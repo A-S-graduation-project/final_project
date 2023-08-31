@@ -15,7 +15,6 @@
         </div>
         <div class="search">
           <form action="{% url 'searchapp:searchResult' %}" method="get">
-          <form action="" method="">
             <!-- <div class="rangedropdown">
               <button class="dropbtn">검색범위</button>
               <div class="dropdown-content">
@@ -40,13 +39,33 @@
         </div>
         <div class="menu">
           <ul>
-            <li><a href="{% url 'board:board_list' %}">Board</a></li>
+            <li>
+              <a href="{% url 'board:board_list' %}">
+                <div class="board_btn">
+                  레시피
+                </div>
+              </a>
+            </li>
             {% if user.is_authenticated %}
-            <li><a href="{% url 'signapp:mypage' %}">{{ username }}</a></li>
-            <li><a href="{% url 'signapp:login' %}">Logout</a></li>
+            <div class="dropdown">
+              <button class="dropbtn">{{username}}</button>
+              <div class="dropdown-content">
+                <a href="{% url 'signapp:mypage' %}">{{ username }}</a>
+                <a href="{% url 'signapp:mypage' %}">내정보</a>
+                <a href="{% url 'signapp:mypage' %}">작성한 글</a>
+                <a href="{% url 'signapp:mypage' %}">찜 목록</a>
+                <a href="{% url 'signapp:login' %}">로그아웃</a>
+              </div>
+            </div>
             {% else %}
-            <li><a href="{% url 'signapp:mypage' %}">MyPage</a></li>
-            <li><a href="{% url 'signapp:login' %}">Login</a></li>
+            <div class="dropdown" style="margin-top: 10px;">
+              <button class="dropbtn">{{username}}</button>
+              <div class="dropdown-content">
+                <a href="{% url 'signapp:login' %}">로그인</a>
+              </div>
+            </div>
+            <!-- <li><a href="{% url 'signapp:mypage' %}">MyPage</a></li> -->
+            <!-- <li><a href="{% url 'signapp:login' %}">Login</a></li> -->
             {% endif %}
           </ul>
         </div>
