@@ -28,7 +28,7 @@ class Product(models.Model):
 
 class UserData(models.Model):
     rnum = models.AutoField(primary_key=True)
-    gender = models.TextField(null=True)
+    gender = models.BooleanField(null=True)
     older = models.IntegerField(null=True)
     allergy = models.TextField()
     prdlstReportNo = models.CharField(max_length=20)
