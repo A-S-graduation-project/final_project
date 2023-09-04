@@ -24,7 +24,11 @@ rdr = csv.reader(f)
 
 for line in rdr:
     if line[0] != 'rnum':
-        preUserData = [line[0], line[1], line[2], line[3], line[6], line[4], line[5]]
+        if line[1] == '남성':
+            preUserData = [line[0], 0, line[2], line[3], line[6], line[4], line[5]]
+        else:
+            preUserData = [line[0], 1, line[2], line[3], line[6], line[4], line[5]]
+            
         cur.execute("""INSERT INTO searchapp_userdata(rnum, gender, older, allergy, prdlstReportNo, prdlstNm, rating) values (%s, %s, %s, %s, %s, %s, %s)""", preUserData)
         conn.commit()
 
