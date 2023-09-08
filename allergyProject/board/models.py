@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Board(models.Model):
-    bno = models.CharField(max_length=8, primary_key=True)
+    bno = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100)
     name = models.CharField(max_length=8)
     cno = models.CharField(max_length=8)
