@@ -1,156 +1,45 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block content %}
-<div style="margin:1% 15%">
-    <h1>나의 정보</h1>
-        <div>
-            {{ username }}님께서 가입하신 회원 정보입니다.
-        </div>
+<div class="signup-form">
+  <h1>회원 프로필</h1>
+  <form method="post">
+    {% csrf_token %}
+    <label for="username">사용자명</label>
+    <input type="text" id="username" value="{{ user_profile.user.username }}" readonly>
+    <label for="email">이메일</label>
+    <input type="email" id="email" value="{{ user_profile.user.email }}" readonly>
+    <label for="phone">전화번호</label>
+    <input type="tel" id="phone" name="phone" value="{{ user_profile.phone }}" required>
+    <label for="birthdate">출생일</label>
+    <input type="date" id="birthdate" name="birthdate" value="{{ user_profile.birthdate }}">
+    <label>성별</label>
+    <div class="gender-label-container">
+      <label for="male" class="gender-label {% if user_profile.gender == 'M' %}selected{% endif %}" id="male">남자</label>
+      <label for="female" class="gender-label {% if user_profile.gender == 'F' %}selected{% endif %}" id="female">여자</label>
+    </div>
+    <label for="password">새 비밀번호</label>
+    <input type="password" id="password" name="password" required>
+    <label for="password-confirm">비밀번호 확인</label>
+    <input type="password" id="password-confirm" name="password-confirm" required>
+    
+    <input type="submit" value="프로필 업데이트">
+  </form>
 </div>
-<main class="mypage">
-    <aside id="sidebar">
-        <li>내정보</li>
-        <li>게시판</li>
-        <li>즐겨찾기</li>
-    </aside>
-    <div>필수 회원 정보</div>
-    <section>
-      <div>
-        <div>
-          <div>
-            <h3>이름</h3>
-          </div>
-          <div>
-            <!-- {% if editing %}
-            <div>
-              <input type="text" value="{{ username }}" />
-            </div>
-            <div>
-              <button class="confirm">확인</button>
-              <button class="cancel">취소</button>
-            </div>
-            {% else %} -->
-            <div>{{ username }}</div>
-            <div>
-              <button class="edit">수정</button>
-            </div>
-            <!-- {% endif %} -->
-          </div>
-        </div> 
-      </div>
-    </section>
-    <section>
-      <div>
-        <div>
-          <div>
-            <h3>생년월일</h3>
-          </div>
-          <div>
-            <!-- {% if editing %}
-            <div>
-              <input type="text" value="{{ username }}" />
-            </div>
-            <div>
-              <button class="confirm">확인</button>
-              <button class="cancel">취소</button>
-            </div>
-            {% else %} -->
-            <div>{{ bday }}</div>
-            <div>
-              <button class="edit">수정</button>
-            </div>
-            <!-- {% endif %} -->
-          </div>
-        </div> 
-      </div>
-    </section>
-    <section>
-      <div>
-        <div>
-          <div>
-            <h3>이메일</h3>
-          </div>
-          <div>
-            <!-- {% if editing %}
-            <div>
-              <input type="text" value="{{ username }}" />
-            </div>
-            <div>
-              <button class="confirm">확인</button>
-              <button class="cancel">취소</button>
-            </div>
-            {% else %} -->
-            <div>{{ useremail }}</div>
-            <div>
-              <button class="edit">수정</button>
-            </div>
-            <!-- {% endif %} -->
-          </div>
-        </div> 
-      </div>
-    </section>
-    <section>
-      <div>
-        <div>
-          <div>
-            <h3>알러지 정보</h3>
-          </div>
-          <div>
-            <!-- {% if editing %}
-            <table>
-              <tr>
-                <th>Allegies:</th>
-                <td>
-                  {% for allergy in form.allergies %}
-                    <div>
-                      <input type="checkbox" name="{{ allergy.name }}" id="id_{{ allergy.name }}" {% if allergy.id in user_profile.allergies.all %}checked{% endif %}>
-                      <label for="id_{{ allergy.name }}">{{ allergy.name }}</label>
-                    </div>
-                  {% endfor %}
-                </td>
-              </tr>
-            </table>
-            <div>
-              <input type="text" value="{{ username }}" />
-            </div>
-            <div>
-              <button class="confirm">확인</button>
-              <button class="cancel">취소</button>
-            </div>
-            {% else %} -->
-            <div>{{ userallergy }}</div>
-            <div>
-              <button class="edit">수정</button>
-            </div>
-            <!-- {% endif %} -->
-          </div>
-        </div> 
-      </div>
-    </section>
-    <!-- <ul>    
-        <li>이름 :</li>
-        <li>이메일</li>
-        <li>전화번호</li>
-        <li>생년월일</li>
-        <li>알러지</li>
-        <ul>
-            <li>난류</li>
-            <li>갑각류</li>
-        </ul>            
-    </ul> -->
-    <!-- <form action="">
-        <div>
-            <label for="username">이름 : </label>
-            <input type="text" placeholder="" id="username" name="username">
-        </div>
-        <div>
-            <label for="userId">아이디 : </label>
-            <input type="text" placeholder="" id="userId" name="userId">
-        </div>
-        <div>
-            <label for="userpwd">비밀번호 : </label>
-            <input type="password" placeholder="" id="userpwd" name="userpwd">
-        </div>
-    </form> -->
-</main> 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const genderLabels = document.querySelectorAll('.gender-label');
+
+    genderLabels.forEach(label => {
+      label.addEventListener('click', function() {
+        genderLabels.forEach(label => label.classList.remove('selected'));
+        this.classList.add('selected');
+
+        const genderRadio = document.getElementById(this.getAttribute('for'));
+        genderRadio.checked = true;
+      });
+    });
+  });
+</script>
 {% endblock %}
