@@ -11,3 +11,4 @@ class Customer(models.Model):
     gender = models.BooleanField()
     bookinfo = models.TextField(blank=True, null=True)
     boardinfo = models.TextField(blank=True, null=True)
+    
