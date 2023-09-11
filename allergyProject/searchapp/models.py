@@ -48,7 +48,7 @@ class UserData(models.Model):
 # allergy category table 작성 필요 #
 class Allergy(models.Model):
     ano = models.AutoField(primary_key=True)
-    allergy = models.CharField(max_length=45)
+    allergy = models.CharField(max_length=45, unique=True)
 
     class Meta:
         db_table = "allergies" # DB에 표시되고 사용할 테이블 명
