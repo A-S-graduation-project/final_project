@@ -12,6 +12,10 @@ class Board(models.Model):
     cdate = models.DateField()
     content = models.TextField()
 
+    class Meta:
+        db_table = "boards" # DB에 표시되고 사용할 테이블 명
+
+
 class Comment(models.Model):
     serialno = models.AutoField(primary_key=True)
     # bno = models.CharField(max_length=8)
@@ -20,3 +24,6 @@ class Comment(models.Model):
     # cno = models.ForeignKey("")
     cno = models.CharField(max_length=8)
     cdate = models.DateField()
+
+    class Meta:
+        db_table = "comments" # DB에 표시되고 사용할 테이블 명

@@ -12,3 +12,5 @@ class Customer(models.Model):
     bookinfo = models.TextField(blank=True, null=True)
     boardinfo = models.TextField(blank=True, null=True)
     
+    class Meta:
+        db_table = "customers" # DB에 표시되고 사용할 테이블 명
