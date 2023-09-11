@@ -11,7 +11,7 @@ conn = pymysql.connect(host='localhost',
 cur = conn.cursor()
 
 # Mysql에서 DATA 읽기 (전처리 포함) #
-cur.execute("""SELECT prdlstReportNo, rawmtrl FROM searchapp_product""")
+cur.execute("""SELECT prdlstReportNo, rawmtrl FROM products""")
 proData = cur.fetchall()
 # print(proData[0:2])                                             # product data 확인용                                          # user data 확인용
 

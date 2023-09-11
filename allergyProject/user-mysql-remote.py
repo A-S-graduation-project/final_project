@@ -5,7 +5,7 @@ conn = pymysql.connect(host='localhost',user='root',password='2017018023',db='al
 cur = conn.cursor()
 
 # TABLE 생성 Query문 #
-cur.execute("""CREATE TABLE IF NOT EXISTS searchapp_userdata(
+cur.execute("""CREATE TABLE IF NOT EXISTS userdata(
             rnum int not null,
             gender text,
             older int,
@@ -16,7 +16,7 @@ cur.execute("""CREATE TABLE IF NOT EXISTS searchapp_userdata(
             PRIMARY KEY (rnum))""")
 
 # TABLE DATA 초기화 (테스트용) #
-cur.execute("""DELETE FROM searchapp_userdata""")
+cur.execute("""DELETE FROM userdata""")
 
 # 필요시 주소 변경 바람 #
 f = open('allergyProject/UserData.csv', 'r', encoding='UTF8')
@@ -29,7 +29,7 @@ for line in rdr:
         else:
             preUserData = [line[0], 1, line[2], line[3], line[6], line[4], line[5]]
             
-        cur.execute("""INSERT INTO searchapp_userdata(rnum, gender, older, allergy, prdlstReportNo, prdlstNm, rating) values (%s, %s, %s, %s, %s, %s, %s)""", preUserData)
+        cur.execute("""INSERT INTO userdata(rnum, gender, older, allergy, prdlstReportNo, prdlstNm, rating) values (%s, %s, %s, %s, %s, %s, %s)""", preUserData)
         conn.commit()
 
 conn.close()
