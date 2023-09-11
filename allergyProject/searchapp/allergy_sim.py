@@ -78,11 +78,11 @@ conn = pymysql.connect(host='localhost',
 cur = conn.cursor()
 
 # Mysql에서 DATA 읽기 (전처리 포함) #
-cur.execute("""SELECT prdlstReportNo FROM searchapp_product""")
+cur.execute("""SELECT prdlstReportNo FROM products""")
 proData = cur.fetchall()
 # print(proData[0:2])                                             # product data 확인용
 
-cur.execute("""SELECT gender,older,allergy,prdlstReportNo,rating FROM searchapp_userdata""")
+cur.execute("""SELECT gender,older,allergy,prdlstReportNo,rating FROM userdata""")
 choData = cur.fetchall()
 # print(choData[0:2])                                             # user data 확인용
 

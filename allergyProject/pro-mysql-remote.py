@@ -27,7 +27,7 @@ conn = pymysql.connect(host='localhost',user='root',password='2017018023',db='al
 cur = conn.cursor()
 
 # TABLE 생성 Query문 #
-cur.execute("""CREATE TABLE IF NOT EXISTS searchapp_product(
+cur.execute("""CREATE TABLE IF NOT EXISTS products(
             prdlstReportNo varchar(200) NOT NULL,
             prdlstNm varchar(200),
             prdkind varchar(200),
@@ -73,7 +73,7 @@ while True:
         procData = Processed(prdlst)
 
         if procData:
-            sql = """INSERT INTO searchapp_product(prdlstReportNo, prdlstNm, prdkind, rawmtrl, allergy, image, manufacture) VALUES(%s, %s, %s, %s, %s, %s, %s)"""\
+            sql = """INSERT INTO products(prdlstReportNo, prdlstNm, prdkind, rawmtrl, allergy, image, manufacture) VALUES(%s, %s, %s, %s, %s, %s, %s)"""\
                 """ON DUPLICATE KEY UPDATE prdlstNm=VALUES(prdlstNm), prdkind=VALUES(prdkind), rawmtrl=VALUES(rawmtrl), allergy=VALUES(allergy), image=VALUES(image), manufacture=VALUES(manufacture)"""
             
             # sql문의 오류가 발생한 경우 무시 #

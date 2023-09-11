@@ -24,6 +24,9 @@ class Product(models.Model):
         except:
             url = ''
         return url
+    
+    class Meta:
+        db_table = "products" # DB에 표시되고 사용할 테이블 명
 
 
 class UserData(models.Model):
@@ -37,3 +40,15 @@ class UserData(models.Model):
 
     def __str__(self):
         return self.allergy
+    
+    class Meta:
+        db_table = "userdata" # DB에 표시되고 사용할 테이블 명
+    
+
+# allergy category table 작성 필요 #
+class Allergy(models.Model):
+    ano = models.AutoField(primary_key=True)
+    allergy = models.CharField(max_length=45)
+
+    class Meta:
+        db_table = "allergies" # DB에 표시되고 사용할 테이블 명
