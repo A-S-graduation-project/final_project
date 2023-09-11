@@ -5,9 +5,22 @@
 <!-- 회원 가입 폼 -->
 <div class="signup-form">
   <h1>회원 가입</h1>
-  <form onsubmit="return validateForm()">
+  <form method="post" onsubmit="return validateForm()">
     {% csrf_token %}
-    
+
+    <!-- 오류 메시지 출력 -->
+    {% if form.errors %}
+    <div class="error-messages">
+        <ul>
+            {% for field_errors in form.errors.values %}
+                {% for error in field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
     <!-- 사용자명 입력 -->
     <input type="text" placeholder="사용자명" name="username" id="username" required>
 
@@ -20,13 +33,13 @@
     oninput="this.setCustomValidity('')">
 
     <!-- 비밀번호 입력 -->
-    <input type="password" pattern="\c{8,15}" placeholder="비밀번호(8~15자리)" name="password" id="password" required
+    <input type="password" pattern="[A-Za-z0-9]{8,15}" placeholder="비밀번호(8~15자리)" name="password" id="password" required
     oninvalid="this.setCustomValidity('비밀번호는 8~15자리여야 합니다.')"
     oninput="this.setCustomValidity('')">
 
     <!-- 비밀번호 확인 입력 -->
-    <input type="password" placeholder="비밀번호 확인" name="password-confirm" id="password-confirm" required>
-    <span id="password-confirm-error" class="error-msg"></span>
+    <input type="password" placeholder="비밀번호 확인" name="password_confirm" id="password_confirm" required>
+    <span id="password-confirm-error" class="error-msg"></span> <!--오류출력-->
     
     <!-- 출생일 선택 -->
     <label for="birthdate">출생일 선택</label>
@@ -34,13 +47,15 @@
 
     <!-- 성별 선택 -->
     <div class="gender-label-container">
-      <label for="male" class="gender-label">남자</label>
-      <label for="female" class="gender-label">여자</label>
+      <input type="radio" id="male" name="gender" value="1" required>
+      <label for="male" class="gender-label" id="male-label">남자</label>
+      
+      <input type="radio" id="female" name="gender" value="2" required>
+      <label for="female" class="gender-label" id="female-label">여자</label>
     </div>
     
     <!-- 회원 가입 버튼 -->
     <input type="submit" value="회원 가입">
-
     </form>
   
     <!-- 로그인 링크 -->
@@ -49,25 +64,6 @@
 
 <!-- 스크립트 -->
 <script>
-function validateForm() {
-    var username = document.getElementById('username').value;
-    var email = document.getElementById('email').value;
-    var phone = document.getElementById('phone').value;
-    var password = document.getElementById('password').value;
-    var passwordConfirm = document.getElementById('password-confirm').value;
-    var passwordConfirmError = document.getElementById('password-confirm-error');
-
-    // 비밀번호 확인 일치 여부 확인
-    if (password !== passwordConfirm) {
-        passwordConfirmError.textContent = "비밀번호가 일치하지 않습니다.";
-        return false;
-    } else {
-        passwordConfirmError.textContent = "";
-    }
-    
-    alert("회원 가입이 완료되었습니다.");
-    return true;
-}
 document.addEventListener('DOMContentLoaded', function() {
   const genderLabels = document.querySelectorAll('.gender-label');
 
@@ -79,7 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // 선택된 성별 버튼에 해당하는 라디오 버튼 선택
       const genderRadio = document.getElementById(this.getAttribute('for'));
-      genderRadio.checked = true;
+      if (genderRadio) {
+        genderRadio.checked = true;
+      }
     });
   });
 });
