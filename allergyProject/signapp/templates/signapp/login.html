@@ -7,8 +7,8 @@
   <form method="post">
     {% csrf_token %}
     
-    <!-- 사용자명 입력 -->
-    <input type="text" placeholder="사용자명" name="username" required>
+    <!-- 이메일 입력 -->
+    <input type="email" placeholder="이메일" name="email" required>
     
     <!-- 비밀번호 입력 -->
     <input type="password" placeholder="비밀번호" name="password" required>
@@ -21,8 +21,8 @@
   <p>아직 회원이 아니신가요? <a href="{% url 'signapp:signup' %}">회원가입</a></p>
   
   <!-- 로그인 실패 메시지 출력 -->
-  {% if login_failed %}
-    <p class="error-msg">사용자명 또는 비밀번호가 올바르지 않습니다.</p>
+  {% if error %}
+    <p class="error-msg">{{ error }}</p>
   {% endif %}
 </div>
 {% endblock %}

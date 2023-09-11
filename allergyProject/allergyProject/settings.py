@@ -142,3 +142,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+#mypage를 눌렀을때 로그인이 안되면 넘어가는 주소
+LOGIN_URL = 'signapp:login'
