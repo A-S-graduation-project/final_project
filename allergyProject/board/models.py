@@ -1,4 +1,8 @@
 from django.db import models
+from django.db.models import JSONField
+
+class Recipe(models.Model):
+    recipe = models.CharField(max_length=255)
 
 # Create your models here.
 class Board(models.Model):
@@ -9,11 +13,10 @@ class Board(models.Model):
     cno = models.CharField(max_length=8)
     allerinfo = models.TextField(null=True)
     cdate = models.DateField()
-    content = models.TextField()
+    content = models.ManyToManyField(Recipe)
 
     class Meta:
         db_table = "boards" # DB에 표시되고 사용할 테이블 명
-
 
 class Comment(models.Model):
     serialno = models.AutoField(primary_key=True)

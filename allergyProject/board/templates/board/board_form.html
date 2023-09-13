@@ -3,9 +3,87 @@
 
 {% block content %}
 <h1>create board</h1>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="submit">
-</form>
+<section class="board-main" style="margin-left: 10px;">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="title">
+            <label for="{{ form.title.id_for_label }}">제목</label>
+            {{ board_form.title }}
+        </div>
+        <div class="content">
+            알러지
+            <div class="allergy-table">
+                <ul class="list">
+                    <li class="list-item">
+                        <input type="checkbox" class="hidden-box" id="first" checked/>
+                        <label for="first" class="check--label">
+                            <span class="check--label-box"></span>
+                            <span class="check--label-text">땅콩</span>
+                        </label>
+                    </li>
+                    <li class="list-item">
+                        <input type="checkbox" class="hidden-box" id="second" />
+                        <label for="second" class="check--label">
+                            <span class="check--label-box"></span>
+                            <span class="check--label-text">새우</span>
+                        </label>
+                    </li>
+                    <li class="list-item">
+                        <input type="checkbox" class="hidden-box" id="third" />
+                        <label for="third" class="check--label">
+                            <span class="check--label-box"></span>
+                            <span class="check--label-text">난류</span>
+                        </label>
+                    </li>
+                    <li class="list-item">
+                        <input type="checkbox" class="hidden-box" id="four" checked/>
+                        <label for="four" class="check--label">
+                            <span class="check--label-box"></span>
+                            <span class="check--label-text">땅콩</span>
+                        </label>
+                    </li>
+                    <li class="list-item">
+                        <input type="checkbox" class="hidden-box" id="five" />
+                        <label for="five" class="check--label">
+                            <span class="check--label-box"></span>
+                            <span class="check--label-text">새우</span>
+                        </label>
+                    </li>
+                        <li class="list-item">
+                        <input type="checkbox" class="hidden-box" id="six" />
+                        <label for="six" class="check--label">
+                            <span class="check--label-box"></span>
+                            <span class="check--label-text">난류</span>
+                        </label>
+                    </li>
+                </ul>
+            </div> 
+        </div>
+        <div class="content">
+            <label for="{{ form.content.id_for_label }}">레시피</label>
+            {{ board_form.content }}
+        </div>
+        <div>
+            <a href="/board/board_detail/{{board.name}}"></a>
+        </div>
+        <!-- {{ form.as_table }} -->
+        <div style="display:flex; justify-content: center;">
+            <input class="up" type="submit" value="등록">
+        </div>
+    </form>
+</section>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var recipeContainer = document.getElementById("recipe-container");
+        var addButton = document.getElementById("add-recipe-button");
+    
+        addButton.addEventListener("click", function() {
+            var newForm = document.createElement("div");
+            newForm.className = "recipe-input";
+            newForm.innerHTML = '{{ form.recipes.empty_form|safe }}';
+            recipeContainer.appendChild(newForm);
+        });
+    });
+</script>
 {% endblock %}
+
