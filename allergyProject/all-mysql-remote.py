@@ -1,14 +1,14 @@
-import requests, pymysql
+import psycopg2
+
 
 # DB 연결 #
-conn = pymysql.connect(host='localhost',user='root',password='2017018023',db='allergydb',charset='utf8',connect_timeout=32768)
+conn = psycopg2.connect(host='localhost',user='postgres',password='2017018023',dbname='allergydb',connect_timeout=32768)
 cur = conn.cursor()
 
 # TABLE 생성 Query문 #
 cur.execute("""CREATE TABLE IF NOT EXISTS allergies(
-            ano int NOT NULL AUTO_INCREMENT,
-            allergy varchar(45) NOT NULL,
-            PRIMARY KEY (ano))""")
+            ano SERIAL PRIMARY KEY NOT NULL,
+            allergy varchar(45) UNIQUE NOT NULL)""")
 
 # 이후 빠진 allergy 추가 필요 #
 allergies = {'메밀', '밀', '콩', '대두', '땅콩',

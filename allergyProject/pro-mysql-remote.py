@@ -2,6 +2,7 @@ from urllib.parse import unquote
 import requests
 import json
 import pymysql
+import psycopg2
 
 # dictionary인 prdlst를 tuple인 procData로 변경 #
 def Processed(dict):
@@ -23,19 +24,18 @@ def Processed(dict):
 
 
 # DB 연결 #
-conn = pymysql.connect(host='localhost',user='root',password='2017018023',db='allergydb',charset='utf8',connect_timeout=32768)
+conn = psycopg2.connect(host='localhost',user='postgres',password='2017018023',dbname='allergydb',connect_timeout=32768)
 cur = conn.cursor()
 
 # TABLE 생성 Query문 #
 cur.execute("""CREATE TABLE IF NOT EXISTS products(
-            prdlstReportNo varchar(200) NOT NULL,
-            prdlstNm varchar(200),
+            "prdlstReportNo" varchar(200) NOT NULL primary key,
+            "prdlstNm" varchar(200),
             prdkind varchar(200),
             rawmtrl TEXT,
             allergy TEXT,
             image varchar(100),
-            manufacture varchar(200),
-            PRIMARY KEY (prdlstReportNo))""")
+            manufacture varchar(200))""")
 
 # hearder 정보 #
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'}
@@ -73,8 +73,9 @@ while True:
         procData = Processed(prdlst)
 
         if procData:
-            sql = """INSERT INTO products(prdlstReportNo, prdlstNm, prdkind, rawmtrl, allergy, image, manufacture) VALUES(%s, %s, %s, %s, %s, %s, %s)"""\
-                """ON DUPLICATE KEY UPDATE prdlstNm=VALUES(prdlstNm), prdkind=VALUES(prdkind), rawmtrl=VALUES(rawmtrl), allergy=VALUES(allergy), image=VALUES(image), manufacture=VALUES(manufacture)"""
+            # "" 없으면 소문자로 인식 #
+            sql = """INSERT INTO products("prdlstReportNo", "prdlstNm", prdkind, rawmtrl, allergy, image, manufacture) VALUES(%s, %s, %s, %s, %s, %s, %s)"""\
+                """ON DUPLICATE KEY UPDATE "prdlstNm"=VALUES(prdlstNm), prdkind=VALUES(prdkind), rawmtrl=VALUES(rawmtrl), allergy=VALUES(allergy), image=VALUES(image), manufacture=VALUES(manufacture)"""
             
             # sql문의 오류가 발생한 경우 무시 #
             try:
