@@ -4,6 +4,9 @@ from django.db.models import JSONField
 class Recipe(models.Model):
     recipe = models.CharField(max_length=255)
 
+    class Meta:
+        db_table = "Recipes" # DB에 표시되고 사용할 테이블 명
+
 # Create your models here.
 class Board(models.Model):
     bno = models.AutoField(primary_key=True)
@@ -13,7 +16,7 @@ class Board(models.Model):
     cno = models.CharField(max_length=8)
     allerinfo = models.TextField(null=True)
     cdate = models.DateField()
-    content = models.ManyToManyField(Recipe)
+    content = models.OneToOneField(Recipe, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "boards" # DB에 표시되고 사용할 테이블 명
