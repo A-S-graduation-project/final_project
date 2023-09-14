@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView
 from board.models import Board, Recipe
 from .forms import BoardForm, RecipeForm
-
+from searchapp.models import Allergy
 
 # Create your views here.
 # def board (request):
@@ -33,6 +33,8 @@ class DetailView(TemplateView):
 #     success_url = reverse_lazy("board:board_list")
 
 def create_board(request):
+
+    allergies = Allergy.objects.all()
     if request.method == 'POST':
         board_form = BoardForm(request.POST, prefix='board')
         recipe_form = RecipeForm(request.POST, prefix='recipe')
@@ -51,4 +53,4 @@ def create_board(request):
         board_form = BoardForm(prefix='board')
         recipe_form = RecipeForm(prefix='recipe')
 
-    return render(request, 'board_form.html', {'board_form': board_form, 'recipe_form': recipe_form})
+    return render(request, 'board/board_form.html', {'board_form': board_form, 'recipe_form': recipe_form, 'allergies': allergies})
