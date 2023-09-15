@@ -1,6 +1,10 @@
 from django import forms
 from .models import Customer
-
+from django.contrib.auth.models import User
+class LoginForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'password'] # 로그인 시에는 유저이름과 비밀번호만 입력 받는다.
 # 회원 가입을 위한 폼 정의
 class SignupForm(forms.ModelForm):
     # gender 필드는 HiddenInput 위젯을 사용하여 숨겨진 필드로 정의되며 초기값은 1로 설정됩니다.
@@ -32,3 +36,13 @@ class SignupForm(forms.ModelForm):
             raise forms.ValidationError("이미 있는 이메일입니다.")
         
         return email
+    
+    # 아이디 중복 검사를 위한 메서드
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        
+        # 이미 등록된 이메일이 존재하면 에러 발생
+        if Customer.objects.filter(username=username).exists():
+            raise forms.ValidationError("이미 있는 ID입니다.")
+        
+        return username
