@@ -1,8 +1,35 @@
 from django.db import models
 from django.db.models import JSONField
+import json
 
+class JSONListField(models.TextField):
+    def from_db_value(self, value, expression, connection):
+        if not value:
+            return []
+        try:
+            return json.loads(value)
+        except (TypeError, ValueError):
+            return []
+
+    def to_python(self, value):
+        if not value:
+            return []
+        if isinstance(value, list):
+            return value
+        try:
+            return json.loads(value)
+        except (TypeError, ValueError):
+            return []
+
+    def get_prep_value(self, value):
+        if not value:
+            return "[]"
+        if isinstance(value, str):
+            return value
+        return json.dumps(value)
+    
 class Recipe(models.Model):
-    recipe = models.CharField(max_length=255)
+    recipe = JSONListField()
 
     class Meta:
         db_table = "Recipes" # DB에 표시되고 사용할 테이블 명
@@ -16,6 +43,7 @@ class Board(models.Model):
     cno = models.CharField(max_length=8)
     allerinfo = models.TextField(null=True)
     cdate = models.DateField()
+    ingredient = JSONListField()
     content = models.OneToOneField(Recipe, on_delete=models.CASCADE)
 
     class Meta:

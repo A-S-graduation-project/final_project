@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block content %}
-<h1>create board</h1>
 <section class="board-main" style="margin-left: 10px;">
     <form method="POST">
         {% csrf_token %}
@@ -11,7 +10,7 @@
             {{ board_form.title }}
         </div>
         <div class="content">
-            알러지
+            <div class="allergy">알러지</div>
             <div class="allergy-table">
                 {% for allergy in allergies %}  
                     <ul class="list">
@@ -25,57 +24,17 @@
                     </ul>
                 {% endfor %}
             </div>
-            <!-- <div class="allergy-table">
-                <ul class="list">
-                    <li class="list-item">
-                        <input type="checkbox" class="hidden-box" id="first" checked/>
-                        <label for="first" class="check--label">
-                            <span class="check--label-box"></span>
-                            <span class="check--label-text">땅콩</span>
-                        </label>
-                    </li>
-                    <li class="list-item">
-                        <input type="checkbox" class="hidden-box" id="second" />
-                        <label for="second" class="check--label">
-                            <span class="check--label-box"></span>
-                            <span class="check--label-text">새우</span>
-                        </label>
-                    </li>
-                    <li class="list-item">
-                        <input type="checkbox" class="hidden-box" id="third" />
-                        <label for="third" class="check--label">
-                            <span class="check--label-box"></span>
-                            <span class="check--label-text">난류</span>
-                        </label>
-                    </li>
-                    <li class="list-item">
-                        <input type="checkbox" class="hidden-box" id="four" checked/>
-                        <label for="four" class="check--label">
-                            <span class="check--label-box"></span>
-                            <span class="check--label-text">땅콩</span>
-                        </label>
-                    </li>
-                    <li class="list-item">
-                        <input type="checkbox" class="hidden-box" id="five" />
-                        <label for="five" class="check--label">
-                            <span class="check--label-box"></span>
-                            <span class="check--label-text">새우</span>
-                        </label>
-                    </li>
-                        <li class="list-item">
-                        <input type="checkbox" class="hidden-box" id="six" />
-                        <label for="six" class="check--label">
-                            <span class="check--label-box"></span>
-                            <span class="check--label-text">난류</span>
-                        </label>
-                    </li>
-                </ul>
-            </div> 
-        </div> -->
+        <div class="ingredient">
+            <label for="{{ board_form.ingredient.id_for_label }}">필수 재료</label>
+            {{ board_form.ingredient }}
+        </div>
+
         <div class="content">
-            <label for="{{ form.content.id_for_label }}">레시피</label>
+            <label for="{{ recipe_form.recipe.id_for_label }}">레시피</label>
             <div id="recipe-fields">
-                <p>{{ recipe_form.recipe }}</p> <!-- 레시피 입력 필드를 <p> 태그로 감쌈 -->
+                <div class="recipe-form">
+                    <p>{{ recipe_form.recipe }}</p> <!-- 레시피 입력 필드를 <p> 태그로 감쌈 -->
+                </div>
             </div>
             <button type="button" id="add-recipe">+</button>
             <button type="button" id="remove-recipe">-</button>
@@ -91,64 +50,43 @@
                 <input class="up" type="submit" value="등록">
             </div>
         </div>
-        </form>
-        </section>
-        
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script>
-        $(document).ready(function() {
-            // + 버튼을 클릭할 때마다 새로운 레시피 입력 필드를 추가
-            $("#add-recipe").click(function() {
-                var recipeField = $(".content p:first").clone();
-                recipeField.find('input').val(''); // 새로운 필드를 비웁니다.
-                $("#recipe-fields").append(recipeField);
-            });
-        
-            // - 버튼을 클릭하여 레시피 입력 필드를 제거
-            $("#remove-recipe").click(function() {
-                var recipeFieldCount = $("#recipe-fields p").length;
-                // 최소한 1개의 레시피 입력 필드가 있어야 함
-                if (recipeFieldCount > 1) {
-                    $("#recipe-fields p:last").remove();
-                }
-            });
-        });
-        </script>
-        <!-- <div class="content">
-            <label for="{{ form.content.id_for_label }}">레시피</label>
-            <p>{{ recipe_form.recipe }}</p>
-        </div>
-        <button type="button" id="add-recipe">+</button>
-        <button type="button" id="remove-recipe">-</button>
-        <div class="recipe_button">
-            <div>
-                <a href="/board/board_detail/{{board.name}}"></a>
-            </div>
-            <div style="display:flex; justify-content: center;">
-                <input class="up" type="submit" value="등록">
-            </div>
-        </div>
     </form>
 </section>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
     // + 버튼을 클릭할 때마다 새로운 레시피 입력 필드를 추가
     $("#add-recipe").click(function() {
-        var recipeField = $(".content p:first").clone();
-        recipeField.find('input').val(''); // 새로운 필드를 비웁니다.
-        $(".content").append(recipeField);
+        var recipeField = $(".recipe-form:first").clone();
+        recipeField.find('textarea').val(''); // 새로운 필드를 비웁니다.
+        $("#recipe-fields").append(recipeField);
     });
 
     // - 버튼을 클릭하여 레시피 입력 필드를 제거
     $("#remove-recipe").click(function() {
-    var recipeFieldCount = $(".content p").length;
-    // 최소한 1개의 레시피 입력 필드가 있어야 함
-    if (recipeFieldCount > 1) {
-        $(".content p:last").remove();
+        var recipeFieldCount = $("#recipe-fields .recipe-form").length;
+        // 최소한 1개의 레시피 입력 필드가 있어야 함
+        if (recipeFieldCount > 1) {
+            $("#recipe-fields .recipe-form:last").remove();
         }
     });
+
+    // 등록 버튼 클릭 시 모든 레시피를 리스트로 저장
+    $("#your-submit-button-id").click(function() {
+        var recipeList = [];
+        $(".recipe-form textarea").each(function() {
+            var recipeValue = $(this).val();
+            if (recipeValue !== '') {
+                recipeList.push(recipeValue);
+            }
+        });
+
+        // recipeList를 JSON 형식으로 보낼 수 있도록 처리
+        var recipeData = JSON.stringify(recipeList);
+
+    });
 });
-</script> -->
+</script>
 {% endblock %}
 
