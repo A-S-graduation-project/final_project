@@ -1,10 +1,10 @@
 from django import forms
 from .models import Customer
-from django.contrib.auth.models import User
 class LoginForm(forms.ModelForm):
     class Meta:
-        model = User
+        model = Customer
         fields = ['username', 'password'] # 로그인 시에는 유저이름과 비밀번호만 입력 받는다.
+
 # 회원 가입을 위한 폼 정의
 class SignupForm(forms.ModelForm):
     # gender 필드는 HiddenInput 위젯을 사용하여 숨겨진 필드로 정의되며 초기값은 1로 설정됩니다.
