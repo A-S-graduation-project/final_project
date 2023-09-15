@@ -1,17 +1,17 @@
-import pymysql
+import pymysql, psycopg2
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 # DB 연결 #
-conn = pymysql.connect(host='localhost',
-                       user='root',
-                       password='2017018023',
-                       db='allergydb',
-                       charset='utf8')
+conn = psycopg2.connect(host='localhost',
+                        user='postgres',
+                        password='2017018023',
+                        dbname='allergydb',
+                        connect_timeout=32768)
 cur = conn.cursor()
 
 # Mysql에서 DATA 읽기 (전처리 포함) #
-cur.execute("""SELECT prdlstReportNo, rawmtrl FROM products""")
+cur.execute("""SELECT "prdlstReportNo", rawmtrl FROM products""")
 proData = cur.fetchall()
 # print(proData[0:2])                                             # product data 확인용                                          # user data 확인용
 

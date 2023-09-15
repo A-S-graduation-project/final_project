@@ -1,7 +1,6 @@
 from urllib.parse import unquote
 import requests
 import json
-import pymysql
 import psycopg2
 
 # dictionary인 prdlst를 tuple인 procData로 변경 #
@@ -70,18 +69,22 @@ while True:
         prdlst = i['item']
 
         field = prdlst.keys()
-        procData = Processed(prdlst)
+        procData = list(Processed(prdlst))
 
         if procData:
             # "" 없으면 소문자로 인식 #
-            sql = """INSERT INTO products("prdlstReportNo", "prdlstNm", prdkind, rawmtrl, allergy, image, manufacture) VALUES(%s, %s, %s, %s, %s, %s, %s)"""\
-                """ON DUPLICATE KEY UPDATE "prdlstNm"=VALUES(prdlstNm), prdkind=VALUES(prdkind), rawmtrl=VALUES(rawmtrl), allergy=VALUES(allergy), image=VALUES(image), manufacture=VALUES(manufacture)"""
+            sql = """INSERT INTO products("prdlstReportNo", "prdlstNm", prdkind, rawmtrl, allergy, image, manufacture)"""\
+                f"""VALUES('{procData[0]}','{procData[1]}','{procData[2]}','{procData[3]}','{procData[4]}','{procData[5]}','{procData[6]}')"""\
+                """ON CONFLICT ("prdlstReportNo")"""\
+                f"""DO UPDATE SET "prdlstNm" = '{procData[1]}', prdkind='{procData[2]}', rawmtrl='{procData[3]}', allergy='{procData[4]}', image='{procData[5]}', manufacture='{procData[6]}'"""
             
             # sql문의 오류가 발생한 경우 무시 #
             try:
-                cur.execute(sql, procData)
+                cur.execute(sql)
                 conn.commit()
-            except:
+            except Exception as ex:
+                conn.commit()
+                print(ex)
                 pass
         
     pageNo += 1
