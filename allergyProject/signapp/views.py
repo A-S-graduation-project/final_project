@@ -5,8 +5,10 @@ from django.views.generic.edit import CreateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from signapp.models import Customer
-from signapp.forms import SignupForm
-from django.contrib.auth import authenticate, login
+from signapp.forms import SignupForm, LoginForm
+from django.http import JsonResponse
+from django.urls import reverse
+from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.decorators import login_required
@@ -15,25 +17,35 @@ from django.views.generic import TemplateView
 
 # 사용자 로그인 뷰
 class UserLoginView(View):
-    template_name = 'signapp/login.html'  # 로그인 템플릿 경로
+    template_name = 'signapp/login.html'
 
     def get(self, request):
-        return render(request, self.template_name)
+        form = LoginForm()
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        
-        user = authenticate(request, email=email, password=password)
-        
-        if user is not None:
-            login(request, user)
-            print('로그인 성공:', email)
-            return redirect('mainapp:homr')  # 로그인 성공 시 리다이렉트할 URL 설정
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            
+            try:
+                customer = Customer.objects.get(username=username)
+                if customer.password == password:
+                    # 로그인 성공
+                    request.session['customer_id'] = customer.cno
+                    # 로그인 성공 시 홈 페이지로 리디렉션
+                    return redirect(reverse('main:home'))
+                else:
+                    # 비밀번호가 일치하지 않음
+                    error_msg = '비밀번호가 틀렸습니다'
+            except Customer.DoesNotExist:
+                # 해당 사용자가 존재하지 않음
+                error_msg = '존재하지 않는 ID입니다'
         else:
-            error = "이메일 또는 비밀번호가 일치하지 않습니다."
-            print('로그인 실패:', email, password)
-            return render(request, self.template_name, {'error': error})
+            # 폼 유효성 검사 실패 시 에러 메시지 반환
+            error_msg = '입력값이 올바르지 않습니다'
+        return render(request, self.template_name, {'form': form, 'error_msg': error_msg})
 
 # 사용자 회원 가입 뷰
 class SignupView(SuccessMessageMixin, CreateView):

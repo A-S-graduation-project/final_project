@@ -700,7 +700,7 @@ footer {
   color: #333; /* 글자 색상 */
 }
 
-.login-form input[type="email"],
+.login-form input[type="username"],
 .login-form input[type="password"] {
   width: 100%;
   padding: 12px 20px;
@@ -712,7 +712,7 @@ footer {
   border-radius: 0;
 }
 
-.login-form input[type="email"]:focus,
+.login-form input[type="username"]:focus,
 .login-form input[type="password"]:focus {
   background-color: #e1e1e1; /* 입력창에 포커스가 갔을 때 배경색 변경 */
 }
