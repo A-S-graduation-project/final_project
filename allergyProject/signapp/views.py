@@ -1,14 +1,12 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-from django.views.generic.edit import CreateView
-from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic.edit import FormView
 from django.contrib import messages
 from signapp.models import Customer
-from signapp.forms import SignupForm, LoginForm
-from django.http import JsonResponse
-from django.urls import reverse
-from django.contrib.auth import login
+from signapp.forms import SignupForm
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.hashers import make_password 
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.decorators import login_required
@@ -17,53 +15,45 @@ from django.views.generic import TemplateView
 
 # 사용자 로그인 뷰
 class UserLoginView(View):
-    template_name = 'signapp/login.html'
-
     def get(self, request):
-        form = LoginForm()
-        return render(request, self.template_name, {'form': form})
-
+        # 로그인 폼을 보여주는 부분 (GET 요청)
+        return render(request, 'signapp/login.html')
+    
     def post(self, request):
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            
-            try:
-                customer = Customer.objects.get(username=username)
-                if customer.password == password:
-                    # 로그인 성공
-                    request.session['customer_id'] = customer.cno
-                    # 로그인 성공 시 홈 페이지로 리디렉션
-                    return redirect(reverse('main:home'))
-                else:
-                    # 비밀번호가 일치하지 않음
-                    error_msg = '비밀번호가 틀렸습니다'
-            except Customer.DoesNotExist:
-                # 해당 사용자가 존재하지 않음
-                error_msg = '존재하지 않는 ID입니다'
+        # POST 요청으로 로그인 정보를 처리
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            # 로그인 성공
+            login(request, user)
+            return redirect('main:home')  # 로그인 후 홈페이지로 리디렉션
         else:
-            # 폼 유효성 검사 실패 시 에러 메시지 반환
-            error_msg = '입력값이 올바르지 않습니다'
-        return render(request, self.template_name, {'form': form, 'error_msg': error_msg})
+            print(username)
+            print(password)
+            error_message = '로그인에 실패하였습니다. 다시 시도해주세요.'
+            messages.error(request, error_message)
+            return render(request, 'signapp/login.html', {'error_message': error_message})
 
 # 사용자 회원 가입 뷰
-class SignupView(SuccessMessageMixin, CreateView):
-    model = Customer
-    form_class = SignupForm
+class SignupView(FormView):
     template_name = 'signapp/signup.html'
-    success_url = reverse_lazy('signapp:login')
-    success_message = "회원 가입이 완료되었습니다."
+    form_class = SignupForm
+    success_url = reverse_lazy('main:home')
 
-    # 폼 데이터가 유효할 때 실행되는 메서드
     def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, self.success_message)
-        return response
-    
-    # 폼 데이터가 유효하지 않을 때 실행되는 메서드
-    def form_invalid(self, form):
-        return super().form_invalid(form)
+        # 비밀번호를 해싱하여 저장
+        user = form.save(commit=False)
+        user.password = make_password(form.cleaned_data['password'])
+        user.save()
+
+        # 사용자를 로그인 시킴
+        login(self.request, user)
+
+        messages.success(self.request, "회원 가입이 완료되었습니다.")
+        return super().form_valid(form)
 
 # 사용자 마이페이지 뷰
 class MypageView(TemplateView):

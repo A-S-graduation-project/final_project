@@ -19,10 +19,13 @@
   
   <!-- 회원가입 링크 -->
   <p>아직 회원이 아니신가요? <a href="{% url 'signapp:signup' %}">회원가입</a></p>
-  
+  {% if messages %}
+        <ul class="errorlist">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
   <!-- 로그인 실패 메시지 출력 -->
-  {% if error_msg %}
-    <p class="error-msg">{{ error_msg }}</p>
-  {% endif %}
 </div>
 {% endblock %}
