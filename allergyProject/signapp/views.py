@@ -1,17 +1,15 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.views.generic import TemplateView
+from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from signapp.models import Customer
-from signapp.forms import SignupForm
+from signapp.forms import SignupForm, UserProfileForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password 
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView
 
 # 사용자 로그인 뷰
 class UserLoginView(View):
@@ -56,16 +54,30 @@ class SignupView(FormView):
         return super().form_valid(form)
 
 # 사용자 마이페이지 뷰
-class MypageView(TemplateView):
+@method_decorator(login_required, name='dispatch')
+class MypageView(View):
     template_name = 'signapp/mypage.html'
-    
-    @method_decorator(login_required)  # 로그인 상태를 확인하는 데코레이터 적용
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
-    # 템플릿 컨텍스트 데이터 설정
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user_profile = Customer.objects.get(user=self.request.user)  # 현재 로그인한 사용자의 프로필 정보를 가져옴
-        context['user_profile'] = user_profile
-        return context
+    def get(self, request, *args, **kwargs):
+        user_profile = Customer.objects.get(username=request.user.username)
+        form = UserProfileForm(instance=user_profile)
+        context = {
+            'user_profile': user_profile,
+            'form': form,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        user_profile = Customer.objects.get(username=request.user.username)
+        form = UserProfileForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '회원 정보가 성공적으로 수정되었습니다.')
+            return redirect(reverse('signapp:mypage'))
+        else:
+            messages.error(request, '회원 정보 수정에 실패했습니다. 입력 값을 확인하세요.')
+            context = {
+                'user_profile': user_profile,
+                'form': form,
+            }
+            return render(request, self.template_name, context)
