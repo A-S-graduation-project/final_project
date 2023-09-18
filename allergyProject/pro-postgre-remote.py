@@ -1,7 +1,5 @@
 from urllib.parse import unquote
-import requests
-import json
-import pymysql
+import requests, json, psycopg2, re
 
 # dictionary인 prdlst를 tuple인 procData로 변경 #
 def Processed(dict):
@@ -23,19 +21,18 @@ def Processed(dict):
 
 
 # DB 연결 #
-conn = pymysql.connect(host='localhost',user='root',password='2017018023',db='allergydb',charset='utf8',connect_timeout=32768)
+conn = psycopg2.connect(host='localhost',user='postgres',password='2017018023',dbname='allergydb',connect_timeout=32768)
 cur = conn.cursor()
 
 # TABLE 생성 Query문 #
 cur.execute("""CREATE TABLE IF NOT EXISTS products(
-            prdlstReportNo varchar(200) NOT NULL,
-            prdlstNm varchar(200),
+            "prdlstReportNo" varchar(200) NOT NULL primary key,
+            "prdlstNm" varchar(200),
             prdkind varchar(200),
             rawmtrl TEXT,
             allergy TEXT,
             image varchar(100),
-            manufacture varchar(200),
-            PRIMARY KEY (prdlstReportNo))""")
+            manufacture varchar(200))""")
 
 # hearder 정보 #
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'}
@@ -49,17 +46,15 @@ while True:
     URL = "http://apis.data.go.kr/B553748/CertImgListService/getCertImgListService"
     parameters = {"serviceKey" : unquote(serviceKey), "pageNo" : str(pageNo), "returnType" : "json"}
 
-    # error 발생 시 error의 종류 출력 후 다시 시도 #
     try:
         res = requests.get(URL, params=parameters, verify=False, headers=headers, timeout=None)
-    except Exception as ex:
+    except Exception as ex: # error 발생 시 error의 종류 출력 후 다시 시도 #
         print(ex)
         continue
-    
-    # JSONDecodeError 무시 #
+
     try:
         data = json.loads(res.text)['body']['items']
-    except:
+    except: # JSONDecodeError 무시 #
         pass
 
     # load된 data가 없을 경우 종료 #
@@ -68,19 +63,29 @@ while True:
 
     for i in data:
         prdlst = i['item']
-
         field = prdlst.keys()
-        procData = Processed(prdlst)
+
+        try:
+            procData = list(Processed(prdlst))
+            procData[3] = re.sub(r"[^\uAC00-\uD7A3a-zA-Z]", " ", procData[3])
+            procData[3] = procData[3].replace('•, \n', ' ')
+            procData = tuple(procData)
+        except: # TypeError 방지 #
+            pass
 
         if procData:
-            sql = """INSERT INTO products(prdlstReportNo, prdlstNm, prdkind, rawmtrl, allergy, image, manufacture) VALUES(%s, %s, %s, %s, %s, %s, %s)"""\
-                """ON DUPLICATE KEY UPDATE prdlstNm=VALUES(prdlstNm), prdkind=VALUES(prdkind), rawmtrl=VALUES(rawmtrl), allergy=VALUES(allergy), image=VALUES(image), manufacture=VALUES(manufacture)"""
+            # "" 없으면 소문자로 인식 #
+            sql = u"""INSERT INTO products("prdlstReportNo", "prdlstNm", prdkind, rawmtrl, allergy, image, manufacture)"""\
+                f"""VALUES('{procData[0]}','{procData[1]}','{procData[2]}','{procData[3]}','{procData[4]}','{procData[5]}','{procData[6]}')"""\
+                """ON CONFLICT ("prdlstReportNo")"""\
+                f"""DO UPDATE SET "prdlstNm" = '{procData[1]}', prdkind='{procData[2]}', rawmtrl='{procData[3]}', allergy='{procData[4]}', image='{procData[5]}', manufacture='{procData[6]}'"""
             
-            # sql문의 오류가 발생한 경우 무시 #
             try:
-                cur.execute(sql, procData)
+                cur.execute(sql)
                 conn.commit()
-            except:
+            except Exception as ex: # sql문의 오류가 발생한 경우 무시 #
+                conn.commit()
+                print(ex)
                 pass
         
     pageNo += 1

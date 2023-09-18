@@ -1,4 +1,4 @@
-import pymysql
+import pymysql, psycopg2
 import pandas as pd
 from math import sqrt
 
@@ -70,19 +70,19 @@ def getRecommendation (data, allergy, sim_function=sim_person):
 
 
 # DB 연결 #
-conn = pymysql.connect(host='localhost',
-                       user='root',
-                       password='2017018023',
-                       db='allergydb',
-                       charset='utf8')
+conn = psycopg2.connect(host='localhost',
+                        user='postgres',
+                        password='2017018023',
+                        dbname='allergydb',
+                        connect_timeout=32768)
 cur = conn.cursor()
 
 # Mysql에서 DATA 읽기 (전처리 포함) #
-cur.execute("""SELECT prdlstReportNo FROM products""")
+cur.execute("""SELECT "prdlstReportNo" FROM products""")
 proData = cur.fetchall()
 # print(proData[0:2])                                             # product data 확인용
 
-cur.execute("""SELECT gender,older,allergy,prdlstReportNo,rating FROM userdata""")
+cur.execute("""SELECT gender,older,allergy,"prdlstReportNo",rating FROM userdata""")
 choData = cur.fetchall()
 # print(choData[0:2])                                             # user data 확인용
 

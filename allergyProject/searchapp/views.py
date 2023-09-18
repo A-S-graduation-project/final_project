@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Product
 from .models import UserData
 from django.db.models import Q
+from django.core.cache import cache
 try:
     from searchapp.allergy_sim import *
     from searchapp.food_sim import *
@@ -25,24 +26,37 @@ def filtering(products, list, query):
     return products
 
 
+# cache 적용 사례 #
 def searchResult(request):
-    # global query
-    if ('kw' in request.GET) and ('afilter' in request.GET):
-        query = request.GET.get('kw')
-        afilter = request.GET.getlist('afilter')
-        list = afilter.copy()
-        products = Product.objects.all().order_by('prdlstNm')
-        products = filtering(products, list, query)[:200]
-        return render(request, 'search.html', {'query':query, 'afilter':afilter, 'products':products} )
+    if request.GET.get('afilter'):
+        cache_key = request.GET.get('kw') + request.GET.get('afilter')
+    else:
+        cache_key = request.GET.get('kw')
+    products = cache.get(cache_key, None)
+
+    if not products:
+        # global query
+        if ('kw' in request.GET):
+            if ('afilter' in request.GET):
+                query = request.GET.get('kw')
+                afilter = request.GET.getlist('afilter')
+                list = afilter.copy()
+                products = Product.objects.all().order_by('prdlstNm')
+                products = filtering(products, list, query)[:1000]
+                cache.set(cache_key, products, 60*60)
+                return render(request, 'search.html', {'query':query, 'afilter':afilter, 'products':products} )
+        
+            else:
+                query = request.GET.get('kw')
+                products = Product.objects.all().order_by('prdlstNm')
+                products = products.filter(
+                    Q(prdlstNm__icontains=query) |
+                    Q(prdkind__icontains=query)
+                )[:1000]
+                cache.set(cache_key, products, 60*60)
+                return render(request, 'search.html', {'query':query, 'products':products} )
     
-    elif ('kw' in request.GET):
-        query = request.GET.get('kw')
-        products = Product.objects.all().order_by('prdlstNm')
-        products = products.filter(
-            Q(prdlstNm__icontains=query) |
-            Q(prdkind__icontains=query)
-        )[:200]
-        return render(request, 'search.html', {'query':query, 'products':products} )
+    return render(request, 'search.html', {'products':products})
 
 
 def Detail(request):
