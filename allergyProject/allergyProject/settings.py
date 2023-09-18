@@ -154,3 +154,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #mypage를 눌렀을때 로그인이 안되면 넘어가는 주소
 LOGIN_URL = 'signapp:login'
+
+#USER모델을 Customer모델로함
+AUTH_USER_MODEL = 'signapp.Customer'

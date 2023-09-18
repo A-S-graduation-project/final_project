@@ -1,5 +1,9 @@
 from django import forms
 from .models import Customer
+from django.contrib.auth.hashers import make_password 
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.contrib import messages
 class LoginForm(forms.ModelForm):
     class Meta:
         model = Customer
@@ -46,3 +50,48 @@ class SignupForm(forms.ModelForm):
             raise forms.ValidationError("이미 있는 ID입니다.")
         
         return username
+    
+#회원 정보를 편집할수 있게 만든 form
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ['email', 'phone', 'birthdate', 'gender', 'password']
+
+    # 비밀번호 필드를 PasswordInput 위젯으로 설정
+    password = forms.CharField(required=False, widget=forms.PasswordInput)
+    # 이메일 필드를 선택적으로 만듦
+    email = forms.EmailField(required=False)
+
+def update_profile(request):
+    if request.method == 'POST':
+        user_profile = Customer.objects.get(username=request.user.username)
+        form = UserProfileForm(request.POST, instance=user_profile)
+
+        if form.is_valid():
+            # 이메일과 비밀번호 필드를 가져와서 변경된 경우에만 업데이트
+            new_email = form.cleaned_data['email']
+            new_password = form.cleaned_data['password']
+
+            if new_email != user_profile.email:
+                user_profile.email = new_email
+            if new_password:
+                user_profile.password = make_password(new_password)
+
+            user_profile.phone = form.cleaned_data['phone']
+            user_profile.birthdate = form.cleaned_data['birthdate']
+            user_profile.gender = form.cleaned_data['gender']
+
+            user_profile.save()
+            messages.success(request, '프로필이 성공적으로 업데이트되었습니다.')
+            return redirect(reverse('signapp:mypage'))
+        else:
+            messages.error(request, '프로필 업데이트에 실패했습니다. 입력 값을 확인하세요.')
+    else:
+        user_profile = Customer.objects.get(username=request.user.username)
+        form = UserProfileForm(instance=user_profile)
+
+    context = {
+        'user_profile': user_profile,
+        'form': form,
+    }
+    return render(request, 'signapp/mypage.html', context)
