@@ -28,7 +28,10 @@ def filtering(products, list, query):
 
 # cache 적용 사례 #
 def searchResult(request):
-    cache_key = request.GET.get('kw')
+    if request.GET.get('afilter'):
+        cache_key = request.GET.get('kw') + request.GET.get('afilter')
+    else:
+        cache_key = request.GET.get('kw')
     products = cache.get(cache_key, None)
 
     if not products:
