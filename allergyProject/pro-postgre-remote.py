@@ -25,11 +25,11 @@ conn = psycopg2.connect(host='localhost',user='postgres',password='2017018023',d
 cur = conn.cursor()
 
 # TABLE 생성 Query문 #
-cur.execute("""CREATE TABLE IF NOT EXISTS products(
+cur.execute("""REATE TABLE IF NOT EXISTS products(
             "prdlstReportNo" varchar(200) NOT NULL primary key,
-            "prdlstNm" varchar(200),
-            prdkind varchar(200),
-            rawmtrl TEXT,
+            "prdlstNm" varchar(200) NOT NULL,
+            prdkind varchar(200) NOT NULL,
+            rawmtrl TEXT NOT NULL,
             allergy TEXT,
             image varchar(100),
             manufacture varchar(200))""")
