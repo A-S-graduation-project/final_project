@@ -27,9 +27,9 @@ cur = conn.cursor()
 # TABLE 생성 Query문 #
 cur.execute("""CREATE TABLE IF NOT EXISTS products(
             "prdlstReportNo" varchar(200) NOT NULL primary key,
-            "prdlstNm" varchar(200),
-            prdkind varchar(200),
-            rawmtrl TEXT,
+            "prdlstNm" varchar(200) NOT NULL,
+            prdkind varchar(200) NOT NULL,
+            rawmtrl TEXT NOT NULL,
             allergy TEXT,
             image varchar(100),
             manufacture varchar(200))""")
@@ -76,12 +76,12 @@ while True:
         if procData:
             # "" 없으면 소문자로 인식 #
             sql = u"""INSERT INTO products("prdlstReportNo", "prdlstNm", prdkind, rawmtrl, allergy, image, manufacture)"""\
-                f"""VALUES('{procData[0]}','{procData[1]}','{procData[2]}','{procData[3]}','{procData[4]}','{procData[5]}','{procData[6]}')"""\
+                f"""VALUES(%s, %s, %s, %s, %s, %s, %s)"""\
                 """ON CONFLICT ("prdlstReportNo")"""\
-                f"""DO UPDATE SET "prdlstNm" = '{procData[1]}', prdkind='{procData[2]}', rawmtrl='{procData[3]}', allergy='{procData[4]}', image='{procData[5]}', manufacture='{procData[6]}'"""
+                f"""DO UPDATE SET "prdlstNm" = EXCLUDED."prdlstNm", prdkind=EXCLUDED.prdkind, rawmtrl=EXCLUDED.rawmtrl, allergy=EXCLUDED.allergy, image=EXCLUDED.image, manufacture=EXCLUDED.manufacture"""
             
             try:
-                cur.execute(sql)
+                cur.execute(sql, procData)
                 conn.commit()
             except Exception as ex: # sql문의 오류가 발생한 경우 무시 #
                 conn.commit()
