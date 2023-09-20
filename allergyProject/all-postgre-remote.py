@@ -21,8 +21,8 @@ allergies = ["메밀", "밀", "콩", "대두", "땅콩",
 for allergy in allergies:
     # allergy를 unique field이므로 존재하는 데이터의 경우 무시 #
     try:
-        sql = f"""INSERT INTO allergies(ano, allergy) VALUES(DEFAULT, '{allergy}')"""
-        cur.execute(sql)
+        sql = """INSERT INTO allergies(ano, allergy) VALUES(DEFAULT, %s)"""
+        cur.execute(sql, allergy)
         conn.commit()
     except Exception as ex:
         continue
