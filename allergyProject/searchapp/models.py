@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.contrib.postgres.fields import ArrayField
 # Create your models here.
 
 class Product(models.Model):
@@ -52,3 +53,11 @@ class Allergy(models.Model):
 
     class Meta:
         db_table = "allergies" # DB에 표시되고 사용할 테이블 명
+
+
+class Similarity(models.Model):
+    prdNo = models.CharField(max_length=50, primary_key=True)
+    simlist = ArrayField(models.CharField(max_length=50), null=True)
+
+    class Meta:
+        db_table = "similarity" # DB에 표시되고 사용할 테이블 명
