@@ -1,11 +1,26 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h1 style="text-align: center;"> 게시글 제목 </h1>
-<h3 style="text-align: right;">작성자, 작성시간</h3>
+<h1 style="text-align: center;"> {{ board.title }}</h1>
+<h3 style="text-align: right;">{{ board.name }} , {{ board.cdate }}</h3>
 <main>
   <div class="board-details">
       <img src="{% static 'images/food3.jpg' %}" alt="짜장면">
+      <div>
+        {% for allergy in allerinfo %}
+          {{ allergy }}
+        {% endfor %}
+      </div>
+      <div>
+        <ul>
+          {% for key, ingredient in ingredient_data.items %}
+          <li>
+              {{key}} {{ ingredient }}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
       <div class="recipe">
           <p>1. 양배추,양파,당근,호박을 잘게 썰어 놓습니다.</p>
           <p>2. 포도씨유를 넣어 뜨겁게 달군 후라이팬에 돼지고기를 튀기듯 볶다가 생강청(생강즙)과 간마늘을 넣어줍니다(고기냄새 제거)</p>
