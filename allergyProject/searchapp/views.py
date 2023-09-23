@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.core.cache import cache
 try:
     from searchapp.allergy_sim import *
-    from searchapp.food_sim import prdlstReportNo, food_simi_cate
+    # from searchapp.food_sim import *
 except:
     pass
 
