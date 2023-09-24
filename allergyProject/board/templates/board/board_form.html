@@ -2,10 +2,108 @@
 {% load static %}
 
 {% block content %}
-<h1>create board</h1>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="submit">
-</form>
+<section class="board-main" style="margin-left: 10px;">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="title">
+            <label for="{{ form.title.id_for_label }}">제목</label>
+            {{ board_form.title }}
+        </div>
+        <div class="content">
+            <div class="allergy">알러지</div>
+            <div class="allergy-table">
+                {% for allergy in allergies %}  
+                    <ul class="list">
+                        <li class="list-item">
+                            <input type="checkbox" class="hidden-box" id="{{ allergy.ano }}" name="selected_allergies" value="{{ allergy.ano }}" />
+                            <label for="{{ allergy.ano }}" class="check--label">
+                                <span class="check--label-box"></span>
+                                <span class="check--label-text">{{ allergy.allergy }}</span>
+                            </label>
+                        </li>
+                    </ul>
+                {% endfor %}
+            </div>
+        <div class="ingredient">
+            <label for="{{ ingredient_form.ingredient_name.id_for_label }}">필수 재료</label>
+            {{ ingredient_form.ingredient_name }}
+            {{ ingredient_form.quantity }}
+            {{ ingredient_form.unit }}
+            <button type="button" id="add-ingredient">+</button>
+            <button type="button" id="remove-ingredient">-</button>
+        </div>
+        <div class="content">
+            <label for="{{ board_form.content.id_for_label }}">레시피</label>
+            <div id="recipe-fields">
+                <div class="recipe-form">
+                    <p>{{ board_form.content }}</p> <!-- 레시피 입력 필드를 <p> 태그로 감쌈 -->
+                </div>
+            </div>
+            <button type="button" id="add-recipe">+</button>
+            <button type="button" id="remove-recipe">-</button>
+        </div>
+        
+        <!-- 등록 버튼을 별도의 <div>로 감싸서 분리 -->
+        <div class="registration-button">
+            <div>
+                <a href="/board/board_detail/{{ board.name }}"></a>
+            </div>
+        </div>
+        <div style="display:flex; justify-content: center;">
+            <input class="up" type="submit" value="등록">
+        </div>
+    </form>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // + 버튼을 클릭할 때마다 새로운 레시피 입력 필드를 추가
+    $("#add-recipe").click(function() {
+        var recipeField = $(".recipe-form:first").clone();
+        recipeField.find('textarea').val(''); // 새로운 필드를 비웁니다.
+        $("#recipe-fields").append(recipeField);
+    });
+
+    // - 버튼을 클릭하여 레시피 입력 필드를 제거
+    $("#remove-recipe").click(function() {
+        var recipeFieldCount = $("#recipe-fields .recipe-form").length;
+        // 최소한 1개의 레시피 입력 필드가 있어야 함
+        if (recipeFieldCount > 1) {
+            $("#recipe-fields .recipe-form:last").remove();
+        }
+    });
+
+    // + 버튼을 클릭할 때마다 새로운 필수 재료 입력 필드를 추가
+    $("#add-ingredient").click(function() {
+        var ingredientField = $(".ingredient-form:first").clone();
+        ingredientField.find('input').val(''); // 새로운 필드를 비웁니다.
+        $("#ingredient-fields").append(ingredientField);
+    });
+
+    // - 버튼을 클릭하여 필수 재료 입력 필드를 제거
+    $("#remove-ingredient").click(function() {
+        var ingredientFieldCount = $("#ingredient-fields .ingredient-form").length;
+        // 최소한 1개의 필수 재료 입력 필드가 있어야 함
+        if (ingredientFieldCount > 1) {
+            $("#ingredient-fields .ingredient-form:last").remove();
+        }
+    });
+
+    $("#allergy-form").submit(function (event) {
+            event.preventDefault();
+            var selectedAllergies = [];
+            $(".hidden-box:checked").each(function () { // 클래스 이름 수정
+                selectedAllergies.push($(this).val());
+            });
+
+            // 선택한 알러지 값을 hidden input에 설정
+            $("#selected-allergies").val(JSON.stringify(selectedAllergies));
+
+            // 폼 제출
+            $(this).unbind("submit").submit();
+        });
+});
+</script>
 {% endblock %}
+
