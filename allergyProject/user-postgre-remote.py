@@ -1,5 +1,4 @@
-import csv, pymysql
-import psycopg2
+import csv, psycopg2
 
 # DB 연결 #
 conn = psycopg2.connect(host='localhost',user='postgres',password='2017018023',dbname='allergydb',connect_timeout=32768)

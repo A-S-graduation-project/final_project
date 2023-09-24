@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from .models import Product
 from .models import UserData
+from .models import Similarity
 from django.db.models import Q
 from django.core.cache import cache
 try:
     from searchapp.allergy_sim import *
-    from searchapp.food_sim import *
+    # from searchapp.food_sim import *
 except:
     pass
 
@@ -96,21 +97,21 @@ def Detail(request):
 
     if ('pk' in request.GET):
         pk = request.GET.get('pk')
-        id = prdlstReportNo.index(pk)
-        for j in range(len(food_simi_cate[id])):
-            if food_simi_cate[id][j] >= 0.7 and id != j:
-                simquery = prdlstReportNo[j]
-                try:
-                    int(simquery)
-                except ValueError:
-                    continue
-                similarity = Product.objects.all()
-                similarity = similarity.get(
-                    Q(prdlstReportNo__exact = simquery)
-                )
-                similarities.append(similarity)
+        sim = Similarity.objects.all().order_by('prdNo')
+        # SELECT simlist FROM similarity WHERE prdNo=pk;
+        sim_list = sim.filter(
+            Q(prdNo__exact=pk)
+        ).get().simlist
+
+        for sim_no in sim_list:
+            similarity = Product.objects.all()
+            similarity = similarity.get(
+                Q(prdlstReportNo__exact = sim_no)
+            )
+            similarities.append(similarity)
 
     try:
         return render(request, 'detail.html', {'pk':pk, 'detail':detail, 'collarbors':collarbors, 'similarities':similarities})
-    except:
+    except Exception as ex:
+        print(ex)
         return render(request, 'detail.html', {'pk':pk, 'detail':detail})
