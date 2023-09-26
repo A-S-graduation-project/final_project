@@ -4,11 +4,12 @@ from django.views.generic.edit import FormView
 from django.contrib import messages
 from signapp.models import Customer
 from signapp.forms import SignupForm, UserProfileForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password 
+from django.contrib.auth.views import LogoutView
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views import View
-from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 # 사용자 로그인 뷰
@@ -81,3 +82,7 @@ class MypageView(View):
                 'form': form,
             }
             return render(request, self.template_name, context)
+        
+class UserLogoutView(LogoutView):
+    # 로그아웃 후 리디렉션할 URL 설정
+    next_page = reverse_lazy('main:home')
