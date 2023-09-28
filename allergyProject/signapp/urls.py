@@ -9,4 +9,6 @@ urlpatterns = [
     path('mypage/', MypageView.as_view() , name='mypage'),
     path('logout/', UserLogoutView.as_view(), name='logout'), # 로그아웃 URL
     path('delete/', views.delete, name='delete'),
+    path('update/', views.update, name='update'),
+    path('update_password/', views.update_password, name = 'update_password'),
 ]
