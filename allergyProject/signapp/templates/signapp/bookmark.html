@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h1>Your Bookmarks</h1>
+    <ul class="bookmark-list">
+        {% for bookmark in bookmark %}
+            <li class="bookmark-item">
+                <strong>{{ bookmark.TITLE }}</strong>
+                <br>
+                <span class="bookmark-date">Added on: {{ bookmark.CDATE }}</span>
+                <br>
+                <span class="bookmark-board">Related Board: {{ bookmark.BNO }}</span>
+                <br>
+                <span class="bookmark-product">Related Product: {{ bookmark.FNO }}</span>
+            </li>
+        {% empty %}
+            <p class="empty-message">You haven't bookmarked anything yet.</p>
+        {% endfor %}
+    </ul>    
+</div>
+{% endblock %}
