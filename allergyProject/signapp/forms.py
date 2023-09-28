@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib import messages
+from django.contrib.auth.forms import UserChangeForm
 class LoginForm(forms.ModelForm):
     class Meta:
         model = Customer
@@ -55,9 +56,23 @@ class SignupForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ['email', 'phone', 'birthdate', 'gender', 'password']
+        fields = ['email', 'phone', 'birthdate', 'gender']
 
-    # 비밀번호 필드를 PasswordInput 위젯으로 설정
-    password = forms.CharField(required=False, widget=forms.PasswordInput)
     # 이메일 필드를 선택적으로 만듦
     email = forms.EmailField(required=False)
+    
+class CustomUserChangeForm(forms.ModelForm):
+    gender = forms.IntegerField(widget=forms.HiddenInput(), initial=1)
+    class Meta:
+        model = Customer  # 폼과 연결될 모델 (Customer 모델)
+        fields = ['email', 'phone', 'birthdate', 'gender']  # 폼에 사용될 필드들
+
+    # 이메일 중복 검사를 위한 메서드
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        
+        # 이미 등록된 이메일이 존재하면 에러 발생
+        if Customer.objects.exclude(pk=self.instance.pk).filter(email=email).exists():
+            raise forms.ValidationError("이미 있는 이메일입니다.")
+        
+        return email

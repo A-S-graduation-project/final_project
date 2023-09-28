@@ -33,7 +33,7 @@
     oninput="this.setCustomValidity('')">
 
     <!-- 비밀번호 입력 -->
-    <input type="password" pattern="[A-Za-z0-9]{8,15}" placeholder="비밀번호(8~15자리)" name="password" id="password" required
+    <input type="password" pattern="[A-Za-z0-9]{8,25}" placeholder="비밀번호(8~15자리)" name="password" id="password" required
     oninvalid="this.setCustomValidity('비밀번호는 8~15자리여야 합니다.')"
     oninput="this.setCustomValidity('')">
 
@@ -50,7 +50,7 @@
       <input type="radio" id="male" name="gender" value="1" required>
       <label for="male" class="gender-label" id="male-label">남자</label>
       
-      <input type="radio" id="female" name="gender" value="2" required>
+      <input type="radio" id="female" name="gender" value="0" required>
       <label for="female" class="gender-label" id="female-label">여자</label>
     </div>
     
