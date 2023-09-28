@@ -34,7 +34,7 @@
     {% csrf_token %}
     <!-- 비밀번호 입력 -->
     <input type="password" pattern="[A-Za-z0-9]{8,25}" placeholder="비밀번호(8~15자리)" name="password" id="password" required
-    oninvalid="this.setCustomValidity('비밀번호는 8~15자리여야 합니다.')"
+    oninvalid="this.setCustomValidity('비밀번호는 8~25자리여야 합니다.')"
     oninput="this.setCustomValidity('')">
 
     <!-- 비밀번호 확인 입력 -->
