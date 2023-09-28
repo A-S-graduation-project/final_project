@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import UserLoginView, SignupView ,MypageView, UserLogoutView
-
+from . import views
 app_name = 'signapp'
 
 urlpatterns = [
@@ -8,4 +8,5 @@ urlpatterns = [
     path('signup/', SignupView.as_view() , name='signup'), # 회원 가입 URL 패턴
     path('mypage/', MypageView.as_view() , name='mypage'),
     path('logout/', UserLogoutView.as_view(), name='logout'), # 로그아웃 URL
+    path('delete/', views.delete, name='delete'),
 ]

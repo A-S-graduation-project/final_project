@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, DeleteView
 from django.contrib import messages
 from signapp.models import Customer
 from signapp.forms import SignupForm, UserProfileForm
@@ -51,7 +51,6 @@ class SignupView(FormView):
         # 사용자를 로그인 시킴
         login(self.request, user)
 
-        messages.success(self.request, "회원 가입이 완료되었습니다.")
         return super().form_valid(form)
 
 # 사용자 마이페이지 뷰
@@ -67,22 +66,12 @@ class MypageView(View):
             'form': form,
         }
         return render(request, self.template_name, context)
-
-    def post(self, request, *args, **kwargs):
-        user_profile = Customer.objects.get(username=request.user.username)
-        form = UserProfileForm(request.POST, instance=user_profile)
-        if form.is_valid():
-            form.save()
-            messages.success(request, '회원 정보가 성공적으로 수정되었습니다.')
-            return redirect(reverse('signapp:mypage'))
-        else:
-            messages.error(request, '회원 정보 수정에 실패했습니다. 입력 값을 확인하세요.')
-            context = {
-                'user_profile': user_profile,
-                'form': form,
-            }
-            return render(request, self.template_name, context)
         
 class UserLogoutView(LogoutView):
     # 로그아웃 후 리디렉션할 URL 설정
     next_page = reverse_lazy('main:home')
+
+def delete(request):
+    user = request.user
+    user.delete()
+    return redirect("signapp:login")
