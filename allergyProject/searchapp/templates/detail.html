@@ -13,9 +13,19 @@
             <input type="hidden" name="query" value="{{ detail.name }}">
             <button class="buy" type="submit"> 구매하기 </button>
         </form>
-        <div class="like-button-container">
-          <button class="like-button" aria-label="Like"></button>
+        <form action="{% url 'searchapp:like_button' %}" method="POST" class="like-form">
+          {% csrf_token %}
+          <input type="hidden" name="title" value="{{ detail.prdlstNm }}">
+          <input type="hidden" name="fno" value="{{ detail.prdlstReportNo }}">
+          <button type="submit" class="like-button" aria-label="Like"></button>
+      </form>
+      <!-- 메세지 출력 창 -->
+      <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p id="modal-message"></p>
         </div>
+      </div>
       </div>
   </div>
 </main>
@@ -45,4 +55,63 @@
       <h4>결과 없음</h4>
   {% endfor %}
 </div>
+<script>
+// 모달 창 열기
+function openModal(message) {
+  var modal = document.getElementById("myModal");
+  var modalMessage = document.getElementById("modal-message");
+  modalMessage.innerHTML = message;
+  modal.style.display = "block";
+}
+
+// 모달 창 닫기
+function closeModal() {
+  var modal = document.getElementById("myModal");
+  modal.style.display = "none";
+}
+
+// 페이지 로드 시 실행
+window.onload = function() {
+  var modal = document.getElementById("myModal");
+  var closeButton = document.getElementsByClassName("close")[0];
+
+  // 모달 창 닫기 버튼에 이벤트 리스너 추가
+  closeButton.onclick = function() {
+    closeModal();
+  }
+
+  // 모달 창 외부를 클릭하면 모달 창 닫기
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      closeModal();
+    }
+  }
+}
+
+// 폼 제출 이벤트 핸들러
+$('.like-form').submit(function(event) {
+  event.preventDefault(); // 기본 폼 제출 동작을 막습니다.
+
+  // 폼 데이터를 가져옵니다.
+  var formData = new FormData(this);
+
+  // Ajax를 사용하여 폼 데이터를 서버로 전송합니다.
+  $.ajax({
+    type: 'POST',
+    url: $(this).attr('action'), // 폼의 'action' 속성을 사용하여 URL을 가져옵니다.
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function(data) {
+      // 서버에서 반환한 메시지를 모달 팝업으로 표시합니다.
+      openModal(data.message);
+      // 여기에 필요한 추가 작업을 수행할 수 있습니다.
+    },
+    error: function() {
+      // 오류가 발생했을 때 오류 메시지를 모달 팝업으로 표시합니다.
+      openModal('오류가 발생했습니다.');
+    }
+  });
+});
+</script>
 {% endblock %}
