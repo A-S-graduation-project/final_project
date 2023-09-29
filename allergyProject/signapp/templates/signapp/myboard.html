@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/myboard.css' %}">
+<div class="myboard-container">
+    <h1>내가 작성한 글</h1>
+    
+    <ul class="myboard-list food-list">
+        {% for post in user_posts %}
+        <li class="myboard-item">
+            <h2>{{ post.title }}</h2>
+            <p>작성일: {{ post.cdate }}</p>
+        </li>
+        {% empty %}
+        <li>작성한 글이 없습니다.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+
