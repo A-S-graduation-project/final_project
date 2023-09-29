@@ -2,6 +2,7 @@ from django.urls import path
 from .views import UserLoginView, SignupView ,MypageView, UserLogoutView
 from . import views
 from . import views_bookmark
+from .views_myboard import my_board
 app_name = 'signapp'
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
     path('update/', views.update, name='update'),
     path('update_password/', views.update_password, name = 'update_password'),
     path('bookmarks/', views_bookmark.bookmarks, name='bookmarks'),
+    path('myboard/', my_board, name='my_board'),
 ]
