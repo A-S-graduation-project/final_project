@@ -1,5 +1,5 @@
 from urllib.parse import unquote
-import requests, json, psycopg2, re
+import requests, json, psycopg2, re, os
 
 # dictionary인 prdlst를 tuple인 procData로 변경 #
 def Processed(dict):
@@ -64,9 +64,10 @@ while True:
     for i in data:
         prdlst = i['item']
         field = prdlst.keys()
+        procData = Processed(prdlst)
 
         try:
-            procData = list(Processed(prdlst))
+            procData = list(procData)
             procData[3] = re.sub(r"[^\uAC00-\uD7A3a-zA-Z]", " ", procData[3])
             procData[3] = procData[3].replace('•, \n', ' ')
             procData = tuple(procData)
@@ -91,3 +92,8 @@ while True:
     pageNo += 1
 
 conn.close()
+
+print("\nfood_sim.py 실행")
+print("========================================================================================")
+os.system("python ./food_sim.py")
+print("========================================================================================")
