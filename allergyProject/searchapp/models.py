@@ -61,3 +61,12 @@ class Similarity(models.Model):
 
     class Meta:
         db_table = "similarity" # DB에 표시되고 사용할 테이블 명
+
+
+class Recommend(models.Model):
+    serialno = models.AutoField(primary_key=True)
+    cno = models.IntegerField()
+    rno = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = "recommend" # DB에 표시되고 사용할 테이블 명

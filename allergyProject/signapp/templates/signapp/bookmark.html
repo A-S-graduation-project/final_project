@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/bookmark.css' %}">
+<div class="bookmark-container">
+    <h1>나의 북마크 목록</h1>
+    <!-- 음식과 게시판 버튼 추가 -->
+    <div class="bookmark-button-container">
+        <button class="bookmark-button" id="food-button">음식 보기</button>
+        <button class="bookmark-button" id="board-button">게시판 보기</button>
+        <!-- 이름순 혹은 추가한 날짜순으로 정렬하는 버튼 추가 -->
+        <button class="bookmark-button" id="sort-title">제목순 정렬</button>
+        <button class="bookmark-button" id="sort-date">저장 날짜순 정렬</button>
+    </div>
+
+    <!-- 음식 (Food) 목록 -->
+    <h2 class="bookmark-heading" id="food-heading">음식 (Food)</h2>
+    <ul class="bookmark-list food-list">
+        {% for food_bookmark in food_bookmarks %}
+        <li class="bookmark-item" data-date="{{ food_bookmark.CDATE }}">
+            <strong>{{ food_bookmark.CDATE }}:</strong>
+            <a class="bookmark-link" href="{{ food_bookmark.FNO.get_absolute_url }}" target="_blank">{{ food_bookmark.FNO.TITLE }}</a>
+            - {{ food_bookmark.FNO.DESCRIPTION }}
+        </li>
+        {% empty %}
+        <li>No food bookmarks found.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- 게시판 (Board) 목록 -->
+    <h2 class="bookmark-heading" id="board-heading">게시판 (Board)</h2>
+    <ul class="bookmark-list board-list">
+        {% for board_bookmark in board_bookmarks %}
+        <li class="bookmark-item" data-date="{{ board_bookmark.CDATE }}">
+            <strong>{{ board_bookmark.CDATE }}:</strong>
+            <a class="bookmark-link" href="{{ board_bookmark.BNO.get_absolute_url }}" target="_blank">{{ board_bookmark.BNO.TITLE }}</a>
+            - {{ board_bookmark.BNO.DESCRIPTION }}
+        </li>
+        {% empty %}
+        <li>No board bookmarks found.</li>
+        {% endfor %}
+    </ul>
+</div>
+<script>
+    // 버튼 클릭 시 목록 및 헤딩 표시/숨김 함수 정의
+    function toggleListAndHeading(listClass, headingId) {
+        const lists = document.querySelectorAll('.bookmark-list');
+        for (const list of lists) {
+            list.style.display = 'none'; // 모든 목록 숨김
+        }
+        const selectedList = document.querySelector(`.${listClass}`);
+        selectedList.style.display = 'block'; // 선택한 목록 표시
+
+        const headings = document.querySelectorAll('h2');
+        for (const heading of headings) {
+            heading.style.display = 'none'; // 모든 헤딩 숨김
+        }
+        const selectedHeading = document.getElementById(headingId);
+        selectedHeading.style.display = 'block'; // 선택한 헤딩 표시
+    }
+
+    // 초기 정렬 상태 설정
+    let currentSort = '{{ current_sort }}';
+
+    // 제목순 정렬 함수
+    function sortByTitle() {
+        const listToSort = document.querySelector('.bookmark-list.food-list');
+        const itemsArray = Array.from(listToSort.children);
+
+        itemsArray.sort((a, b) => {
+            const textA = a.textContent.trim().toLowerCase();
+            const textB = b.textContent.trim().toLowerCase();
+            return textA.localeCompare(textB);
+        });
+
+        listToSort.innerHTML = '';
+        itemsArray.forEach(item => {
+            listToSort.appendChild(item);
+        });
+
+        currentSort = 'title';
+    }
+
+    // 저장 날짜순 정렬 함수
+    function sortByDate() {
+        const listToSort = document.querySelector('.bookmark-list.food-list');
+        const itemsArray = Array.from(listToSort.children);
+
+        itemsArray.sort((a, b) => {
+            const dateA = new Date(a.getAttribute('data-date'));
+            const dateB = new Date(b.getAttribute('data-date'));
+            return dateA - dateB;
+        });
+
+        listToSort.innerHTML = '';
+        itemsArray.forEach(item => {
+            listToSort.appendChild(item);
+        });
+
+        currentSort = 'date';
+    }
+
+    // 제목순 버튼 클릭 시 정렬
+    document.getElementById('sort-title').addEventListener('click', function () {
+        if (currentSort !== 'title') {
+            sortByTitle();
+        }
+    });
+
+    // 저장 날짜순 버튼 클릭 시 정렬
+    document.getElementById('sort-date').addEventListener('click', function () {
+        if (currentSort !== 'date') {
+            sortByDate();
+        }
+    });
+
+    // 처음 페이지 로드 시 목록과 헤딩을 숨김
+    const initialLists = document.querySelectorAll('.bookmark-list');
+    for (const list of initialLists) {
+        list.style.display = 'none';
+    }
+    const initialHeadings = document.querySelectorAll('h2');
+    for (const heading of initialHeadings) {
+        heading.style.display = 'none';
+    }
+
+    // 음식 버튼 클릭 시 음식 목록 및 헤딩 표시
+    document.getElementById('food-button').addEventListener('click', function () {
+        toggleListAndHeading('food-list', 'food-heading');
+    });
+
+    // 게시판 버튼 클릭 시 게시판 목록 및 헤딩 표시
+    document.getElementById('board-button').addEventListener('click', function () {
+        toggleListAndHeading('board-list', 'board-heading');
+    });
+</script>
+{% endblock %}

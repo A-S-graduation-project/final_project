@@ -52,9 +52,9 @@
               <div class="dropdown-content">
                 <a href="{% url 'signapp:mypage' %}">{{ username }}</a>
                 <a href="{% url 'signapp:mypage' %}">내정보</a>
-                <a href="{% url 'signapp:mypage' %}">작성한 글</a>
-                <a href="{% url 'signapp:mypage' %}">찜 목록</a>
-                <a href="{% url 'signapp:login' %}">로그아웃</a>
+                <a href="{% url 'signapp:my_board' %}">작성한 글</a>
+                <a href="{% url 'signapp:bookmarks' %}">찜 목록</a>
+                <a href="{% url 'signapp:logout' %}">로그아웃</a>
               </div>
             </div>
             {% else %}
