@@ -442,7 +442,7 @@ footer {
 }
 
 .like-button{
-  background-color: #ffffff;
+  background-color: #ff0000;
 }
 
 .like-button {
@@ -455,10 +455,6 @@ footer {
   cursor: pointer;
 }
 
-.like-button:hover {
-  background-color: #f7f7f7;
-}
-
 .like-button:before {
   content: "\2665"; 
   position: absolute; 
@@ -466,11 +462,11 @@ footer {
   left: 50%; 
   transform: translate(-50%, -50%); 
   font-size: 24px;
-  color: rgb(255, 255, 255);
+  color: #ff0000;
 }
 
 .like-button:hover:before {
-  color: red;
+  color: #7a0000;
 }
 
 .board-like-button-container {
@@ -480,12 +476,6 @@ footer {
   justify-content: center;
   margin-bottom: 10px;
   bottom: 0;
-}
-
-.like-button.liked {
-  /* '좋아요' 상태일 때의 스타일 */
-  background-color: #ff5733; /* 원하는 색상으로 변경하세요 */
-  /* '좋아요' 상태일 때의 다른 스타일 설정 */
 }
 
 .recommend{
