@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
 <h1>Search results for "{{ detail.prdlstNm }}"</h1>
 <main>
   <div class="food-details">
@@ -17,15 +18,9 @@
           {% csrf_token %}
           <input type="hidden" name="title" value="{{ detail.prdlstNm }}">
           <input type="hidden" name="fno" value="{{ detail.prdlstReportNo }}">
-          <button type="submit" class="like-button" aria-label="Like"></button>
-      </form>
-      <!-- 메세지 출력 창 -->
-      <div id="myModal" class="modal">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <p id="modal-message"></p>
-        </div>
-      </div>
+          <input type="hidden" name="pk" value="{{ detail.pk }}"> 
+          <button type="submit" class="like-button {% if user_liked_product %}liked{% endif %}" aria-label="좋아요"></button>
+        </form>
       </div>
   </div>
 </main>
@@ -56,62 +51,41 @@
   {% endfor %}
 </div>
 <script>
-// 모달 창 열기
-function openModal(message) {
-  var modal = document.getElementById("myModal");
-  var modalMessage = document.getElementById("modal-message");
-  modalMessage.innerHTML = message;
-  modal.style.display = "block";
-}
-
-// 모달 창 닫기
-function closeModal() {
-  var modal = document.getElementById("myModal");
-  modal.style.display = "none";
-}
-
-// 페이지 로드 시 실행
-window.onload = function() {
-  var modal = document.getElementById("myModal");
-  var closeButton = document.getElementsByClassName("close")[0];
-
-  // 모달 창 닫기 버튼에 이벤트 리스너 추가
-  closeButton.onclick = function() {
-    closeModal();
-  }
-
-  // 모달 창 외부를 클릭하면 모달 창 닫기
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      closeModal();
+  $(document).ready(function() {
+    var $submitButton = $('.like-button');
+    
+    // 페이지 로드 시 버튼 클래스를 확인하여 초기 색상 설정
+    if ($submitButton.hasClass('liked')) {
+      $submitButton.css('background-color', '#ff5733'); // 북마크 추가 상태의 배경색
+    } else {
+      $submitButton.css('background-color', '#ccc'); // 기본 상태의 배경색
     }
-  }
-}
 
-// 폼 제출 이벤트 핸들러
-$('.like-form').submit(function(event) {
-  event.preventDefault(); // 기본 폼 제출 동작을 막습니다.
-
-  // 폼 데이터를 가져옵니다.
-  var formData = new FormData(this);
-
-  // Ajax를 사용하여 폼 데이터를 서버로 전송합니다.
-  $.ajax({
-    type: 'POST',
-    url: $(this).attr('action'), // 폼의 'action' 속성을 사용하여 URL을 가져옵니다.
-    data: formData,
-    processData: false,
-    contentType: false,
-    success: function(data) {
-      // 서버에서 반환한 메시지를 모달 팝업으로 표시합니다.
-      openModal(data.message);
-      // 여기에 필요한 추가 작업을 수행할 수 있습니다.
-    },
-    error: function() {
-      // 오류가 발생했을 때 오류 메시지를 모달 팝업으로 표시합니다.
-      openModal('오류가 발생했습니다.');
-    }
+    $('.like-form').submit(function(event) {
+      event.preventDefault(); // 기본 폼 제출 동작을 막습니다.
+      
+      $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        success: function(data) {
+          // '좋아요'가 성공적으로 처리되면 'liked' 클래스를 토글합니다.
+          $submitButton.toggleClass('liked');
+          
+          // 'liked' 클래스가 있는 경우 (북마크 추가) 버튼의 배경색을 설정합니다.
+          if ($submitButton.hasClass('liked')) {
+            $submitButton.css('background-color', '#ff5733'); // '좋아요' 상태의 배경색
+          } else {
+            $submitButton.css('background-color', '#ccc'); // 기본 상태의 배경색
+          }
+        },
+        error: function() {
+          // 오류 처리 (필요한 경우)
+        }
+      });
+    });
   });
-});
 </script>
 {% endblock %}

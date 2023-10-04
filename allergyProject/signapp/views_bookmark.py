@@ -11,8 +11,8 @@ def bookmarks(request):
     bbookmarks = BBookmark.objects.filter(CNO=user)
 
     context = {
-        'product_bookmarks': fbookmarks,
-        'board_bookmarks': bbookmarks,
+        'food_bookmarks': fbookmarks,
+        'board_bookmark': bbookmarks,
     }
 
     return render(request, 'signapp/bookmark.html', context)

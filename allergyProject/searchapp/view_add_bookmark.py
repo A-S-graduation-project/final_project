@@ -1,38 +1,42 @@
-from django.http import HttpResponse
-from searchapp.models import Product
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.contrib import messages
+from django.views.decorators.http import require_POST
+from .models import Product
 from signapp.models_bookmark import FBookmark
 from datetime import date
 
+@require_POST
 def like_button_view(request):
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        fno = request.POST.get('fno')
-        customer = request.user
+    # POST 요청에서 필요한 데이터를 가져옵니다.
+    title = request.POST.get('title')
+    fno = request.POST.get('fno')
+    customer = request.user
+    redirect_url = reverse('searchapp:Detail') + f'?pk={fno}'
 
-        # Product 모델에서 prdlstReportNo와 일치하는 제품을 가져옵니다.
-        try:
-            product = Product.objects.get(prdlstReportNo=fno)
-        except Product.DoesNotExist:
-            return HttpResponse(f'<script>openModal("{message}")</script>')
+    try:
+        # 제품을 데이터베이스에서 찾습니다.
+        product = Product.objects.get(prdlstReportNo=fno)
+    except Product.DoesNotExist:
+        messages.error(request, '제품을 찾을 수 없습니다.')
+        return HttpResponseRedirect(redirect_url)  # 현재 페이지를 다시 렌더링
 
-        # 이미 해당 제품에 대한 즐겨찾기가 있는지 확인합니다.
-        existing_bookmark = FBookmark.objects.filter(CNO=customer, FNO=product).first()
+    # 현재 사용자와 제품에 대한 북마크가 이미 존재하는지 확인합니다.
+    existing_bookmark = FBookmark.objects.filter(CNO=customer, FNO=product).first()
 
-        if existing_bookmark:
-            # 이미 저장된 즐겨찾기가 있으면 모달 창을 열어서 메시지를 표시합니다.
-            message = 'Bookmark already exists'
-            return HttpResponse(f'<script>openModal("{message}")</script>')
-        else:
-            # Bookmark 모델에 제품과 현재 로그인한 사용자를 연결하여 저장합니다.
-            bookmark = FBookmark.objects.create(
-                TITLE=title,
-                FNO=product,
-                CNO=customer,  # 현재 로그인한 사용자를 CNO 필드에 저장합니다.
-                CDATE=date.today()
-            )
-
-            # 성공 메시지를 모달 창을 열어서 표시합니다.
-            message = 'Success'
-            return HttpResponse(f'<script>openModal("{message}")</script>')
+    if existing_bookmark:
+        # 북마크가 이미 존재하는 경우, 북마크를 삭제하여 해제합니다.
+        existing_bookmark.delete()
+        messages.success(request, '북마크가 성공적으로 해제되었습니다.')
     else:
-        return HttpResponse('<script>alert("Invalid Request")</script>')
+        # 새로운 북마크를 생성합니다.
+        bookmark = FBookmark.objects.create(
+            TITLE=title,
+            FNO=product,
+            CNO=customer,
+            CDATE=date.today()
+        )
+        messages.success(request, '북마크가 성공적으로 추가되었습니다.')
+    # 현재 페이지를 다시 렌더링
+    
+    return HttpResponseRedirect(redirect_url)
