@@ -30,10 +30,10 @@
     <!-- 게시판 (Board) 목록 -->
     <h2 class="bookmark-heading" id="board-heading" style="display: none;">게시판 (Board)</h2>
     <ul class="bookmark-list board-list" style="display: none;">
-        {% for board_bookmark in board_bookmarks %}
+        {% for board_bookmark in board_bookmark %}
         <li class="bookmark-item" data-date="{{ board_bookmark.CDATE }}">
             <strong>{{ board_bookmark.CDATE|date:"Y년 m월 d일"  }}:</strong>
-            <a class="bookmark-link" href="{{ board_bookmark.BMNO.get_absolute_url }}" target="_blank">{{ board_bookmark.TITLE }}</a>
+            <a class="bookmark-link" href="/board/board_detail/{{board_bookmark.bNO_id}}" target="_blank">{{ board_bookmark.TITLE }}</a>
         </li>
         {% empty %}
         <li>찜목록이 없습니다.</li>
