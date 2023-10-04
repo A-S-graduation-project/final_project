@@ -73,12 +73,14 @@ while True:
         except: # TypeError 방지 #
             pass
 
+        procData = Processed(prdlst)
+
         if procData:
             # "" 없으면 소문자로 인식 #
-            sql = u"""INSERT INTO products("prdlstReportNo", "prdlstNm", prdkind, rawmtrl, allergy, image, manufacture)"""\
-                f"""VALUES(%s, %s, %s, %s, %s, %s, %s)"""\
+            sql = """INSERT INTO products("prdlstReportNo", "prdlstNm", prdkind, rawmtrl, allergy, image, manufacture)"""\
+                """VALUES(%s, %s, %s, %s, %s, %s, %s)"""\
                 """ON CONFLICT ("prdlstReportNo")"""\
-                f"""DO UPDATE SET "prdlstNm" = EXCLUDED."prdlstNm", prdkind=EXCLUDED.prdkind, rawmtrl=EXCLUDED.rawmtrl, allergy=EXCLUDED.allergy, image=EXCLUDED.image, manufacture=EXCLUDED.manufacture"""
+                """DO UPDATE SET "prdlstNm" = EXCLUDED."prdlstNm", prdkind=EXCLUDED.prdkind, rawmtrl=EXCLUDED.rawmtrl, allergy=EXCLUDED.allergy, image=EXCLUDED.image, manufacture=EXCLUDED.manufacture"""
             
             try:
                 cur.execute(sql, procData)
