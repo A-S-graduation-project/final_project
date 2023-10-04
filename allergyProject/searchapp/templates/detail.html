@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
 <h1>Search results for "{{ detail.prdlstNm }}"</h1>
 <main>
   <div class="food-details">
@@ -13,9 +14,20 @@
             <input type="hidden" name="query" value="{{ detail.name }}">
             <button class="buy" type="submit"> 구매하기 </button>
         </form>
-        <div class="like-button-container">
-          <button class="like-button" aria-label="Like"></button>
+        <form action="{% url 'searchapp:like_button' %}" method="POST" class="like-form">
+          {% csrf_token %}
+          <input type="hidden" name="title" value="{{ detail.prdlstNm }}">
+          <input type="hidden" name="fno" value="{{ detail.prdlstReportNo }}">
+          <input type="hidden" name="pk" value="{{ detail.pk }}"> 
+          <button type="submit" class="like-button {% if user_liked_product %}liked{% endif %}" aria-label="좋아요"></button>
+        </form>
+        {% if messages %}
+        <div id="messages">
+          {% for message in messages %}
+          <div class="message">{{ message }}</div>
+          {% endfor %}
         </div>
+        {% endif %}
       </div>
   </div>
 </main>
@@ -45,4 +57,23 @@
       <h4>결과 없음</h4>
   {% endfor %}
 </div>
+<script>
+  $(document).ready(function() {
+    var $submitButton = $('.like-button');
+
+    $('.like-form').submit(function(event) {
+      event.preventDefault();
+
+      var formData = new FormData(this);
+
+      $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        data: formData,
+        processData: false,
+        contentType: false,
+      });
+    });
+  });
+</script>
 {% endblock %}

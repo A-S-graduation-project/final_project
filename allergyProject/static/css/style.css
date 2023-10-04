@@ -442,7 +442,7 @@ footer {
 }
 
 .like-button{
-  background-color: #ffffff;
+  background-color: #ff0000;
 }
 
 .like-button {
@@ -455,10 +455,6 @@ footer {
   cursor: pointer;
 }
 
-.like-button:hover {
-  background-color: #f7f7f7;
-}
-
 .like-button:before {
   content: "\2665"; 
   position: absolute; 
@@ -466,11 +462,11 @@ footer {
   left: 50%; 
   transform: translate(-50%, -50%); 
   font-size: 24px;
-  color: rgb(255, 108, 108);
+  color: #ff0000;
 }
 
 .like-button:hover:before {
-  color: red;
+  color: #7a0000;
 }
 
 .board-like-button-container {
