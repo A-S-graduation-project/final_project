@@ -14,5 +14,7 @@ urlpatterns = [
     path('update/', views.update, name='update'),
     path('update_password/', views.update_password, name = 'update_password'),
     path('bookmarks/', views_bookmark.bookmarks, name='bookmarks'),
+    path('delete_fbookmark/', views_bookmark.delete_fbookmark, name='delete_fbookmark'),
+    path('delete_bbookmark/', views_bookmark.delete_bbookmark, name='delete_bbookmark'),
     path('myboard/', my_board, name='my_board'),
 ]
