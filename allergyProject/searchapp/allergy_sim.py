@@ -100,7 +100,8 @@ proAlData.fillna(0, inplace=True)                               # NaN -> 0
 # print(proAlData)
 
 # 결과 #
-re = getRecommendation(proAlData, '난류')                       # userdata 수집 필요
+# 알레르기 key가 userdata에 존재하지 않은 경우 오류 발생 #
+re = getRecommendation(proAlData, '호두, 대두, 쇠고기, 새우, 난류, 조개류, 돼지고기, 고등어')                       # userdata 수집 필요
 print(re[:10])
 print("\n")
 
