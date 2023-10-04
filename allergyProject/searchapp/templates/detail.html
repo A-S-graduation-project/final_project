@@ -21,6 +21,13 @@
           <input type="hidden" name="pk" value="{{ detail.pk }}"> 
           <button type="submit" class="like-button {% if user_liked_product %}liked{% endif %}" aria-label="좋아요"></button>
         </form>
+        {% if messages %}
+        <div id="messages">
+          {% for message in messages %}
+          <div class="message">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
       </div>
   </div>
 </main>
@@ -53,37 +60,18 @@
 <script>
   $(document).ready(function() {
     var $submitButton = $('.like-button');
-    
-    // 페이지 로드 시 버튼 클래스를 확인하여 초기 색상 설정
-    if ($submitButton.hasClass('liked')) {
-      $submitButton.css('background-color', '#ff5733'); // 북마크 추가 상태의 배경색
-    } else {
-      $submitButton.css('background-color', '#ccc'); // 기본 상태의 배경색
-    }
 
     $('.like-form').submit(function(event) {
-      event.preventDefault(); // 기본 폼 제출 동작을 막습니다.
-      
+      event.preventDefault();
+
+      var formData = new FormData(this);
+
       $.ajax({
         type: 'POST',
         url: $(this).attr('action'),
-        data: new FormData(this),
+        data: formData,
         processData: false,
         contentType: false,
-        success: function(data) {
-          // '좋아요'가 성공적으로 처리되면 'liked' 클래스를 토글합니다.
-          $submitButton.toggleClass('liked');
-          
-          // 'liked' 클래스가 있는 경우 (북마크 추가) 버튼의 배경색을 설정합니다.
-          if ($submitButton.hasClass('liked')) {
-            $submitButton.css('background-color', '#ff5733'); // '좋아요' 상태의 배경색
-          } else {
-            $submitButton.css('background-color', '#ccc'); // 기본 상태의 배경색
-          }
-        },
-        error: function() {
-          // 오류 처리 (필요한 경우)
-        }
       });
     });
   });
