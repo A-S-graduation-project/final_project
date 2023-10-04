@@ -23,7 +23,7 @@
             <a class="bookmark-link" href="{{ food_bookmark.FMNO.get_absolute_url }}" target="_blank">{{ food_bookmark.TITLE }}</a>
         </li>
         {% empty %}
-        <li>No food bookmarks found.</li>
+        <li>찜목록이 없습니다.</li>
         {% endfor %}
     </ul>
 
@@ -36,7 +36,7 @@
             <a class="bookmark-link" href="{{ board_bookmark.BMNO.get_absolute_url }}" target="_blank">{{ board_bookmark.TITLE }}</a>
         </li>
         {% empty %}
-        <li>No board bookmarks found.</li>
+        <li>찜목록이 없습니다.</li>
         {% endfor %}
     </ul>
 </div>
