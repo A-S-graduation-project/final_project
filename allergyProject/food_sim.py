@@ -28,8 +28,14 @@ for row in proData:
 
 # count vector로 만들어서 cosine similar 만들기 #
 vectorizer = CountVectorizer()
-food_vector = vectorizer.fit_transform(rawmtrl, prdkind)
-food_simi_cate = cosine_similarity(food_vector, food_vector)
+
+raw_vector = vectorizer.fit_transform(rawmtrl)
+food_raw_cate = cosine_similarity(raw_vector)
+
+kind_vector = vectorizer.fit_transform(prdkind)
+food_kind_cate = cosine_similarity(kind_vector)
+
+food_simi_cate = food_raw_cate * 0.3 + food_kind_cate * 0.7
 
 print(food_simi_cate)
 
