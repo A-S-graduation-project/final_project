@@ -4,18 +4,75 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/myboard.css' %}">
 <div class="myboard-container">
     <h1>내가 작성한 글</h1>
+    <div class="bookmark-button-container">
+        <button class="bookmark-button" id="sort-title">제목순 정렬</button>
+        <button class="bookmark-button" id="sort-date">저장 날짜순 정렬</button>
+    </div>
     
-    <ul class="myboard-list food-list">
-        {% for post in user_posts %}
-        <li class="myboard-item">
-            <h2>{{ post.title }}</h2>
-            <p>작성일: {{ post.cdate }}</p>
+    <!-- 사용자 작성 board 목록 -->
+    <h2 class="bookmark-heading" id="food-heading">내가 쓴 글 게시판</h2>
+    <ul class="myboard-list board-list">
+        {% for board in customer_board %}
+        <li class="myboard-item" data-date="{{ board.cdate }}">
+            <strong>{{ board.cdate|date:"Y년 m월 d일"  }}:</strong>
+            <a class="board-link" href="{% url 'searchapp:Detail' %}?pk={{ board.bno }}" target="_blank">{{ board.title }}</a>
+            <button class="modify-button" data-id="{{ board.bno }}">글 수정</button>
         </li>
         {% empty %}
         <li>작성한 글이 없습니다.</li>
         {% endfor %}
     </ul>
 </div>
+<script>
+        // 제목순 정렬 함수
+        function sortByTitle() {
+            const listToSort = document.querySelector('.myboard-list.board-list'); // 수정된 선택자
+            const itemsArray = Array.from(listToSort.children);
+        
+            itemsArray.sort((a, b) => {
+                const textA = a.textContent.trim().toLowerCase();
+                const textB = b.textContent.trim().toLowerCase();
+                return textA.localeCompare(textB);
+            });
+        
+            listToSort.innerHTML = '';
+            itemsArray.forEach(item => {
+                listToSort.appendChild(item);
+            });
+        
+            currentSort = 'title';
+        }
+        
+        function sortByDate() {
+            const listToSort = document.querySelector('.myboard-list.board-list'); // 수정된 선택자
+            const itemsArray = Array.from(listToSort.children);
+        
+            itemsArray.sort((a, b) => {
+                const dateA = new Date(a.getAttribute('data-date'));
+                const dateB = new Date(b.getAttribute('data-date'));
+                return dateA - dateB;
+            });
+        
+            listToSort.innerHTML = '';
+            itemsArray.forEach(item => {
+                listToSort.appendChild(item);
+            });
+        
+            currentSort = 'date';
+        }
+    
+        // 제목순 버튼 클릭 시 정렬
+        document.getElementById('sort-title').addEventListener('click', function () {
+            if (currentSort !== 'title') {
+                sortByTitle();
+            }
+        });
+    
+        // 저장 날짜순 버튼 클릭 시 정렬
+        document.getElementById('sort-date').addEventListener('click', function () {
+            if (currentSort !== 'date') {
+                sortByDate();
+            }
+        });
+</script>
 {% endblock %}
-
-
