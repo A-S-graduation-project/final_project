@@ -61,3 +61,31 @@ h1 {
 .bookmark-list {
     display: none;
 }
+
+/* bdelete-button 스타일 */
+.bdelete-button {
+    background-color: #99A638;
+    color: #fff;
+    border: none;
+    padding: 5px 5px;
+    cursor: pointer;
+    float: right;
+    margin-top: -2.5px;
+}
+.bdelete-button:hover {
+    background-color: #818C30; /* 호버 시 배경색 변경 */
+}
+
+/* fdelete-button 스타일 */
+.fdelete-button {
+    background-color: #99A638;
+    color: #fff;
+    border: none;
+    padding: 5px 5px;
+    cursor: pointer;
+    float: right;
+    margin-top: -2.5px;
+}
+.fdelete-button:hover {
+    background-color: #818C30; /* 호버 시 배경색 변경 */
+}

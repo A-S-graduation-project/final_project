@@ -3,9 +3,9 @@ from board.models import Board
 
 def my_board(request):
     # 현재 로그인한 사용자의 cno 값을 가져옵니다.
-    user_cno = request.user.cno
+    customer_cno = request.user.cno
 
     # 사용자가 작성한 글을 가져옵니다.
-    user_posts = Board.objects.filter(cno=user_cno)
+    customer_board = Board.objects.filter(cno=customer_cno)
 
-    return render(request, 'signapp/myboard.html', {'user_posts': user_posts})
+    return render(request, 'signapp/myboard.html', {'customer_board': customer_board})

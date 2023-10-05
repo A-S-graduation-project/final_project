@@ -21,7 +21,7 @@
     <ul class="bookmark-list food-list">
         {% for food_bookmark in food_bookmarks %}
         <li class="bookmark-item" data-date="{{ food_bookmark.CDATE }}">
-            <strong>{{ food_bookmark.CDATE|date:"Y년 m월 d일"  }} 추가됨:</strong>
+            <strong>{{ food_bookmark.CDATE|date:"Y년 m월 d일"  }}:</strong>
             <a class="bookmark-link" href="{% url 'searchapp:Detail' %}?pk={{ food_bookmark.FNO_id }}" target="_blank">{{ food_bookmark.TITLE }}</a>
             <button class="fdelete-button" data-id="{{ food_bookmark.FMNO }}">찜 해제</button>
         </li>
