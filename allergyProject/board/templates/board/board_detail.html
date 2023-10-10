@@ -3,9 +3,11 @@
 {% block content %}
 <h1 style="text-align: center;"> {{ board.title }}</h1>
 <h3 style="text-align: right;">{{ board.name }} , {{ board.cdate }}</h3>
+<button type="submit" class="btn btn-danger" id="delete-board-button">게시글 삭제</button>
 <main>
   <div class="board-details">
       <img src="{% static 'images/food3.jpg' %}" alt="짜장면">
+      <img src="board.images" alt="사진">
       <div>
         {% for allergy in allerinfo %}
           {{ allergy }}
@@ -20,20 +22,11 @@
           {% endfor %}
         </ul>
       </div>
-
+      {% for recipe in board.content %}
       <div class="recipe">
-          <p>1. 양배추,양파,당근,호박을 잘게 썰어 놓습니다.</p>
-          <p>2. 포도씨유를 넣어 뜨겁게 달군 후라이팬에 돼지고기를 튀기듯 볶다가 생강청(생강즙)과 간마늘을 넣어줍니다(고기냄새 제거)</p>
-          <p>3. 잘볶아진 돼지고기에 양파를 넣어 볶습니다.</p>
-          <p>4. 양파가 갈색이 날때까지 볶습니다.
-              양파의 풍미가 살아나요.</p>
-          <p>5. 준비한 야채들도 넣어 잘 볶아줍3니다.</p>
-          <p>6. 야채가 숨이죽고 수분이 나오면 짜장가루를 조금씩 나눠 넣으며 덩어리지지않게 볶아줍니다.</p>
-          <p>7. 짜장이 너무 되면 물을 반컵만 넣어 짜장을 완성합니다.</p>
-          <p>8. 잘 삶아진 면을 건져 그릇에 담고</p>
-          <p>9. 짜장을 올려 짜장면을 완성합니다.</p>
-          <p>10.삶은 완두콩도 올려 더욱 맛나게보입니다.</p>
+        {{ recipe }}
       </div>
+      {% endfor %}
   </div>
 
   <div class="board-like-button-container">
@@ -153,4 +146,25 @@
     </a>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    $("#delete-board-button").click(function () {
+        if (confirm("게시글을 삭제하시겠습니까?")) {
+            $.ajax({
+                url: "{% url 'board:delete_board' board.bno %}",
+                type: "POST",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                },
+                success: function (data) {
+                    alert(data.message);
+                    // 삭제가 성공하면 board_list 페이지로 이동
+                    window.location.href = "{% url 'board:board_list' %}";
+                }
+            });
+        }
+    });
+});
+</script>
 {% endblock %}
