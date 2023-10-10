@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Board, Comment
+from .models import Board, Comment, Image
 import json
 
 
@@ -13,7 +13,7 @@ class IngredientForm(forms.Form):
 # ModelForm으로 BoardForm 클래스 생성
 class BoardForm(ModelForm):
     # ingredient = forms.CharField(widget=forms.HiddenInput())
-    
+    content = forms.CharField(widget=forms.Textarea(attrs={'placeholder': '레시피를 입력하세요'}))
     class Meta:
         # Board모델의 모든 필드를 사용하고
         model = Board
@@ -22,12 +22,8 @@ class BoardForm(ModelForm):
         # 위젯으로 title과 content를 꾸밈
         widgets = {
             "title" : forms.TextInput(attrs={"placeholder": " 제목을 입력하세요"}),
-            "content" : forms.Textarea(attrs={"placeholder": " 레시피를 입력해주세요"}),
+            # "content" : forms.Textarea(attrs={"placeholder": " 레시피를 입력해주세요"}),
         }
-    
-    #     def __init__(self, *args, **kwargs):
-    #         super().__init__(*args, **kwargs)
-    #         self.fields['ingredient'].widget = forms.HiddenInput()
 
     def clean_ingredient(self):
         data = self.cleaned_data.get('ingredient')
@@ -45,6 +41,15 @@ class BoardForm(ModelForm):
             instance.save()
         return instance
 
+# board의 이미지를 넣기 위함 form
+class ImageForm(ModelForm):
+    class Meta:
+        model = Image
+        fields = ['image']
+
+    widgets = {
+        'image' : forms.ClearableFileInput(attrs={"multiple":True})
+    }
 
 class CommentForm(ModelForm):
     class Meta:
