@@ -1,39 +1,60 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h1 style="text-align: center;"> {{ board.title }}</h1>
-<h3 style="text-align: right;">{{ board.name }} , {{ board.cdate }}</h3>
+
 <button type="submit" class="btn btn-danger" id="delete-board-button">게시글 삭제</button>
 <main>
-  <div class="board-details">
-      <img src="{% static 'images/food3.jpg' %}" alt="짜장면">
-      <img src="board.images" alt="사진">
-      <div>
-        {% for allergy in allerinfo %}
-          {{ allergy }}
-        {% endfor %}
-      </div>
-      <div>
-        <ul>
-          {% for key, ingredient in ingredient_data.items %}
-          <li>
-              {{key}} {{ ingredient }}
-          </li>
+    <div class="board-details">
+      <h1 style="text-align: center;"> {{ board.title }}</h1>
+        <h3 style="text-align: right;">{{ board.name }} , {{ board.cdate }}</h3>
+        <img src="{% static 'images/food3.jpg' %}" alt="짜장면">
+        <img src="{{ images.images.url }}" alt="사진">
+        <div class="recipe">
+          {% for allergy in allerinfo %}
+            {{ allergy }}
           {% endfor %}
-        </ul>
-      </div>
-      {% for recipe in board.content %}
-      <div class="recipe">
-        {{ recipe }}
-      </div>
-      {% endfor %}
-  </div>
+        </div>
+        <div class="recipe">
+          <ul>
+            {% for key, ingredient in ingredient_data.items %}
+            <li>
+                {{key}} {{ ingredient }}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% for recipe in board.content %}
+        <div class="recipe-box">
+          <p>{{ forloop.counter }}</p>
+          <div class="recipe">
+            {{ recipe }}
+          </div>
+          {% for image in images %}
+            <img src="{{ image.url }}" alt="게시판 이미지">
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
 
   <div class="board-like-button-container">
     <button class="like-button" aria-label="Like"></button>
   </div>
-
 </main>
+<div>
+  <div class="comment-box">
+    <form method="POST" action="{% url 'board:create_comment' board.bno %}">
+      {% csrf_token %}
+      {{ comment_form.as_p }}
+      <button type="submit">Add Comment</button>
+    </form>
+    {% for comment in comments %}
+      <div class="comment">
+          <p>{{ comment.comments }}</p>
+          <p>Posted by: {{ comment.cno.username }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
 
 <div id="recommend"></div>
 <div class="container">
