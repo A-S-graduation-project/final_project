@@ -9,4 +9,6 @@ urlpatterns = [
     path('board_create/', views.create_board, name='board_create'),
     path('board_detail/<int:bno>', views.read_board, name="board_detail"),
     path('board_detail/<int:bno>/delete', views.delete_board, name='delete_board'),
+    path('board_detail/<int:bno>/create_comment', views.create_comment, name='create_comment'),
+
 ]
