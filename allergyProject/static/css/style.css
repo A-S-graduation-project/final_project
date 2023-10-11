@@ -230,7 +230,10 @@ main {
   background-color: #f7f7f7;
   align-items: center;
   justify-content: center;
-  padding: 50px;
+  padding: 50px 0;
+  width: 99%;
+  margin: 0 10px 0;
+  border-radius: 15px;
 }
 
 .mypage{
@@ -826,7 +829,7 @@ footer {
 .header {
   display: flex;
   justify-content: space-between;
-  background-color: #f7f7f7;
+  
 }
 
 .create-board-btn {
@@ -1000,4 +1003,32 @@ form .content textarea::placeholder{
     border-color: var(--hover);
     color: #fff;
   }
+}
+
+.recipe-box {
+  display: flex;
+  flex-direction: row;
+  justify-items: center;
+}
+
+.recipe-box div {
+  width: 400px;
+  height: 100px;
+  margin: 15px;
+}
+
+.recipe-box p {
+  font-size: 3em;
+  font-weight: bolder;
+}
+
+.comment-box{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background-color:#f7f7f7;
+  width: 99%;
+  margin: 10px;
+  border-radius: 15px;
 }
