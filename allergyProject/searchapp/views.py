@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Product
 from .models import UserData
-from .models import Similarity
+from .models import PSimilarity
 from django.db.models import Q
 from django.core.cache import cache
 try:
@@ -97,7 +97,7 @@ def Detail(request):
 
     if ('pk' in request.GET):
         pk = request.GET.get('pk')
-        sim = Similarity.objects.all().order_by('prdNo')
+        sim = PSimilarity.objects.all().order_by('prdNo')
         # SELECT simlist FROM similarity WHERE prdNo=pk;
         sim_list = sim.filter(
             Q(prdNo__exact=pk)

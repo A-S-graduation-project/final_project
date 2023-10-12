@@ -33,3 +33,11 @@ class Comment(models.Model):
 
     class Meta:
         db_table = "comments" # DB에 표시되고 사용할 테이블 명
+
+
+class BSimilarity(models.Model):
+    bno = models.IntegerField(primary_key=True)
+    simlist = ArrayField(models.IntegerField(), null=True)
+
+    class Meta:
+        db_table = "bsimilarity" # DB에 표시되고 사용할 테이블 명
