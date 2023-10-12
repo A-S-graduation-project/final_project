@@ -3,22 +3,24 @@ import requests, json, psycopg2, re, os
 
 # dictionary인 prdlst를 tuple인 procData로 변경 #
 def Processed(dict):
+    
+    rawmtrl = re.sub(r"[^\uAC00-\uD7A3a-zA-Z]", " ", dict['rawmtrl'])
+    rawmtrl = rawmtrl.replace('•, \n', ' ')
+
     try:
         procData = (dict['prdlstReportNo'],
                     dict['prdlstNm'],
                     dict['prdkind'],
-                    dict['rawmtrl'],
+                    rawmtrl,
                     dict['allergy'],
                     dict['imgurl1'],
                     dict['manufacture'])
     except KeyError:
         return 0
 
-    # 확인용 #
-    # print(procData)
-
     return procData
 
+allergy_list = []
 
 # DB 연결 #
 conn = psycopg2.connect(host='localhost',user='postgres',password='2017018023',dbname='allergydb',connect_timeout=32768)
@@ -49,7 +51,8 @@ while True:
     try:
         res = requests.get(URL, params=parameters, verify=False, headers=headers, timeout=None)
     except Exception as ex: # error 발생 시 error의 종류 출력 후 다시 시도 #
-        print(ex)
+        if ex is not ConnectionError:
+            print(ex)
         continue
 
     try:
@@ -66,17 +69,13 @@ while True:
         field = prdlst.keys()
         procData = Processed(prdlst)
 
-        try:
-            procData = list(procData)
-            procData[3] = re.sub(r"[^\uAC00-\uD7A3a-zA-Z]", " ", procData[3])
-            procData[3] = procData[3].replace('•, \n', ' ')
-            procData = tuple(procData)
-        except: # TypeError 방지 #
-            pass
-
-        procData = Processed(prdlst)
+        # print(procData)
 
         if procData:
+            for al in procData[4].split(','):
+                if al not in allergy_list and al != "없음" and al != "해당없음" and len(al) <= 6:
+                    allergy_list.append(al)
+
             # "" 없으면 소문자로 인식 #
             sql = """INSERT INTO products("prdlstReportNo", "prdlstNm", prdkind, rawmtrl, allergy, image, manufacture)"""\
                 """VALUES(%s, %s, %s, %s, %s, %s, %s)"""\
@@ -94,6 +93,8 @@ while True:
     pageNo += 1
 
 conn.close()
+
+print(allergy_list)
 
 print("\nfood_sim.py 실행")
 print("========================================================================================")
