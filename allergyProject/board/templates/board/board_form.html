@@ -37,6 +37,7 @@
             <div id="recipe-fields">
                 <div class="recipe-form">
                     <p>{{ board_form.content }}</p> <!-- 레시피 입력 필드를 <p> 태그로 감쌈 -->
+                    <div>{{ image_form.image }}</div>
                 </div>
             </div>
             <button type="button" id="add-recipe">+</button>
@@ -63,6 +64,9 @@ $(document).ready(function() {
         var recipeField = $(".recipe-form:first").clone();
         recipeField.find('textarea').val(''); // 새로운 필드를 비웁니다.
         $("#recipe-fields").append(recipeField);
+
+        // 새로운 필드의 이름을 배열로 설정 (content[] 형태)
+        recipeField.find('textarea').attr('name', 'content[]');
     });
 
     // - 버튼을 클릭하여 레시피 입력 필드를 제거
@@ -72,6 +76,16 @@ $(document).ready(function() {
         if (recipeFieldCount > 1) {
             $("#recipe-fields .recipe-form:last").remove();
         }
+    });
+
+    // 폼 제출 시 content 값을 배열로 만들어 전송
+    $("form").submit(function() {
+        var contentArray = [];
+        $("#recipe-fields .recipe-form").each(function() {
+            var contentValue = $(this).find('textarea').val();
+            contentArray.push(contentValue);
+        });
+        $("#id_content").val(JSON.stringify(contentArray));
     });
 
     // + 버튼을 클릭할 때마다 새로운 필수 재료 입력 필드를 추가

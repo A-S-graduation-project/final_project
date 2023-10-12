@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import JSONField
+from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 class Board(models.Model):
@@ -10,10 +11,17 @@ class Board(models.Model):
     allerinfo = models.TextField(null=False)
     cdate = models.DateField()
     ingredient = JSONField(null=False)
-    content = JSONField(null=False)
+    content = ArrayField(models.CharField(max_length=500), null=False)
+    images = models.ManyToManyField('Image', blank=True)
 
     class Meta:
         db_table = "boards" # DB에 표시되고 사용할 테이블 명
+
+class Image(models.Model):
+    image = models.ImageField()
+
+    class Meta:
+        db_table = "images" # DB에 표시되고 사용할 테이블 명
 
 class Comment(models.Model):
     serialno = models.AutoField(primary_key=True)
