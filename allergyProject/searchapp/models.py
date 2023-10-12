@@ -55,12 +55,12 @@ class Allergy(models.Model):
         db_table = "allergies" # DB에 표시되고 사용할 테이블 명
 
 
-class Similarity(models.Model):
+class PSimilarity(models.Model):
     prdNo = models.CharField(max_length=50, primary_key=True)
     simlist = ArrayField(models.CharField(max_length=50), null=True)
 
     class Meta:
-        db_table = "similarity" # DB에 표시되고 사용할 테이블 명
+        db_table = "psimilarity" # DB에 표시되고 사용할 테이블 명
 
 
 class Recommend(models.Model):
