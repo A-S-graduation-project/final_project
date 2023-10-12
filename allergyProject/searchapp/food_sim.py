@@ -34,7 +34,7 @@ food_simi_cate = cosine_similarity(food_vector, food_vector)
 print(food_simi_cate)
 
 for n in range(row_count):
-    source = [prdlstReportNo[n], [prdlstReportNo[m] for m in range(row_count) if (food_simi_cate[n][m] >= 0.5 and prdlstReportNo[m] != prdlstReportNo[n])]]
+    source = [prdlstReportNo[n], [prdlstReportNo[m] for m in range(row_count) if (food_simi_cate[n][m] >= 0.6 and prdlstReportNo[m] != prdlstReportNo[n])]]
     sql = """INSERT INTO similarity("prdNo",simlist) VALUES(%s, %s)"""\
         """ON CONFLICT ("prdNo") DO UPDATE SET simlist = EXCLUDED.simlist"""
     cur.execute(sql, source)
