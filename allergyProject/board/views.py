@@ -54,26 +54,20 @@ def create_board(request):
                 image = Image.objects.create(image=uploaded_image)
                 board.images.add(image)
 
-        print(f"{board_form.is_valid()} and {ingredient_form.is_valid()} and {image_form.is_valid()}")
         if board_form.is_valid() and ingredient_form.is_valid():
             print("---------- valid form ----------")
             board = board_form.save(commit=False) # 데이터 베이스에 아직 저장하지 않고 board만 생성
             board.cdate = timezone.now()
-            print(" ---------- save form and datetime -----------")
-            if request.user.is_authenticated:
-                board.name = request.user.username
-                board.cno = 1
-                # board.cno = request.user.cno
-                print(" ---------- User -----------")
+
+    if request.user.is_authenticated:
+        board.name = request.user.username
+        board.cno = 1
             else:
                 print(" ---------- NO User -----------")
 
-            selected_allergies = request.POST.getlist('selected_allergies')
-            # 선택한 알러지 정보를 가져오고
-            selected_allergies_objects = Allergy.objects.filter(ano__in=selected_allergies)
-            # 선택한 알러지 정보를 Allergy 모델에서 가져옴
+    selected_allergies = request.POST.getlist('selected_allergies')
+    selected_allergies_objects = Allergy.objects.filter(ano__in=selected_allergies)
 
-            # 게시판의 allerinfo 속성에 넣어준다.
             allergy_info = [{"ano": allergy.ano, "allergy": allergy.allergy} for allergy in selected_allergies_objects]
             board.allerinfo = json.dumps(allergy_info)
             
