@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-
+<script>const csrfToken = "{{ csrf_token|escapejs }}";</script>
 <button type="submit" class="btn btn-danger" id="delete-board-button">게시글 삭제</button>
 <main>
     <div class="board-details">
@@ -43,7 +43,7 @@
     </div>
 
   <div class="board-like-button-container">
-    <button class="like-button" aria-label="Like"></button>
+    <button class="like-button" aria-label="Like" data-id="{{ board.bno }}"></button>
   </div>
 </main>
 <div>
@@ -192,6 +192,28 @@ $(document).ready(function () {
             });
         }
     });
+});
+document.addEventListener('click', function (event) {
+  if (event.target.classList.contains('like-button')) {
+      const boardId = event.target.getAttribute('data-id');
+      
+      // 서버로 POST 요청을 보냅니다.
+      $.ajax({
+          type: 'POST',
+          url: "{% url 'board:like_button' %}",
+          data: { bno: boardId },
+          headers: {
+              'X-CSRFToken': csrfToken
+          },
+          success: function (data) {
+            alert(data.message);
+          },
+          error: function () {
+              // 오류 처리
+              alert("찜 해제 중 오류가 발생했습니다.");
+          }
+      });
+  }
 });
 </script>
 {% endblock %}
