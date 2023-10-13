@@ -82,18 +82,18 @@ def Detail(request):
         user.prdlstReportNo=detail.prdlstReportNo
         user.save()
 
-    collarbors = []
-    similarities = []
+    collarbors = Collarbor(request)
+    similarities = Similarity(request)
 
-    for i in range(len(re)):
-        if i == 5:
-            break
-        colquery = re[i][1]
-        collarbor = Product.objects.all()
-        collarbor = collarbor.get(
-            Q(prdlstReportNo__exact=colquery)
-        )
-        collarbors.append(collarbor)
+    try:
+        return render(request, 'detail.html', {'pk':pk, 'detail':detail, 'collarbors':collarbors, 'similarities':similarities})
+    except Exception as ex:
+        print(ex)
+        return render(request, 'detail.html', {'pk':pk, 'detail':detail})
+
+
+def Similarity(request):
+    similarities = []
 
     if ('pk' in request.GET):
         pk = request.GET.get('pk')
@@ -110,8 +110,20 @@ def Detail(request):
             )
             similarities.append(similarity)
 
-    try:
-        return render(request, 'detail.html', {'pk':pk, 'detail':detail, 'collarbors':collarbors, 'similarities':similarities})
-    except Exception as ex:
-        print(ex)
-        return render(request, 'detail.html', {'pk':pk, 'detail':detail})
+    return similarities
+
+
+def Collarbor(request):
+    collarbors = []
+
+    for i in range(len(re)):
+        if i == 5:
+            break
+        colquery = re[i][1]
+        collarbor = Product.objects.all()
+        collarbor = collarbor.get(
+            Q(prdlstReportNo__exact=colquery)
+        )
+        collarbors.append(collarbor)
+
+    return collarbors
