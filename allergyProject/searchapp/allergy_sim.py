@@ -105,4 +105,34 @@ re = getRecommendation(proAlData, '호두, 대두, 쇠고기, 새우, 난류, �
 print(re[:10])
 print("\n")
 
+#=========================================================================================================================================#
+
+# # Mysql에서 DATA 읽기 (전처리 포함) #
+# cur.execute("""SELECT bno from boards""")
+# proData = cur.fetchall()
+# # print(proData[0:2])                                             # product data 확인용
+
+# cur.execute("""SELECT gender,older,allergy,"prdlstReportNo",rating FROM userdata""")
+# choData = cur.fetchall()
+# # print(choData[0:2])                                             # user data 확인용
+
+# # 형식 변환 #
+# pdProData = pd.DataFrame(proData)
+# pdChoData = pd.DataFrame(choData)
+
+# # 병합 #
+# merge_data = pd.concat([pdProData, pdChoData], join='outer')
+# # print(merge_data)
+
+# # 데이터 분포 #
+# proAlData = merge_data.pivot_table(4, index=3, columns=2)       # 4 : 'rating', 3 : 'prdlstReportNo', 2: 'allergy'
+# proAlData.fillna(0, inplace=True)                               # NaN -> 0
+# # print(proAlData)
+
+# # 결과 #
+# # 알레르기 key가 userdata에 존재하지 않은 경우 오류 발생 #
+# re = getRecommendation(proAlData, '호두, 대두, 쇠고기, 새우, 난류, 조개류, 돼지고기, 고등어')                       # userdata 수집 필요
+# print(re[:10])
+# print("\n")
+
 conn.close()
