@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import BoardView
 from . import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 app_name = 'board'
 
@@ -12,3 +14,4 @@ urlpatterns = [
     path('board_detail/<int:bno>/create_comment', views.create_comment, name='create_comment'),
 
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
