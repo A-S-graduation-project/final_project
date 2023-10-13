@@ -33,16 +33,20 @@
 </main>
 <div id="recommend"></div>
 <div class="picture-grid">
-  {% for collarbor in collarbors %}
-    <div class="picture">
-      <a href="{% url 'searchapp:Detail' %}?pk={{ collarbor.prdlstReportNo }}">
-        <img src="{{ collarbor.image }}" alt="{{ collarbor.prdlstNm }}">
-        <p>{{ collarbor.prdlstNm }}</p>
-      </a>
-    </div>
-    {% empty %}
-      <h4>결과 없음</h4>
-  {% endfor %}
+  {% if user.is_authenticated %}
+    {% for collarbor in collarbors %}
+      <div class="picture">
+        <a href="{% url 'searchapp:Detail' %}?pk={{ collarbor.prdlstReportNo }}">
+          <img src="{{ collarbor.image }}" alt="{{ collarbor.prdlstNm }}">
+          <p>{{ collarbor.prdlstNm }}</p>
+        </a>
+      </div>
+      {% empty %}
+        <h4>결과 없음</h4>
+    {% endfor %}
+  {% else %}
+      <h2>로그인 필요</h2>
+  {% endif %}
 </div>
 
 <div class="picture-grid">
