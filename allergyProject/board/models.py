@@ -13,8 +13,8 @@ class Board(models.Model):
     cdate = models.DateField()
     ingredient = JSONField(null=False)
     content = ArrayField(models.CharField(max_length=500), null=False)
-    # types = models.OneToOneField('TypeCategories', blank=True)
-    # meterial = models.OneToOneField('MeterialCategories', blank=True)
+    types = models.TextField(null=False)
+    meterial = models.TextField(null=False)
 
     class Meta:
         db_table = "boards" # DB에 표시되고 사용할 테이블 명
@@ -38,17 +38,17 @@ class BoardImage(models.Model):
     class Meta:
         db_table = "board_images" # DB에 표시되고 사용할 테이블 명
 
-# class TypeCategories(models.Model):
-#     types = models.CharField(max_length=50)
+class TypeCategories(models.Model):
+    types = models.CharField(max_length=50)
 
-#     class Meta:
-#         db_table = "type_categories" # DB에 표시되고 사용할 테이블 명
+    class Meta:
+        db_table = "type_categories" # DB에 표시되고 사용할 테이블 명
 
-# class MeterialCategories(models.Model):
-#     material = models.CharField(max_length=50)
+class MeterialCategories(models.Model):
+    materials = models.CharField(max_length=50)
 
-#     class Meta:
-#         db_table = "meterial_categories" # DB에 표시되고 사용할 테이블 명
+    class Meta:
+        db_table = "meterial_categories" # DB에 표시되고 사용할 테이블 명
 
 class Comment(models.Model):
     serialno = models.AutoField(primary_key=True)
