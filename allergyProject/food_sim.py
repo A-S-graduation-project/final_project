@@ -31,37 +31,38 @@ conn = psycopg2.connect(host='localhost',
                         connect_timeout=32768)
 cur = conn.cursor()
 
-# # Mysql에서 DATA 읽기 (전처리 포함) #
-# cur.execute("""SELECT "prdlstReportNo", rawmtrl, prdkind FROM products""")
-# proData = cur.fetchall()
-# row_count = len(proData)
-# # print(proData[0:2])                                             # product data 확인용                                          # user data 확인용
+# Mysql에서 DATA 읽기 (전처리 포함) #
+cur.execute("""SELECT "prdlstReportNo", rawmtrl, prdkind FROM products""")
+proData = cur.fetchall()
+row_count = len(proData)
+# print(proData[0:2])                                             # product data 확인용                                          # user data 확인용
 
-# # 전처리 #
-# prdlstReportNo = []
-# rawmtrl = []
-# prdkind = []
+# 전처리 #
+prdlstReportNo = []
+rawmtrl = []
+prdkind = []
 
-# for row in proData:
-#     prdlstReportNo.append(row[0])
-#     rawmtrl.append(row[1])
-#     prdkind.append(row[2])
+for row in proData:
+    prdlstReportNo.append(row[0])
+    rawmtrl.append(row[1])
+    prdkind.append(row[2])
 
-# print(rawmtrl[:5])
-# print(prdkind[:5])
+print(rawmtrl[:5])
+print(prdkind[:5])
 
-# food_simi_cate = vector(0, rawmtrl, prdkind)
-# print(food_simi_cate)
+food_simi_cate = vector(0, rawmtrl, prdkind)
+print(food_simi_cate)
 
-# for n in range(row_count):
-#     source = [prdlstReportNo[n], [prdlstReportNo[m] for m in range(row_count) if (food_simi_cate[n][m] >= 0.5 and prdlstReportNo[m] != prdlstReportNo[n])]]
-#     sql = """INSERT INTO psimilarity("prdNo",simlist) VALUES(%s, %s)"""\
-#         """ON CONFLICT ("prdNo") DO UPDATE SET simlist = EXCLUDED.simlist"""
-#     cur.execute(sql, source)
-#     conn.commit()
+for n in range(row_count):
+    source = [prdlstReportNo[n], [prdlstReportNo[m] for m in range(row_count) if (food_simi_cate[n][m] >= 0.5 and prdlstReportNo[m] != prdlstReportNo[n])]]
+    sql = """INSERT INTO psimilarity("prdNo",simlist) VALUES(%s, %s)"""\
+        """ON CONFLICT ("prdNo") DO UPDATE SET simlist = EXCLUDED.simlist"""
+    cur.execute(sql, source)
+    conn.commit()
 
-# print("\n")
+print("\n")
 
+#=========================================================================================================================================#
 
 # Mysql에서 DATA 읽기 (전처리 포함) #
 cur.execute("""SELECT bno, ingredient FROM boards""")
