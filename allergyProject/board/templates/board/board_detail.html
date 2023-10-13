@@ -7,8 +7,13 @@
     <div class="board-details">
       <h1 style="text-align: center;"> {{ board.title }}</h1>
         <h3 style="text-align: right;">{{ board.name }} , {{ board.cdate }}</h3>
-        <img src="{% static 'images/food3.jpg' %}" alt="짜장면">
-        <img src="{{ images.images.url }}" alt="사진">
+        {% if images %}
+        <div class="image-box">
+          {% with latest_image=images|first %}
+            <img src="{{ latest_image.image.url }}" alt="title 이미지">
+          {% endwith %}
+        </div>
+        {% endif %}
         <div class="recipe">
           {% for allergy in allerinfo %}
             {{ allergy }}
@@ -23,17 +28,18 @@
             {% endfor %}
           </ul>
         </div>
-        {% for recipe in board.content %}
+        {% for recipe, image in recipe_images %}
         <div class="recipe-box">
           <p>{{ forloop.counter }}</p>
           <div class="recipe">
             {{ recipe }}
           </div>
-          {% for image in images %}
-            <img src="{{ image.url }}" alt="게시판 이미지">
-            {% endfor %}
+          {% if image %}
+            <img class="recipe-img" src="{{ image.image.url }}" alt="게시판 이미지">
+          {% endif %}
         </div>
         {% endfor %}
+
     </div>
 
   <div class="board-like-button-container">
