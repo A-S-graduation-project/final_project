@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import BoardView
-from . import views
+from . import views, view_add_board
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -12,6 +12,7 @@ urlpatterns = [
     path('board_detail/<int:bno>', views.read_board, name="board_detail"),
     path('board_detail/<int:bno>/delete', views.delete_board, name='delete_board'),
     path('board_detail/<int:bno>/create_comment', views.create_comment, name='create_comment'),
+    path('like_button/', view_add_board.like_button_view, name='like_button'),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
