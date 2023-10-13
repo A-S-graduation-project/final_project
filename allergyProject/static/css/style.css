@@ -1032,3 +1032,8 @@ form .content textarea::placeholder{
   margin: 10px;
   border-radius: 15px;
 }
+
+.recipe-img{
+  width: 150px;
+  height: 150px;
+}

@@ -3,7 +3,7 @@
 
 {% block content %}
 <section class="board-main" style="margin-left: 10px;">
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="title">
             <label for="{{ form.title.id_for_label }}">제목</label>
@@ -63,6 +63,7 @@ $(document).ready(function() {
     $("#add-recipe").click(function() {
         var recipeField = $(".recipe-form:first").clone();
         recipeField.find('textarea').val(''); // 새로운 필드를 비웁니다.
+        recipeField.find('input').val(''); // 새로운 필드를 비웁니다.
         $("#recipe-fields").append(recipeField);
 
         // 새로운 필드의 이름을 배열로 설정 (content[] 형태)

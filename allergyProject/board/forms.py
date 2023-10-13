@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Board, Comment, Image
+from .models import Board, Comment, BoardImage
 import json
 
 
@@ -44,12 +44,9 @@ class BoardForm(ModelForm):
 # board의 이미지를 넣기 위함 form
 class ImageForm(ModelForm):
     class Meta:
-        model = Image
+        model = BoardImage
         fields = ['image']
 
-    widgets = {
-        # 'image' : forms.ClearableFileInput(attrs={"multiple":True})
-    }
 
 class CommentForm(ModelForm):
     class Meta:

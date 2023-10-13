@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import JSONField
 from django.contrib.postgres.fields import ArrayField
+import os
 
 # Create your models here.
 class Board(models.Model):
@@ -12,16 +13,42 @@ class Board(models.Model):
     cdate = models.DateField()
     ingredient = JSONField(null=False)
     content = ArrayField(models.CharField(max_length=500), null=False)
-    images = models.ManyToManyField('Image', blank=True)
+    # types = models.OneToOneField('TypeCategories', blank=True)
+    # meterial = models.OneToOneField('MeterialCategories', blank=True)
 
     class Meta:
         db_table = "boards" # DB에 표시되고 사용할 테이블 명
 
-class Image(models.Model):
-    image = models.ImageField()
+
+def get_image_filename(instance, filename):
+    # 이미지 파일의 원래 이름
+    original_filename = os.path.basename(filename)
+    
+    # 이미지 파일의 새 이름 생성 (게시판 번호 + 원래 파일 이름)
+    new_filename = f"bno_{instance.bno}_{original_filename}"
+    
+    # 반환하려는 파일 경로와 이름
+    return os.path.join("", new_filename)
+
+class BoardImage(models.Model):
+    serial = models.AutoField(primary_key=True)
+    bno = models.ForeignKey(Board, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=get_image_filename)
 
     class Meta:
-        db_table = "images" # DB에 표시되고 사용할 테이블 명
+        db_table = "board_images" # DB에 표시되고 사용할 테이블 명
+
+# class TypeCategories(models.Model):
+#     types = models.CharField(max_length=50)
+
+#     class Meta:
+#         db_table = "type_categories" # DB에 표시되고 사용할 테이블 명
+
+# class MeterialCategories(models.Model):
+#     material = models.CharField(max_length=50)
+
+#     class Meta:
+#         db_table = "meterial_categories" # DB에 표시되고 사용할 테이블 명
 
 class Comment(models.Model):
     serialno = models.AutoField(primary_key=True)
