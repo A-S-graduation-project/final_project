@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView, ListView
-from board.models import Board, Comment, BoardImage
+from board.models import Board, Comment, BoardImage, TypeCategories, MeterialCategories
 from .forms import BoardForm, CommentForm, IngredientForm, ImageForm, CommentForm
 from searchapp.models import Allergy
 from django.utils import timezone
@@ -53,11 +53,9 @@ def create_board(request):
     image_form = ImageForm(request.POST, request.FILES)
 
     if request.method == 'POST':
-        print(request.FILES)
         print("----------- this method POST -----------")
         board_form = BoardForm(request.POST, request.FILES)
         print("----------- board form -----------")
-        print(image_form)
         ingredient_form = IngredientForm(request.POST, prefix='ingredient')
         print("----------- ingredient form -----------")
 
@@ -75,7 +73,10 @@ def create_board(request):
         'board_form': board_form, 
         'ingredient_form' : ingredient_form, 
         'allergies': allergies, 
-        'image_form': image_form})
+        'image_form': image_form,
+        'type_category':type_category,
+        'meterial_category':meterial_category,
+        })
 
 def save_board(request, board_form, ingredient_form, image_form):
     board = board_form.save(commit=False)
@@ -95,6 +96,16 @@ def save_board(request, board_form, ingredient_form, image_form):
     ingredients = get_ingredients(ingredient_form)
     board.ingredient = json.dumps(ingredients)
 
+    # 사용자로부터 선택받은 카테고리 정보를 가져와서 게시판 객체에 설정
+    print("category save하는곳")
+    type_category_id = request.POST.get('type_category_id')
+    meterial_category_id = request.POST.get('meterial_category_id')
+    print(type_category_id,meterial_category_id)
+    type_category = TypeCategories.objects.get(types=type_category_id)
+    meterial_category = MeterialCategories.objects.get(meterials=meterial_category_id)
+    board.types = type_category.types
+    board.meterial = meterial_category.meterials
+
     board.save()
     print("---------------- save board ----------------")
     handle_uploaded_images(request, board, image_form)
@@ -110,7 +121,6 @@ def get_ingredients(ingredient_form):
 def handle_uploaded_images(request, board, image_form):
     if 'image' in request.FILES:
         print("---------------- valid imageform ----------------")
-        print(image_form.cleaned_data['image'])
         for uploaded_image in request.FILES.getlist('image'):
             image = BoardImage.objects.create(bno=board, image=uploaded_image)
             image.save()
