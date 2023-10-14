@@ -27,7 +27,7 @@
         </div>
         <div class="categories" style="margin-left: 20px;">
             <div class="dropdown">
-                <button class="dropbtn">종류별</button>
+                <div class="dropbtn">종류별</div>
                 <div class="dropdown-content">
                     {% for type in type_category %}
                     <a href="#" class="type-btn" data-id="{{type.types}}">{{type.types}}</a>
@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="dropdown">
-                <button class="dropbtn">재료별</button>
+                <div class="dropbtn">재료별</div>
                 <div class="dropdown-content">
                     {% for meterial in meterial_category %}
                     <a href="#" class="meterial-btn" data-id="{{meterial.meterials}}">{{meterial.meterials}}</a>
