@@ -200,7 +200,7 @@ nav {
   font-size: 0.8em;
   position: absolute;
   background-color: #f9f9f9;
-  min-width: 80px;
+  min-width: 120px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
 }
@@ -210,6 +210,7 @@ nav {
   color: #333;
   padding: 8px 12px;
   text-decoration: none;
+  text-align: center;
   display: block;
 }
 
@@ -221,7 +222,7 @@ nav {
 /* Show the dropdown menu on hover */
 .menu .dropdown:hover .dropdown-content, .rangedropdown:hover .dropdown-content {
   display: block;
-  transform: translateX(-35px);
+  transform: translate(-75px, 7px);
 }
 
 main {
@@ -1051,4 +1052,18 @@ form .content textarea::placeholder{
 .categories{
   display: flex;
   flex-direction: row;
+}
+
+.categories .dropdown .dropbtn{
+  border: 1px solid #000;
+  padding: 5px;
+  margin-left: 5px;
+}
+
+.categories .dropdown:nth-child(2) .dropbtn{
+  transform: translateX(30px);
+}
+
+.categories .dropdown:nth-child(2) .dropdown-content{
+  transform: translateX(30px);
 }
