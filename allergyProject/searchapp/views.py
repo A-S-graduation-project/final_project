@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Product
 from .models import UserData
 from .models import PSimilarity
+from signapp.models import Customer
 from django.db.models import Q
 from django.core.cache import cache
 try:
@@ -114,6 +115,17 @@ def Similarity(request):
 
 
 def Collarbor(request):
+    cno = request.user
+
+    if not cno.is_anonymous:
+        customer = Customer.objects.all().filter(
+            Q(username__exact = cno)
+        )
+
+        # allergy = customer.get().allergy
+
+        print(customer)
+
     collarbors = []
 
     for i in range(len(re)):

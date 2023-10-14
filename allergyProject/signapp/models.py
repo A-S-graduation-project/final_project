@@ -12,6 +12,7 @@ class Customer(AbstractUser):
     gender = models.BooleanField()
     bookinfo = models.TextField(blank=True, null=True)
     boardinfo = models.TextField(blank=True, null=True)
+    allerinfo = models.TextField()
     
     class Meta:
         db_table = "customers" # DB에 표시되고 사용할 테이블 명
