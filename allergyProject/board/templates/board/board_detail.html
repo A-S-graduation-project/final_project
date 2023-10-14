@@ -14,6 +14,11 @@
           {% endwith %}
         </div>
         {% endif %}
+        <div>
+          <p>종류 : {{board.types}}</p>
+          <p>주재료 : {{board.meterial}}</p>
+        </div>
+
         <div class="recipe">
           {% for allergy in allerinfo %}
             {{ allergy }}

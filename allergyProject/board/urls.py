@@ -15,4 +15,3 @@ urlpatterns = [
     path('like_button/', view_add_board.like_button_view, name='like_button'),
 
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
