@@ -24,6 +24,26 @@
                     </ul>
                 {% endfor %}
             </div>
+            <div class="categories" style="margin-left: 20px;">
+                <div class="dropdown">
+                    <button class="dropbtn">종류별</button>
+                    <div class="dropdown-content">
+                        {% for type in type_category %}
+                        <a href="#" class="type-btn" data-allergen="{{type.types}}">{{type.types}}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="dropbtn">재료별</button>
+                    <div class="dropdown-content">
+                        {% for meterial in meterial_category %}
+                        <a href="#" class="meterial-btn" data-allergen="{{meterial.meterials}}">{{meterial.meterials}}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+        
         <div class="ingredient">
             <label for="{{ ingredient_form.ingredient_name.id_for_label }}">필수 재료</label>
             {{ ingredient_form.ingredient_name }}
