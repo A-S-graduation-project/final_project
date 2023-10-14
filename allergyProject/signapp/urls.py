@@ -2,7 +2,7 @@ from django.urls import path
 from .views import UserLoginView, SignupView ,MypageView, UserLogoutView
 from . import views
 from . import views_bookmark
-from .views_myboard import my_board
+from .views_myboard import my_board, delete_board
 app_name = 'signapp'
 
 urlpatterns = [
@@ -16,5 +16,6 @@ urlpatterns = [
     path('bookmarks/', views_bookmark.bookmarks, name='bookmarks'),
     path('delete_fbookmark/', views_bookmark.delete_fbookmark, name='delete_fbookmark'),
     path('delete_bbookmark/', views_bookmark.delete_bbookmark, name='delete_bbookmark'),
+    path('delete_board/', delete_board, name='delete_board'),
     path('myboard/', my_board, name='my_board'),
 ]
