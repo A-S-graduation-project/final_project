@@ -24,26 +24,37 @@
                     </ul>
                 {% endfor %}
             </div>
-            <div class="categories" style="margin-left: 20px;">
-                <div class="dropdown">
-                    <button class="dropbtn">종류별</button>
-                    <div class="dropdown-content">
-                        {% for type in type_category %}
-                        <a href="#" class="type-btn" data-allergen="{{type.types}}">{{type.types}}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="dropdown">
-                    <button class="dropbtn">재료별</button>
-                    <div class="dropdown-content">
-                        {% for meterial in meterial_category %}
-                        <a href="#" class="meterial-btn" data-allergen="{{meterial.meterials}}">{{meterial.meterials}}</a>
-                        {% endfor %}
-                    </div>
+        </div>
+        <div class="categories" style="margin-left: 20px;">
+            <div class="dropdown">
+                <button class="dropbtn">종류별</button>
+                <div class="dropdown-content">
+                    {% for type in type_category %}
+                    <a href="#" class="type-btn" data-id="{{type.types}}">{{type.types}}</a>
+                    {% endfor %}
                 </div>
             </div>
-            
+            <div class="dropdown">
+                <button class="dropbtn">재료별</button>
+                <div class="dropdown-content">
+                    {% for meterial in meterial_category %}
+                    <a href="#" class="meterial-btn" data-id="{{meterial.meterials}}">{{meterial.meterials}}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
         
+        <div class="selected-items">
+            <p>선택한 종류:</p>
+            <ul id="selected-types"></ul>
+            <p>선택한 재료:</p>
+            <ul id="selected-meterials"></ul>
+        </div>
+
+        <!-- 선택한 카테고리 ID를 담을 hidden input 필드 -->
+        <input type="hidden" name="type_category_id" id="type_category_id" value="">
+        <input type="hidden" name="meterial_category_id" id="meterial_category_id" value="">
+
         <div class="ingredient">
             <label for="{{ ingredient_form.ingredient_name.id_for_label }}">필수 재료</label>
             {{ ingredient_form.ingredient_name }}
@@ -139,6 +150,46 @@ $(document).ready(function() {
             $(this).unbind("submit").submit();
         });
 });
+</script>
+
+<script>
+    const selectedType = { id: null, name: null };
+    const selectedMeterial = { id: null, name: null };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const typeButtons = document.querySelectorAll('.type-btn');
+        const meterialButtons = document.querySelectorAll('.meterial-btn');
+        const form = document.querySelector('form'); // 폼을 선택합니다
+
+        typeButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                const id = button.getAttribute('data-id');
+                const name = button.textContent;
+                selectedType.id = id;
+                selectedType.name = name;
+                document.getElementById('type_category_id').value = id; // hidden input 필드에 ID 값을 설정합니다
+                renderSelectedCategory('selected-types', selectedType.name);
+            });
+        });
+
+        meterialButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                const id = button.getAttribute('data-id');
+                const name = button.textContent;
+                selectedMeterial.id = id;
+                selectedMeterial.name = name;
+                document.getElementById('meterial_category_id').value = id; // hidden input 필드에 ID 값을 설정합니다
+                renderSelectedCategory('selected-meterials', selectedMeterial.name);
+            });
+        });
+
+        function renderSelectedCategory(listId, name) {
+            const selectedList = document.getElementById(listId);
+            selectedList.innerHTML = `<li>${name}</li>`;
+        }
+    });
 </script>
 {% endblock %}
 
