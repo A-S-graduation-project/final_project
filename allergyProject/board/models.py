@@ -13,8 +13,8 @@ class Board(models.Model):
     cdate = models.DateField()
     ingredient = JSONField(null=False)
     content = ArrayField(models.CharField(max_length=500), null=False)
-    types = models.TextField(null=False)
-    meterial = models.TextField(null=False)
+    types = models.TextField(null=True)
+    meterial = models.TextField(null=True)
 
     class Meta:
         db_table = "boards" # DB에 표시되고 사용할 테이블 명
@@ -45,7 +45,7 @@ class TypeCategories(models.Model):
         db_table = "type_categories" # DB에 표시되고 사용할 테이블 명
 
 class MeterialCategories(models.Model):
-    materials = models.CharField(max_length=50)
+    meterials = models.CharField(max_length=50)
 
     class Meta:
         db_table = "meterial_categories" # DB에 표시되고 사용할 테이블 명
