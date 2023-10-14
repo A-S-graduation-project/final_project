@@ -10,8 +10,6 @@ class Customer(AbstractUser):
     password = models.TextField()
     birthdate = models.DateField()
     gender = models.BooleanField()
-    bookinfo = models.TextField(blank=True, null=True)
-    boardinfo = models.TextField(blank=True, null=True)
     allerinfo = models.TextField(null=True)
     
     class Meta:

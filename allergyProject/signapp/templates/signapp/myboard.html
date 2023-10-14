@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>const csrfToken = "{{ csrf_token|escapejs }}";</script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/myboard.css' %}">
 <div class="myboard-container">
     <h1>내가 작성한 글</h1>
@@ -15,8 +17,8 @@
         {% for board in customer_board %}
         <li class="myboard-item" data-date="{{ board.cdate }}">
             <strong>{{ board.cdate|date:"Y년 m월 d일"  }}:</strong>
-            <a class="board-link" href="{% url 'searchapp:Detail' %}?pk={{ board.bno }}" target="_blank">{{ board.title }}</a>
-            <button class="modify-button" data-id="{{ board.bno }}">글 수정</button>
+            <a class="board-link" href="{% url 'board:board_detail' board.bno %}" target="_blank">{{ board.title }}</a>
+            <button class="delete-button" data-id="{{ board.bno }}">글 삭제</button>
         </li>
         {% empty %}
         <li>작성한 글이 없습니다.</li>
@@ -72,6 +74,36 @@
         document.getElementById('sort-date').addEventListener('click', function () {
             if (currentSort !== 'date') {
                 sortByDate();
+            }
+        });
+        document.addEventListener('click', function (event) {
+            if (event.target.classList.contains('delete-button')) {
+                const boardId = event.target.getAttribute('data-id');
+                const confirmed = confirm("글 삭제 시겠습니까?");
+            
+                if (confirmed) {
+                    // 서버로 POST 요청을 보냅니다.
+                    $.ajax({
+                        type: 'POST', // POST 요청 사용
+                        url: "{% url 'signapp:delete_board' %}", // 서버의 URL 설정
+                        data: { bno: boardId }, // 데이터 전달
+                        headers: {
+                            'X-CSRFToken': csrfToken // CSRF 토큰을 요청 헤더에 추가
+                        },
+                        success: function (data) {
+                            // 화면에서 해당 북마크 항목을 숨김
+                            const listItem = event.target.closest('li');
+                            if (listItem) {
+                                listItem.style.display = 'none';
+                            }
+                            alert(data.message);
+                        },
+                        error: function () {
+                            // 오류 처리
+                            alert("삭제 중 오류가 발생했습니다.");
+                        }
+                    });
+                }
             }
         });
 </script>

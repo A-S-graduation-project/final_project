@@ -23,3 +23,33 @@ h1 {
     margin-bottom: 5px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
+.bookmark-heading {
+    background-color: #6B7332;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+}
+.delete-button {
+    background-color: #99A638;
+    color: #fff;
+    border: none;
+    padding: 5px 5px;
+    cursor: pointer;
+    float: right;
+    margin-top: -2.5px;
+}
+.delete-button:hover {
+    background-color: #818C30; /* 호버 시 배경색 변경 */
+}
+.bookmark-button {
+    background-color: #99A638;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.bookmark-button:hover {
+    background-color: #818C30;
+}
