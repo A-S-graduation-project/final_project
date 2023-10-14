@@ -23,7 +23,7 @@ for meterial in meterials:
     try:
         sql = """INSERT INTO meterial_categories(id, meterials) VALUES(DEFAULT, '{0}')""".format(meterial)
         print(sql)
-        cur.execute(sql)
+        # cur.execute(sql)
     except Exception as ex:
         conn.rollback() 
     else:
