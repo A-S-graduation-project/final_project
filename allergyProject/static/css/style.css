@@ -1005,6 +1005,16 @@ form .content textarea::placeholder{
   }
 }
 
+.image-box {
+  display:flex;
+  justify-content: center;
+}
+
+.image-box img{
+  max-width: 250px;
+  max-height: 250px;
+}
+
 .recipe-box {
   display: flex;
   flex-direction: row;
@@ -1036,4 +1046,9 @@ form .content textarea::placeholder{
 .recipe-img{
   width: 150px;
   height: 150px;
+}
+
+.categories{
+  display: flex;
+  flex-direction: row;
 }
