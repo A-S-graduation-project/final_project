@@ -22,7 +22,7 @@ for type in types:
     # type에 넣는다. #
     try:
         sql = """INSERT INTO type_categories(id, types) VALUES(DEFAULT, '{0}')""".format(type)
-        cur.execute(sql, type)
+        cur.execute(sql)
         
     except Exception as ex:
         conn.rollback() 
