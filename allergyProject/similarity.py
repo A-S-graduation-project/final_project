@@ -23,15 +23,15 @@ def vector(category, alist, blist=None):
         return alist_cate
 
 
-# DB 연결 #
-conn = psycopg2.connect(host='localhost',
-                        user='postgres',
-                        password='2017018023',
-                        dbname='allergydb',
-                        connect_timeout=32768)
-cur = conn.cursor()
-
 def food_sim():
+    # DB 연결 #
+    conn = psycopg2.connect(host='localhost',
+                            user='postgres',
+                            password='2017018023',
+                            dbname='allergydb',
+                            connect_timeout=32768)
+    cur = conn.cursor()
+
     # Mysql에서 DATA 읽기 (전처리 포함) #
     cur.execute("""SELECT "prdlstReportNo", rawmtrl, prdkind FROM products""")
     proData = cur.fetchall()
@@ -48,8 +48,8 @@ def food_sim():
         rawmtrl.append(row[1])
         prdkind.append(row[2])
 
-    print(rawmtrl[:5])
-    print(prdkind[:5])
+    # print(rawmtrl[:5])
+    # print(prdkind[:5])
 
     food_simi_cate = vector(0, rawmtrl, prdkind)
     print(food_simi_cate)
@@ -61,11 +61,19 @@ def food_sim():
         cur.execute(sql, source)
         conn.commit()
 
-    print("\n")
-
+    conn.close()
+    
 #=========================================================================================================================================#
 
 def board_sim():
+    # DB 연결 #
+    conn = psycopg2.connect(host='localhost',
+                            user='postgres',
+                            password='2017018023',
+                            dbname='allergydb',
+                            connect_timeout=32768)
+    cur = conn.cursor()
+
     # Mysql에서 DATA 읽기 (전처리 포함) #
     cur.execute("""SELECT bno, ingredient FROM boards""")
     brdData = cur.fetchall()
@@ -96,6 +104,4 @@ def board_sim():
         cur.execute(sql, source)
         conn.commit()
 
-    print("\n")
-
-conn.close()
+    conn.close()
