@@ -46,6 +46,7 @@ class TypeCategories(models.Model):
 
 class MeterialCategories(models.Model):
     meterials = models.CharField(max_length=50)
+    meterials = models.CharField(max_length=50)
 
     class Meta:
         db_table = "meterial_categories" # DB에 표시되고 사용할 테이블 명
