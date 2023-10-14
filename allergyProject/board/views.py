@@ -48,6 +48,8 @@ def read_board(request, bno):
 
 def create_board(request):
     allergies = Allergy.objects.all()
+    type_category = TypeCategories.objects.all()
+    meterial_category = MeterialCategories.objects.all()
     image_form = ImageForm(request.POST, request.FILES)
 
     if request.method == 'POST':
@@ -87,7 +89,6 @@ def save_board(request, board_form, ingredient_form, image_form):
 
     selected_allergies = request.POST.getlist('selected_allergies')
     selected_allergies_objects = Allergy.objects.filter(ano__in=selected_allergies)
-
     allergy_info = [{"ano": allergy.ano, "allergy": allergy.allergy} for allergy in selected_allergies_objects]
     board.allerinfo = json.dumps(allergy_info)
 
@@ -113,91 +114,6 @@ def handle_uploaded_images(request, board, image_form):
         for uploaded_image in request.FILES.getlist('image'):
             image = BoardImage.objects.create(bno=board, image=uploaded_image)
             image.save()
-
-
-
-
-# create_board함수
-# def create_board(request):
-#     allergies = Allergy.objects.all()
-#     image_form = ImageForm(request.POST, request.FILES)
-
-#     if request.method == 'POST':
-#         print("----------- this method POST -----------")
-#         board_form = BoardForm(request.POST, request.FILES)
-#         ingredient_form = IngredientForm(request.POST, prefix='ingredient')  # IngredientForm
-#         print(f"{image_form} \n {request.FILES}")
-#         if 'images' in request.FILES:
-#             for uploaded_image in request.FILES.getlist('images'):
-#                 image = BoardImage.objects.create(image=uploaded_image)
-#                 board.images.add(image)
-
-#         print(f"{board_form.is_valid()} and {ingredient_form.is_valid()} and {image_form.is_valid()}")
-#         if board_form.is_valid() and ingredient_form.is_valid():
-#             print("---------- valid form ----------")
-#             board = board_form.save(commit=False) # 데이터 베이스에 아직 저장하지 않고 board만 생성
-#             board.cdate = timezone.now()
-#             print(" ---------- save form and datetime -----------")
-#             if request.user.is_authenticated:
-#                 board.name = request.user.username
-#                 board.cno = 1
-#                 # board.cno = request.user.cno
-#                 print(" ---------- User -----------")
-#             else:
-#                 print(" ---------- NO User -----------")
-
-#             selected_allergies = request.POST.getlist('selected_allergies')
-#             # 선택한 알러지 정보를 가져오고
-#             selected_allergies_objects = Allergy.objects.filter(ano__in=selected_allergies)
-#             # 선택한 알러지 정보를 Allergy 모델에서 가져옴
-
-#             # 게시판의 allerinfo 속성에 넣어준다.
-#             allergy_info = [{"ano": allergy.ano, "allergy": allergy.allergy} for allergy in selected_allergies_objects]
-#             board.allerinfo = json.dumps(allergy_info)
-            
-#             print(f"\n--------{ingredient_form}--------\n-------------{request.POST.get('ingredient_name')}")
-
-#             # IngredientFormSet에서 필수 재료 데이터를 가져와서 JSON 형태로 변환하여 board의 ingredient에 설정
-#             ingredient_name = ingredient_form.cleaned_data.get('ingredient_name')
-#             quantity = float(ingredient_form.cleaned_data.get('quantity'))
-#             unit = ingredient_form.cleaned_data.get('unit')
-#             ingredients = {
-#                 'ingredient_name': ingredient_name,
-#                 'quantity': quantity,
-#                 'unit': unit
-#             }
-#             print(f"\n--------{ingredients}--------\n")
-
-#             board.ingredient = json.dumps(ingredients)
-
-#             print(f"\n--------{board.ingredient}--------\n")
-            
-#             if 'images' in request.FILES:
-#                 for uploaded_image in request.FILES.getlist('images'):
-#                     image = BoardImage.objects.create(image=uploaded_image)
-#                     board.images.add(image)
-            
-#             # 모든 속성이 들어간 board를 저장해준다.
-#             board.save()
-#             print(f'{board} \n------------------')
-
-#             return redirect('../')
-        
-#         print("----------- unvalid form -----------")
-#         print(f"{board_form.errors} {board_form.is_valid()} \n\n")
-#         print(f"{ingredient_form.errors} {ingredient_form.is_valid()}")
-#     else:
-#         print("---------- enter the create board page ----------")
-#         # method가 POST가 아니면 빈 form의 인스턴스를 생성한다.
-#         board_form = BoardForm()
-#         ingredient_form = IngredientForm(prefix='ingredient')  # 빈 IngredientFormSet 생성
-
-#     return render(request, 'board/board_form.html', {
-#         'board_form': board_form, 
-#         'ingredient_form' : ingredient_form, 
-#         'allergies': allergies, 
-#         'image_form': image_form})
-
 
 def update_board(request, bno):
    # 수정할 게시글의 게시판 번호를 가져온다.

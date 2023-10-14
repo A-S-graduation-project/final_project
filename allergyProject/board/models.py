@@ -14,7 +14,7 @@ class Board(models.Model):
     ingredient = JSONField(null=False)
     content = ArrayField(models.CharField(max_length=500), null=False)
     types = models.TextField(null=False)
-    meterial = models.TextField(null=False)
+    meterials = models.TextField(null=False)
 
     class Meta:
         db_table = "boards" # DB에 표시되고 사용할 테이블 명
