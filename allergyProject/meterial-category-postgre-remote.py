@@ -9,7 +9,7 @@ cur = conn.cursor()
 
 cur.execute("""CREATE TABLE IF NOT EXISTS meterial_categories(
             id SERIAL PRIMARY KEY NOT NULL,
-            materials varchar(50) UNIQUE NOT NULL)""")
+            meterials varchar(50) UNIQUE NOT NULL)""")
 
 # 넣을 재료등 #
 meterials = ["소고기", "돼지고기", "닭고기", "육류", "채소류",
