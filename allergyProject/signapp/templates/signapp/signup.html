@@ -53,7 +53,19 @@
       <input type="radio" id="female" name="gender" value="0" required>
       <label for="female" class="gender-label" id="female-label">여자</label>
     </div>
-    
+
+    <!-- 알러지 선택 체크 박스 그룹 -->
+    <!-- 알러지 선택 체크 박스 그룹 -->
+    <div id="allerinfo-group">
+      <label for="allerinfo">알러지 선택</label>
+      {% for allergy in form.allerinfo.field.queryset %}
+          <div class="checkbox">
+              <input type="checkbox" name="allerinfo" id="allergy-{{ allergy.ano }}" value="{{ allergy.ano }}">
+              <label for="allergy-{{ allergy.ano }}">{{ allergy.allergy }}</label>
+          </div>
+      {% endfor %}
+    </div>
+
     <!-- 회원 가입 버튼 -->
     <input type="submit" value="회원 가입">
     </form>
