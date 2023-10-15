@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from signapp.models import Customer
 from signapp.forms import SignupForm, UserProfileForm, CustomUserChangeForm
+from searchapp.models import Allergy
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.hashers import make_password 
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.views import View
 from django.utils.decorators import method_decorator
@@ -45,9 +45,16 @@ class SignupView(FormView):
         # 비밀번호를 해싱하여 저장
         user = form.save(commit=False)
         user.password = make_password(form.cleaned_data['password'])
-        user.save()
+        
+        # 사용자 정보 저장
+        allergies = form.cleaned_data.get('allerinfo')
+        selected_allergies = [str(allergy.ano) for allergy in allergies]
+        selected_allergies_str = ', '.join(selected_allergies)
+        print(selected_allergies_str)
+        user.allerinfo = selected_allergies_str
 
-        # 사용자를 로그인 시킴
+        user.save()  # 사용자 정보 저장
+        
         login(self.request, user)
 
         return super().form_valid(form)
