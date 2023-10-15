@@ -58,6 +58,13 @@ class SignupForm(forms.ModelForm):
     
 #회원 정보를 편집할수 있게 만든 form
 class UserProfileForm(forms.ModelForm):
+    
+    # 알러지 정보를 쉼표로 구분하여 저장할 TextField로 정의
+    allerinfo = forms.ModelMultipleChoiceField(
+        queryset=Allergy.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
     class Meta:
         model = Customer
         fields = ['email', 'phone', 'birthdate', 'gender']

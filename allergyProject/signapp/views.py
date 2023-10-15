@@ -48,10 +48,10 @@ class SignupView(FormView):
         
         # 사용자 정보 저장
         allergies = form.cleaned_data.get('allerinfo')
-        selected_allergies = [str(allergy.ano) for allergy in allergies]
-        selected_allergies_str = ', '.join(selected_allergies)
-        print(selected_allergies_str)
-        user.allerinfo = selected_allergies_str
+        selected_allergies = [allergy.ano for allergy in allergies]
+
+        # 사용자 프로필의 allerinfo 필드에 저장
+        user.allerinfo = selected_allergies
 
         user.save()  # 사용자 정보 저장
         
@@ -66,7 +66,9 @@ class MypageView(View):
 
     def get(self, request, *args, **kwargs):
         user_profile = Customer.objects.get(username=request.user.username)
+        print(user_profile.allerinfo)
         form = UserProfileForm(instance=user_profile)
+        
         context = {
             'user_profile': user_profile,
             'form': form,
