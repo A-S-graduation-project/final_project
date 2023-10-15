@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from searchapp.models import Allergy
 
 # Create your models here.
 class Customer(AbstractUser):

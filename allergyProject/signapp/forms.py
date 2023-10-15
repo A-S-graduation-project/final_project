@@ -1,10 +1,7 @@
 from django import forms
 from .models import Customer
-from django.contrib.auth.hashers import make_password 
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.contrib import messages
-from django.contrib.auth.forms import UserChangeForm
+from searchapp.models import Allergy
+
 class LoginForm(forms.ModelForm):
     class Meta:
         model = Customer
@@ -15,9 +12,16 @@ class SignupForm(forms.ModelForm):
     # gender 필드는 HiddenInput 위젯을 사용하여 숨겨진 필드로 정의되며 초기값은 1로 설정됩니다.
     gender = forms.IntegerField(widget=forms.HiddenInput(), initial=1)
     
+    # 알러지 정보를 쉼표로 구분하여 저장할 TextField로 정의
+    allerinfo = forms.ModelMultipleChoiceField(
+        queryset=Allergy.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+
     class Meta:
         model = Customer  # 폼과 연결될 모델
-        fields = ['username', 'email', 'phone', 'birthdate', 'gender', 'password']  # 폼에 사용될 필드들
+        fields = ['username', 'email', 'phone', 'birthdate', 'gender', 'password', 'allerinfo']  # 폼에 사용될 필드들
     
     # 비밀번호 확인용 필드를 PasswordInput 위젯으로 정의합니다.
     password_confirm = forms.CharField(widget=forms.PasswordInput)
