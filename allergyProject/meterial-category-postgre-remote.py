@@ -22,7 +22,7 @@ for meterial in meterials:
     # 재료를 meterials에 넣음 #
     try:
         sql = """INSERT INTO meterial_categories(id, meterials) VALUES(DEFAULT, '{0}')""".format(meterial)
-        print(sql)
+        # print(sql)
         cur.execute(sql)
     except Exception as ex:
         conn.rollback() 
