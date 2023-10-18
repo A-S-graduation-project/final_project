@@ -3,7 +3,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-def vector(category, alist, blist):
+def vector(alist, blist):
     # count vector로 만들어서 cosine similar 만들기 #
     vectorizer = CountVectorizer()
 
@@ -47,7 +47,7 @@ def food_sim():
     # print(rawmtrl[:5])
     # print(prdkind[:5])
 
-    food_simi_cate = vector(0, rawmtrl, prdkind)
+    food_simi_cate = vector(rawmtrl, prdkind)
     print(food_simi_cate)
 
     for n in range(row_count):
@@ -83,18 +83,21 @@ def board_sim():
 
     for row in brdData:
         bno.append(row[0])
+
         json_ingre = json.loads(row[1])
-        ingredient.append(''.join(json_ingre["ingredient_name"]))
+        ingredient.append(json_ingre['ingredient_name'])
+        
         json_aller = json.loads(row[2])
         aller = ''
         for j in json_aller:
-            aller += j['allergy']
+            aller += j['allergy'] + ' '
         allerinfo.append(''.join(aller.rstrip()))
 
     # print(ingredient)
     # print(allerinfo)
 
-    board_simi_cate = vector(1, ingredient, allerinfo)
+    board_simi_cate = vector(allerinfo, ingredient)
+    # board_simi_cate = vector(ingredient, allerinfo)
     print(board_simi_cate)
 
     for n in range(row_count):
@@ -108,4 +111,4 @@ def board_sim():
 
 
 # food_sim()
-board_sim()
+# board_sim()
