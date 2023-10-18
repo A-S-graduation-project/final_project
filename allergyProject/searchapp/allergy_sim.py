@@ -37,7 +37,7 @@ def top_match(data, allergy, index=3, sim_function=sim_person):
 
 # 서로 다른 알레르기 간의 유사도 #
 def getRecommendation (data, allergy, sim_function=sim_person):
-    result = top_match(proAlData, allergy, len(data))
+    result = top_match(data, allergy, len(data))
 
     simSum=0
     score=0
@@ -68,71 +68,84 @@ def getRecommendation (data, allergy, sim_function=sim_person):
 
     return li
 
+def food_recommend():
+    # DB 연결 #
+    conn = psycopg2.connect(host='localhost',
+                            user='postgres',
+                            password='2017018023',
+                            dbname='allergydb',
+                            connect_timeout=32768)
+    cur = conn.cursor()
 
-# DB 연결 #
-conn = psycopg2.connect(host='localhost',
-                        user='postgres',
-                        password='2017018023',
-                        dbname='allergydb',
-                        connect_timeout=32768)
-cur = conn.cursor()
+    # Mysql에서 DATA 읽기 (전처리 포함) #
+    cur.execute("""SELECT "prdlstReportNo" FROM products""")
+    proData = cur.fetchall()
+    # print(proData[0:2])                                             # product data 확인용
 
-# Mysql에서 DATA 읽기 (전처리 포함) #
-cur.execute("""SELECT "prdlstReportNo" FROM products""")
-proData = cur.fetchall()
-# print(proData[0:2])                                             # product data 확인용
+    cur.execute("""SELECT gender,older,allergy,"prdlstReportNo",rating FROM userdata""")
+    choData = cur.fetchall()
+    # print(choData[0:2])                                             # user data 확인용
 
-cur.execute("""SELECT gender,older,allergy,"prdlstReportNo",rating FROM userdata""")
-choData = cur.fetchall()
-# print(choData[0:2])                                             # user data 확인용
+    # 형식 변환 #
+    pdProData = pd.DataFrame(proData)
+    pdChoData = pd.DataFrame(choData)
 
-# 형식 변환 #
-pdProData = pd.DataFrame(proData)
-pdChoData = pd.DataFrame(choData)
+    # 병합 #
+    merge_data = pd.concat([pdProData, pdChoData], join='outer')
+    # print(merge_data)
 
-# 병합 #
-merge_data = pd.concat([pdProData, pdChoData], join='outer')
-# print(merge_data)
+    # 데이터 분포 #
+    proAlData = merge_data.pivot_table(4, index=3, columns=2)       # 4 : 'rating', 3 : 'prdlstReportNo', 2: 'allergy'
+    proAlData.fillna(0, inplace=True)                               # NaN -> 0
+    # print(proAlData)
 
-# 데이터 분포 #
-proAlData = merge_data.pivot_table(4, index=3, columns=2)       # 4 : 'rating', 3 : 'prdlstReportNo', 2: 'allergy'
-proAlData.fillna(0, inplace=True)                               # NaN -> 0
-# print(proAlData)
+    # 결과 #
+    # 알레르기 key가 userdata에 존재하지 않은 경우 오류 발생 #
+    re = getRecommendation(proAlData, '호두, 대두, 쇠고기, 새우, 난류, 조개류, 돼지고기, 고등어')                       # userdata 수집 필요
+    print(re[:10])
+    print("\n")
 
-# 결과 #
-# 알레르기 key가 userdata에 존재하지 않은 경우 오류 발생 #
-re = getRecommendation(proAlData, '호두, 대두, 쇠고기, 새우, 난류, 조개류, 돼지고기, 고등어')                       # userdata 수집 필요
-print(re[:10])
-print("\n")
+    conn.close()
 
 #=========================================================================================================================================#
 
-# # Mysql에서 DATA 읽기 (전처리 포함) #
-# cur.execute("""SELECT bno from boards""")
-# proData = cur.fetchall()
-# # print(proData[0:2])                                             # product data 확인용
+def board_recommend():
+    # DB 연결 #
+    conn = psycopg2.connect(host='localhost',
+                            user='postgres',
+                            password='2017018023',
+                            dbname='allergydb',
+                            connect_timeout=32768)
+    cur = conn.cursor()
 
-# cur.execute("""SELECT gender,older,allergy,"prdlstReportNo",rating FROM userdata""")
-# choData = cur.fetchall()
-# # print(choData[0:2])                                             # user data 확인용
+    # Mysql에서 DATA 읽기 (전처리 포함) #
+    cur.execute("""SELECT bno from boards""")
+    boardData = cur.fetchall()
+    # print(proData[0:2])                                             # product data 확인용
 
-# # 형식 변환 #
-# pdProData = pd.DataFrame(proData)
-# pdChoData = pd.DataFrame(choData)
+    cur.execute("""SELECT "CNO_id", "bNO_id", allerinfo, 3 FROM bbookmark RIGHT OUTER JOIN customers ON customers.cno = bbookmark."CNO_id" """)
+    choData = cur.fetchall()
+    print(choData[0:2])                                             # user data 확인용
 
-# # 병합 #
-# merge_data = pd.concat([pdProData, pdChoData], join='outer')
-# # print(merge_data)
+    # 형식 변환 #
+    pdBoardData = pd.DataFrame(boardData)
+    pdChoData = pd.DataFrame(choData)
 
-# # 데이터 분포 #
-# proAlData = merge_data.pivot_table(4, index=3, columns=2)       # 4 : 'rating', 3 : 'prdlstReportNo', 2: 'allergy'
-# proAlData.fillna(0, inplace=True)                               # NaN -> 0
-# # print(proAlData)
+    # 병합 #
+    merge_data = pd.concat([pdBoardData, pdChoData], join='outer')
+    # print(merge_data)
 
-# # 결과 #
-# # 알레르기 key가 userdata에 존재하지 않은 경우 오류 발생 #
-# re = getRecommendation(proAlData, '호두, 대두, 쇠고기, 새우, 난류, 조개류, 돼지고기, 고등어')                       # userdata 수집 필요
-# print(re[:10])
-# print("\n")
+    # 데이터 분포 #
+    boardAlData = merge_data.pivot_table(3, index=1, columns=2)       # 4 : 'rating', 3 : 'prdlstReportNo', 2: 'allergy'
+    boardAlData.fillna(0, inplace=True)                               # NaN -> 0
+    print(boardAlData)
 
-conn.close()
+    # 결과 #
+    # 알레르기 key가 userdata에 존재하지 않은 경우 오류 발생 #
+    re = getRecommendation(boardAlData, '2, 3')                       # userdata 수집 필요
+    print(re[:10])
+
+    conn.close()
+
+# food_recommend()
+board_recommend()
