@@ -193,5 +193,5 @@ def board_recommend():
 
     conn.close()
 
-# food_recommend()
-board_recommend()
+food_recommend()
+# board_recommend()

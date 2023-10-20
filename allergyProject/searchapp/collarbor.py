@@ -65,6 +65,14 @@ def food_recommend():
         if cho[0] != None:
             data[cho[1]][cho[0]-1] += 3
 
+    # sample #
+    # data = {
+    # 'User': [1,2,3,4],
+    # 1: [5, 4, 0, 0],
+    # 2: [0, 0, 3, 4],
+    # 3: [2, 0, 0, 0],
+    # }
+
     df = pd.DataFrame(data)
     df.set_index('User', inplace=True)
     
@@ -74,25 +82,6 @@ def food_recommend():
     user_item_matrix = df
     recommend_items = user_based_recommendation(user, user_similarity, user_item_matrix)
     print(recommend_items)
-
-    # # 형식 변환 #
-    # pdProData = pd.DataFrame(proData)
-    # pdChoData = pd.DataFrame(choData)
-
-    # # 병합 #
-    # merge_data = pd.concat([pdProData, pdChoData], join='outer')
-    # # print(merge_data)
-
-    # # 데이터 분포 #
-    # proAlData = merge_data.pivot_table(4, index=3, columns=2)       # 4 : 'rating', 3 : 'prdlstReportNo', 2: 'allergy'
-    # proAlData.fillna(0, inplace=True)                               # NaN -> 0
-    # # print(proAlData)
-
-    # # 결과 #
-    # # 알레르기 key가 userdata에 존재하지 않은 경우 오류 발생 #
-    # re = getRecommendation(proAlData, '호두, 대두, 쇠고기, 새우, 난류, 조개류, 돼지고기, 고등어')                       # userdata 수집 필요
-    # print(re[:10])
-    # print("\n")
 
     conn.close()
 
