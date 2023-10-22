@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Product
 from .models import UserData
 from .models import PSimilarity
+from .models import Allergy
 from signapp.models import Customer
 from django.db.models import Q
 from django.core.cache import cache
@@ -10,6 +11,9 @@ try:
     # from searchapp.food_sim import *
 except:
     pass
+
+# test용 #
+from similarity import food_sim
 
 # filter 함수의 Q함수: OR조건으로 데이터를 조회하기 위해 사용하는 함수
 # objects.filter() 는 특정 조건에 해당하면 객체 출력 .get('kw') 은 kw만 반환
@@ -57,7 +61,7 @@ def searchResult(request):
                 )[:1000]
                 cache.set(cache_key, products, 60*60)
                 return render(request, 'search.html', {'query':query, 'products':products} )
-    
+
     return render(request, 'search.html', {'products':products})
 
 
@@ -85,6 +89,9 @@ def Detail(request):
 
     collarbors = Collarbor(request)
     similarities = Similarity(request)
+
+    # collarbor에 적용 가능성 #
+    # food_sim()
 
     try:
         return render(request, 'detail.html', {'pk':pk, 'detail':detail, 'collarbors':collarbors, 'similarities':similarities})
@@ -116,18 +123,29 @@ def Similarity(request):
 
 def Collarbor(request):
     cno = request.user
+    collarbors = []
+    allergy_list = []
 
+    # 유저의 allerinfo를 받아온다 #
     if not cno.is_anonymous:
         customer = Customer.objects.all().filter(
             Q(username__exact = cno)
         )
 
-        # allergy = customer.get().allergy
+        allerinfo = customer.get().allerinfo.split(',')
 
-        print(customer)
+        # allerinfo의 ano를 통해 알레르기명으로 변환한다. #
+        for ano in allerinfo:
+            allergies = Allergy.objects.all().filter(
+                Q(ano__exact = ano)
+            ).get().allergy
 
-    collarbors = []
+            allergy_list.append(allergies)
 
+    allergy = ', '.join(allergy_list)
+    print(allergy)
+    
+    # Recommend DB에서 호출한다. #
     for i in range(len(re)):
         if i == 5:
             break

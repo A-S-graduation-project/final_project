@@ -84,7 +84,7 @@ def save_board(request, board_form, ingredient_form, image_form):
 
     if request.user.is_authenticated:
         board.name = request.user.username
-        board.cno = 1
+        board.cno = request.user.cno
     else:
         board.cno = None
 
