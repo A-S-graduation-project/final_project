@@ -119,10 +119,16 @@ def Similarity(request):
 
 def Collarbor(request):
     username = request.user
+    collarbor_list = []
     collarbors = []
-    allergy_list = []
     
     if not username.is_anonymous:
-        collarbors = food_recommend(str(username)).keys()
+        collarbor_list = food_recommend(str(username)).keys()
+
+    for col in collarbor_list:
+        collarbor = Product.objects.all().get(
+            Q(prdlstReportNo__exact = col)
+        )
+        collarbors.append(collarbor)
 
     return collarbors
