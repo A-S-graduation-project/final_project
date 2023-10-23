@@ -29,7 +29,10 @@ def user_based_recommendation(user, user_similarity, user_item_matrix):
     return recommendations
 
 
-def food_recommend(user, user_similarity):
+def food_recommend(user):
+    # 알레르기를 통한 사용자 유사도 #
+    user_all_similarity = user_allergy_similarity()
+
     # rating 데이터 만들기 #
     data = {'User':[cno[1] for cno in cnoData]}
 
@@ -54,13 +57,16 @@ def food_recommend(user, user_similarity):
 
     # user = '1234'
     user_item_matrix = df
-    recommend_items = user_based_recommendation(user, user_similarity, user_item_matrix)
+    recommend_items = user_based_recommendation(user, user_all_similarity, user_item_matrix)
     print(recommend_items)
 
-    return 1
+    return recommend_items
 
 
-def board_recommend(user, user_similarity):
+def board_recommend(user):
+    # 알레르기를 통한 사용자 유사도 #
+    user_all_similarity = user_allergy_similarity()
+
     # rating 데이터 만들기 #
     data = {'User':[cno[1] for cno in cnoData]}
 
@@ -85,10 +91,10 @@ def board_recommend(user, user_similarity):
     
     # user = '1234'
     user_item_matrix = df
-    recommend_items = user_based_recommendation(user, user_similarity, user_item_matrix)
+    recommend_items = user_based_recommendation(user, user_all_similarity, user_item_matrix)
     print(recommend_items)
 
-    return 1
+    return recommend_items
 
 
 def user_allergy_similarity():
@@ -151,11 +157,7 @@ cur.execute("""SELECT "CNO_id", "bNO_id" FROM bbookmark""")
 bbData = cur.fetchall()
 # print(choData[0:2])
 
-# 알레르기를 통한 사용자 유사도 #
-user_all_similarity = user_allergy_similarity()
-
 # method 확인용 #
-# food_recommend('1234', user_all_similarity)
-# board_recommend('1234', user_all_similarity)
-
+# food_recommend('1234')
+# board_recommend('1234')
 conn.close()
