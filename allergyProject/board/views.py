@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView, ListView
 from board.models import Board, Comment, BoardImage, TypeCategories, MeterialCategories
-from .forms import BoardForm, CommentForm, IngredientForm, ImageForm, CommentForm
+from .forms import BoardForm, CommentForm, ImageForm, CommentForm
 from searchapp.models import Allergy
 from django.utils import timezone
 import datetime as dt
@@ -22,21 +22,19 @@ def read_board(request, bno):
     comments = Comment.objects.filter(bno=board)
     
     # JSON 형식의 재료 데이터를 파이썬 객체로 변환
-    ingredient_data = json.loads(board.ingredient)
-    print(ingredient_data,'\n',board.ingredient)
 
     # 선택한 알러지 정보를 가져와서 알러지 객체와 매칭하여 이름만 가져옴
     selected_allergies = json.loads(board.allerinfo)
+    # print(selected_allergies)
     allerinfo = [Allergy.objects.get(ano=allergy['ano']).allergy for allergy in selected_allergies]
-    print(allerinfo)
+    # print(allerinfo)
 
     recipe_images = list(zip(board.content, images))
-    print(board.content, images)
-    print(BoardImage.objects.all())
-    print(recipe_images)
+    # print(board.content, images)
+    # print(BoardImage.objects.all())
+    # print(recipe_images)
     return render(request, 'board/board_detail.html', {
         'board': board, 
-        'ingredient_data': ingredient_data, 
         'allerinfo':allerinfo,
         'images':images,
         'comment_form':comment_form,
@@ -56,31 +54,31 @@ def create_board(request):
         print("----------- this method POST -----------")
         board_form = BoardForm(request.POST, request.FILES)
         print("----------- board form -----------")
-        ingredient_form = IngredientForm(request.POST, prefix='ingredient')
-        print("----------- ingredient form -----------")
-
-        if board_form.is_valid() and ingredient_form.is_valid():
+        print(board_form)
+        if board_form.is_valid():
             print("---------------- valid form ----------------")
-            board = save_board(request, board_form, ingredient_form, image_form)
+            board = save_board(request, board_form, image_form)
 
             return redirect('../')
         print("---------------- unvalid form ----------------")
+        print(board_form.errors)
     else:
         board_form = BoardForm()
-        ingredient_form = IngredientForm(prefix='ingredient')
 
     return render(request, 'board/board_form.html', {
         'board_form': board_form, 
-        'ingredient_form' : ingredient_form, 
         'allergies': allergies, 
         'image_form': image_form,
         'type_category':type_category,
         'meterial_category':meterial_category,
         })
 
-def save_board(request, board_form, ingredient_form, image_form):
+def save_board(request, board_form, image_form):
+    print("---------before save---------")
     board = board_form.save(commit=False)
+    print(board)
     board.cdate = timezone.now()
+    print("---------after save ---------")
 
     if request.user.is_authenticated:
         board.name = request.user.username
@@ -93,30 +91,25 @@ def save_board(request, board_form, ingredient_form, image_form):
     allergy_info = [{"ano": allergy.ano, "allergy": allergy.allergy} for allergy in selected_allergies_objects]
     board.allerinfo = json.dumps(allergy_info)
 
-    ingredients = get_ingredients(ingredient_form)
-    board.ingredient = json.dumps(ingredients)
-
     # 사용자로부터 선택받은 카테고리 정보를 가져와서 게시판 객체에 설정
     print("category save하는곳")
     type_category_id = request.POST.get('type_category_id')
     meterial_category_id = request.POST.get('meterial_category_id')
     print(type_category_id,meterial_category_id)
+
     type_category = TypeCategories.objects.get(types=type_category_id)
     meterial_category = MeterialCategories.objects.get(meterials=meterial_category_id)
-    board.types = type_category.types
-    board.meterial = meterial_category.meterials
 
+    board.types = type_category.types
+    board.meterials = meterial_category.meterials
+    print("------------ before ------------")
+    print(board.ingredient)
+    print(board.content)
     board.save()
     print("---------------- save board ----------------")
     handle_uploaded_images(request, board, image_form)
 
     return board
-
-def get_ingredients(ingredient_form):
-    ingredient_name = ingredient_form.cleaned_data.get('ingredient_name')
-    quantity = float(ingredient_form.cleaned_data.get('quantity'))
-    unit = ingredient_form.cleaned_data.get('unit')
-    return {'ingredient_name': ingredient_name, 'quantity': quantity, 'unit': unit}
 
 def handle_uploaded_images(request, board, image_form):
     if 'image' in request.FILES:
