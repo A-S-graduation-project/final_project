@@ -14,38 +14,24 @@
           </div>
           {% endfor %}
       -->
-      <div class="slide">
-        <a href="{% url 'searchapp:searchResult' %}?kw={{ image.keyword }}">
-          <img src ="{% static 'images/allergy1.jpg' %}" alt="Slide 1">
-          <div class="text">음식</div>
-        </a>
-      </div>
-      <div class="slide">
-        <a href="{% url 'searchapp:searchResult' %}?kw={{ image.keyword }}">
-          <img src="{% static 'images/allergy2.jpg' %}" alt="Slide 2">
-          <div class="text">음식</div>
-        </a>  
-      </div>
-      <div class="slide">
-        <a href="{% url 'searchapp:searchResult' %}?kw={{ image.keyword }}">
-          <img src="{% static 'images/allergy3.jpg' %}" alt="Slide 3">
-          <div class="text">음식</div>
-        </a>
-      </div>
-      <div class="slide">
-        <a href="{% url 'searchapp:searchResult' %}?kw={{ image.keyword }}">
-          <img src="{% static 'images/allergy4.jpg' %}" alt="Slide 2">
-          <div class="text">음식</div>
-        </a>
-      </div>
-      <div class="slide">
-        <a href="{% url 'searchapp:searchResult' %}?kw={{ image.keyword }}">
-          <img src="{% static 'images/allergy5.jpg' %}" alt="Slide 3">
-          <div class="text">음식</div>
-        </a>
-      </div>
-      <a class="prev" onclick="changeSlide(1)">&#10094;</a>
-      <a class="next" onclick="changeSlide(-1)">&#10095;</a>
+      <!-- 형식 변경 필요 -->
+      <!-- <div class="slide"> -->
+      
+      {% if user.is_authenticated %}
+        {% for collarbor in collarbors %}
+          <div class="slide">
+            <a href="{% url 'searchapp:Detail' %}?pk={{ collarbor.prdlstReportNo }}">
+              <img src="{{ collarbor.image }}" alt="{{ collarbor.prdlstNm }}">
+              <p>{{ collarbor.prdlstNm }}</p>
+          </div>
+          <a class="prev" onclick="changeSlide(1)">&#10094;</a>
+          <a class="next" onclick="changeSlide(-1)">&#10095;</a>
+        {% empty %}
+          <h4>결과 없음</h4>
+        {% endfor %}
+      {% else %}
+        <h2>로그인 필요</h2>
+      {% endif %}
     </div>
   </main>
 {% endblock %}
