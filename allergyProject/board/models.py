@@ -11,7 +11,7 @@ class Board(models.Model):
     cno = models.CharField(max_length=8, null=True)
     allerinfo = models.TextField(null=False)
     cdate = models.DateField()
-    ingredient = JSONField(null=False)
+    ingredient = ArrayField(models.CharField(max_length=500), null=False)
     content = ArrayField(models.CharField(max_length=500), null=False)
     types = models.TextField(null=False)
     meterials = models.TextField(null=False)
