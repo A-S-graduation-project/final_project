@@ -109,6 +109,8 @@ def food_recommend():
 
     conn.close()
 
+    return re
+
 #=========================================================================================================================================#
 
 def user_based_recommendation(user, user_similarity, user_item_matrix):

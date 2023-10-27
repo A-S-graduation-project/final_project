@@ -100,25 +100,45 @@ form .ingredient label{
   margin: 15px;
 }
 
-form .ingredient input{
-  background: transparent;
-  display: block;
-  padding: 0px;
-  margin: 35px;
-  font-size: 1.25rem;
-  width: 80%;
-  resize: none;
-  line-height: 1.5;
-  outline: none;
-  border: none;
-  font-weight: bold;
-  box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.15);
-  color: var(--text1);
+
+.ingredient{
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+  padding: 0;
 }
 
-form .ingredient input::placeholder{
+.ingredient textarea{
+  max-width: 150px;
+  min-width: 150px;
+  max-height: 30px;
+  min-height: 30px;
+}
+
+form .ingredient textarea{
+  background: transparent;
+  resize: none;
+  width: 330px;
+  display: inline-block;
+  margin: 10px 3px;
+  vertical-align: middle;
+  border: 1px solid #e1e1e1;
+  font-size: 16px;
+  padding-left: 15px;
+  padding-top: 10px;
+  height: 40px;
+  vertical-align: middle;
+  margin-top: -1px;
+  box-shadow: inset 1px 2px 3px rgba(0, 0, 0, .075);
+}
+
+form .ingredient textarea::placeholder{
   color: rgba(185, 185, 185, 0.8);
   font-size: 0.9rem;
+}
+
+#ingredient-fields{
+  margin-left: 40px;
 }
 
 
@@ -142,6 +162,7 @@ form .content textarea{
   display: block;
   padding: 0px;
   margin: 30px;
+  padding: 8px;
   font-size: 1rem;
   width: 80%;
   resize: none;
@@ -149,7 +170,7 @@ form .content textarea{
   outline: none;
   border: none;
   font-weight: bold;
-  box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 2px 3px 7px rgba(0, 0, 0, .075);
   color: var(--text1);
 }
 
@@ -222,6 +243,10 @@ form .content textarea::placeholder{
   
   .categories .dropdown:nth-child(2) .dropdown-content{
     transform: translateX(30px);
+  }
+
+  .selected-items{
+    margin-left: 20px;
   }
 
 

@@ -16,7 +16,7 @@
         {% endif %}
         <div>
           <p>종류 : {{board.types}}</p>
-          <p>주재료 : {{board.meterial}}</p>
+          <p>주재료 : {{board.meterials}}</p>
         </div>
 
         <div class="recipe">
@@ -24,14 +24,11 @@
             {{ allergy }}
           {% endfor %}
         </div>
+        
         <div class="recipe">
-          <ul>
-            {% for key, ingredient in ingredient_data.items %}
-            <li>
-                {{key}} {{ ingredient }}
-            </li>
-            {% endfor %}
-          </ul>
+        {% for ingredient in board.ingredient %}
+          {{ ingredient }}
+        {% endfor %}
         </div>
         {% for recipe, image in recipe_images %}
         <div class="recipe-box">
@@ -61,7 +58,7 @@
     {% for comment in comments %}
       <div class="comment">
           <p>{{ comment.comments }}</p>
-          <p>Posted by: {{ comment.cno.username }}</p>
+          <p>작성자: {{ comment.cno.username }}</p>
       </div>
     {% endfor %}
   </div>

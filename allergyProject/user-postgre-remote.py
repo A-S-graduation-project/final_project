@@ -1,4 +1,4 @@
-import csv, psycopg2
+import csv, psycopg2, os
 
 # DB 연결 #
 conn = psycopg2.connect(host='localhost',user='postgres',password='2017018023',dbname='allergydb',connect_timeout=32768)
@@ -18,7 +18,12 @@ cur.execute("""CREATE TABLE IF NOT EXISTS userdata(
 cur.execute("""DELETE FROM userdata""")
 
 # 필요시 주소 변경 바람 #
-f = open('./UserData.csv', 'r', encoding='UTF8')
+try:
+    f = open('./UserData.csv', 'r', encoding='UTF8')
+except:
+    os.chdir("./allergyProject/")
+    f = open('./allergyProject/UserData.csv', 'r', encoding='UTF8')
+
 rdr = csv.reader(f)
 
 for line in rdr:

@@ -3,20 +3,27 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-def vector(alist, blist):
+def vector(category, alist, blist, clist = None):
     # count vector로 만들어서 cosine similar 만들기 #
     vectorizer = CountVectorizer()
 
-    # alist = rawmtrl (product), ingredient (board) #
+    # alist = rawmtrl (product), allerinfo (board) #
     alist_vector = vectorizer.fit_transform(alist)
     alist_cate = cosine_similarity(alist_vector)
     
-    # category : 0 (product), 1 (board) #
-    # blist = prdkind (product), allerinfo (board) #
+    # blist = prdkind (product), types (board) #
     blist_vector = vectorizer.fit_transform(blist)
     blist_cate = cosine_similarity(blist_vector)
 
-    return alist_cate * 0.3 + blist_cate * 0.7
+    # category : 0 (product), 1 (board) #
+    if category == 1:
+        # blist = meterials
+        clist_vector = vectorizer.fit_transform(clist)
+        clist_cate = cosine_similarity(clist_vector)
+
+        return alist_cate * 0.6 + blist_cate * 0.3 + clist_cate * 0.1
+    else:
+        return alist_cate * 0.3 + blist_cate * 0.7
 
 
 def food_sim():
@@ -47,7 +54,7 @@ def food_sim():
     # print(rawmtrl[:5])
     # print(prdkind[:5])
 
-    food_simi_cate = vector(rawmtrl, prdkind)
+    food_simi_cate = vector(0, rawmtrl, prdkind)
     print(food_simi_cate)
 
     for n in range(row_count):
@@ -71,32 +78,28 @@ def board_sim():
     cur = conn.cursor()
 
     # Mysql에서 DATA 읽기 (전처리 포함) #
-    cur.execute("""SELECT bno, ingredient, allerinfo FROM boards""")
+    cur.execute("""SELECT bno, allerinfo, types, meterials FROM boards""")
     brdData = cur.fetchall()
     row_count = len(brdData)
-    # print(brdData[0:2])
+    # print(brdData[:5])
 
     # 전처리 #
     bno = []
-    ingredient = []
     allerinfo = []
+    types = []
+    meterials = []
 
     for row in brdData:
         bno.append(row[0])
+        allerinfo.append(row[1])
+        types.append(row[2])
+        meterials.append(row[3])
 
-        json_ingre = json.loads(row[1])
-        ingredient.append(json_ingre['ingredient_name'])
-        
-        json_aller = json.loads(row[2])
-        aller = ''
-        for j in json_aller:
-            aller += j['allergy'] + ' '
-        allerinfo.append(''.join(aller.rstrip()))
+    # print(allerinfo[:5])
+    # print(types[:5])
+    # print(meterials[:5])
 
-    # print(ingredient)
-    # print(allerinfo)
-
-    board_simi_cate = vector(allerinfo, ingredient)
+    board_simi_cate = vector(1, allerinfo, types, meterials)
     # board_simi_cate = vector(ingredient, allerinfo)
     print(board_simi_cate)
 
