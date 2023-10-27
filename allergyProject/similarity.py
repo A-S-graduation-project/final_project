@@ -21,7 +21,7 @@ def vector(category, alist, blist, clist = None):
         clist_vector = vectorizer.fit_transform(clist)
         clist_cate = cosine_similarity(clist_vector)
 
-        return alist_cate * 0.3 + blist_cate * 0.6 + clist_cate * 0.1
+        return alist_cate * 0.6 + blist_cate * 0.3 + clist_cate * 0.1
     else:
         return alist_cate * 0.3 + blist_cate * 0.7
 
@@ -81,7 +81,7 @@ def board_sim():
     cur.execute("""SELECT bno, allerinfo, types, meterials FROM boards""")
     brdData = cur.fetchall()
     row_count = len(brdData)
-    print(brdData[:5])
+    # print(brdData[:5])
 
     # 전처리 #
     bno = []

@@ -7,10 +7,6 @@ from signapp.models import Customer
 from django.db.models import Q
 from django.core.cache import cache
 
-# test용 #
-# from similarity import food_sim
-from .collarbor import food_recommend
-
 # filter 함수의 Q함수: OR조건으로 데이터를 조회하기 위해 사용하는 함수
 # objects.filter() 는 특정 조건에 해당하면 객체 출력 .get('kw') 은 kw만 반환
 # __icontains 연산자 : 대소문자를 구분하지 않고 단어가 포함되어 있는지 검사. 사용법 "필드명"__icontains = 조건값
@@ -83,14 +79,10 @@ def Detail(request):
         user.prdlstReportNo=detail.prdlstReportNo
         user.save()
 
-    collarbors = Collarbor(request)
     similarities = Similarity(request)
 
-    # collarbor에 적용 가능성 #
-    # food_sim()
-
     try:
-        return render(request, 'detail.html', {'pk':pk, 'detail':detail, 'collarbors':collarbors, 'similarities':similarities})
+        return render(request, 'detail.html', {'pk':pk, 'detail':detail, 'similarities':similarities})
     except Exception as ex:
         print(ex)
         return render(request, 'detail.html', {'pk':pk, 'detail':detail})
@@ -115,20 +107,3 @@ def Similarity(request):
             similarities.append(similarity)
 
     return similarities
-
-
-def Collarbor(request):
-    username = request.user
-    collarbor_list = []
-    collarbors = []
-    
-    if not username.is_anonymous:
-        collarbor_list = food_recommend(str(username)).keys()
-
-    for col in collarbor_list:
-        collarbor = Product.objects.all().get(
-            Q(prdlstReportNo__exact = col)
-        )
-        collarbors.append(collarbor)
-
-    return collarbors
