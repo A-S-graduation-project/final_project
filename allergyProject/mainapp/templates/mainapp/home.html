@@ -18,11 +18,11 @@
       <!-- <div class="slide"> -->
       
       {% if user.is_authenticated %}
-        {% for collarbor in collarbors %}
+        {% for fcollarbor in fcollarbors %}
           <div class="slide">
-            <a href="{% url 'searchapp:Detail' %}?pk={{ collarbor.prdlstReportNo }}">
-              <img src="{{ collarbor.image }}" alt="{{ collarbor.prdlstNm }}">
-              <p>{{ collarbor.prdlstNm }}</p>
+            <a href="{% url 'searchapp:Detail' %}?pk={{ fcollarbor.prdlstReportNo }}">
+              <img src="{{ fcollarbor.image }}" alt="{{ fcollarbor.prdlstNm }}">
+              <p>{{ fcollarbor.prdlstNm }}</p>
           </div>
           <a class="prev" onclick="changeSlide(1)">&#10094;</a>
           <a class="next" onclick="changeSlide(-1)">&#10095;</a>
@@ -30,7 +30,15 @@
           <h4>결과 없음</h4>
         {% endfor %}
       {% else %}
-        <h2>로그인 필요</h2>
+        {% for rank in ranks %}
+          <div class="slide">
+            <a href="{% url 'searchapp:Detail' %}?pk={{ rank.prdlstReportNo }}">
+              <img src="{{ rank.image }}" alt="{{ rank.prdlstNm }}">
+              <p>{{ rank.prdlstNm }}</p>
+          </div>
+          <a class="prev" onclick="changeSlide(1)">&#10094;</a>
+          <a class="next" onclick="changeSlide(-1)">&#10095;</a>
+        {% endfor %}
       {% endif %}
     </div>
   </main>
