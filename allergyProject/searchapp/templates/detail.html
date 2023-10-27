@@ -12,12 +12,18 @@
         <h2>Food Name</h2>
         <p>Description information about the food.</p>
         <form action="https://search.shopping.naver.com/search/all" method="GET">
-            <input type="hidden" name="query" value="{{ detail.name }}">
+            <input type="hidden" name="query" value="{{ detail.prdlstNm }}">
             <button class="buy" type="submit"> 구매하기 </button>
         </form>
+        {% if check %}
         <div class="like-button-container">
           <button class="like-button" aria-label="Like" data-id="{{ detail.prdlstReportNo }}"></button>
         </div>
+        {% else %}
+        <div class="like-button-container">
+          <button class="like-button" aria-label="Like" data-id="{{ detail.prdlstReportNo }}"></button>
+        </div>
+        {% endif %}
       </div>
   </div>
 </main>
