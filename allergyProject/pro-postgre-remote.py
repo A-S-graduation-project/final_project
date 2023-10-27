@@ -1,5 +1,5 @@
 from urllib.parse import unquote
-import requests, json, psycopg2, re, os
+import requests, json, psycopg2, re
 from similarity import food_sim
 
 # dictionary인 prdlst를 tuple인 procData로 변경 #
@@ -91,7 +91,7 @@ while pageNo<=30:
     try:
         data = json.loads(res.text)['body']['items']
     except: # JSONDecodeError 무시 #
-        pass
+        continue
 
     # load된 data가 없을 경우 종료 #
     if not data:

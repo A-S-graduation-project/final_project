@@ -1,4 +1,4 @@
-import csv, psycopg2
+import psycopg2, os
 import pandas as pd
 from dateutil import parser
 
@@ -12,6 +12,7 @@ cur.execute("""DELETE FROM userdata""")
 try:
     df = pd.read_csv("./board_info.csv")
 except:
+    os.chdir("./allergyProject/")
     df = pd.read_csv("./allergyProject/board_info.csv")
 
 for line in df.values:
