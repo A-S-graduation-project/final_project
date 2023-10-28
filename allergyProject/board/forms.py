@@ -6,7 +6,6 @@ import json
 
 # ModelForm으로 BoardForm 클래스 생성
 class BoardForm(ModelForm):
-    # ingredient = forms.CharField(widget=forms.HiddenInput())
     content = forms.CharField(widget=forms.Textarea(attrs={'placeholder': '레시피를 입력하세요'}))
     ingredient = forms.CharField(widget=forms.Textarea(attrs={"placeholder": "ex) 돼지고기 300g"}))
     class Meta:
@@ -30,3 +29,7 @@ class CommentForm(ModelForm):
     class Meta:
         model = Comment
         fields = ['comments']
+
+        widgets = {
+            "comments" : forms.Textarea(attrs={"placeholder": "댓글을 남겨주세요"})
+        }
