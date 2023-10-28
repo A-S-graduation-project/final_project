@@ -27,7 +27,7 @@
         </div>
         <div class="categories" style="margin-left: 20px;">
             <div class="dropdown">
-                <button class="dropbtn">종류별</button>
+                <div class="dropbtn">종류별</div>
                 <div class="dropdown-content">
                     {% for type in type_category %}
                     <a href="#" class="type-btn" data-id="{{type.types}}">{{type.types}}</a>
@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="dropdown">
-                <button class="dropbtn">재료별</button>
+                <div class="dropbtn">재료별</div>
                 <div class="dropdown-content">
                     {% for meterial in meterial_category %}
                     <a href="#" class="meterial-btn" data-id="{{meterial.meterials}}">{{meterial.meterials}}</a>
@@ -55,14 +55,21 @@
         <input type="hidden" name="type_category_id" id="type_category_id" value="">
         <input type="hidden" name="meterial_category_id" id="meterial_category_id" value="">
 
-        <div class="ingredient">
+
+
+        <div style="font-weight: bold; margin-left: 15px;">
             <label for="{{ ingredient_form.ingredient_name.id_for_label }}">필수 재료</label>
-            {{ ingredient_form.ingredient_name }}
-            {{ ingredient_form.quantity }}
-            {{ ingredient_form.unit }}
+        </div>
+        <div id="ingredient-fields">
+            <div class="ingredient">
+                {{ board_form.ingredient }}
+            </div>
+        </div>
+        <div style="margin-left: 30px;">
             <button type="button" id="add-ingredient">+</button>
             <button type="button" id="remove-ingredient">-</button>
         </div>
+        
         <div class="content">
             <label for="{{ board_form.content.id_for_label }}">레시피</label>
             <div id="recipe-fields">
@@ -110,6 +117,25 @@ $(document).ready(function() {
         }
     });
 
+     // + 버튼을 클릭할 때마다 새로운 필수 재료 입력 필드를 추가
+     $("#add-ingredient").click(function() {
+        var ingredientField = $(".ingredient:first").clone();
+        ingredientField.find('textarea').val(''); // 새로운 필드를 비웁니다.
+        ingredientField.find('input').val(''); // 새로운 필드를 비웁니다.
+        $("#ingredient-fields").append(ingredientField);
+
+        ingredientField.find('textarea').attr('name','ingredient[]')
+    });
+
+    // - 버튼을 클릭하여 필수 재료 입력 필드를 제거
+    $("#remove-ingredient").click(function() {
+        var ingredientCount = $("#ingredient-fields .ingredient").length;
+        if (ingredientCount > 1) {
+            $(`#ingredient-fields .ingredient:last`).remove(); // 마지막 필수 재료 제거
+        }
+    });
+
+
     // 폼 제출 시 content 값을 배열로 만들어 전송
     $("form").submit(function() {
         var contentArray = [];
@@ -118,23 +144,16 @@ $(document).ready(function() {
             contentArray.push(contentValue);
         });
         $("#id_content").val(JSON.stringify(contentArray));
-    });
 
-    // + 버튼을 클릭할 때마다 새로운 필수 재료 입력 필드를 추가
-    $("#add-ingredient").click(function() {
-        var ingredientField = $(".ingredient-form:first").clone();
-        ingredientField.find('input').val(''); // 새로운 필드를 비웁니다.
-        $("#ingredient-fields").append(ingredientField);
+        var ingredientArray = [];
+        $("#ingredient-fields .ingredient").each(function() {
+            var ingredientValue = $(this).find('textarea').val();
+            ingredientArray.push(ingredientValue);
+        });
+        $("#id_ingredient").val(JSON.stringify(ingredientArray));
     });
+    // 재료 데이터를 서버로 전송
 
-    // - 버튼을 클릭하여 필수 재료 입력 필드를 제거
-    $("#remove-ingredient").click(function() {
-        var ingredientFieldCount = $("#ingredient-fields .ingredient-form").length;
-        // 최소한 1개의 필수 재료 입력 필드가 있어야 함
-        if (ingredientFieldCount > 1) {
-            $("#ingredient-fields .ingredient-form:last").remove();
-        }
-    });
 
     $("#allergy-form").submit(function (event) {
             event.preventDefault();
@@ -149,9 +168,9 @@ $(document).ready(function() {
             // 폼 제출
             $(this).unbind("submit").submit();
         });
+    
 });
 </script>
-
 <script>
     const selectedType = { id: null, name: null };
     const selectedMeterial = { id: null, name: null };
@@ -192,4 +211,3 @@ $(document).ready(function() {
     });
 </script>
 {% endblock %}
-

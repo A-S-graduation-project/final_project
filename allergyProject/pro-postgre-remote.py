@@ -1,5 +1,5 @@
 from urllib.parse import unquote
-import requests, json, psycopg2, re, os
+import requests, json, psycopg2, re
 from similarity import food_sim
 
 # dictionary인 prdlst를 tuple인 procData로 변경 #
@@ -76,7 +76,7 @@ serviceKey = "KRFgFYY3tfo9A3cGfNrr%2Bzaib9lhbXTPnsWS149Apg2Vg%2Frl%2BaI9cVAVMQoM
 # TimeOut 오류시 pageNo 변경 #
 pageNo = 1
 
-while pageNo<=5:
+while pageNo<=30:
     print(pageNo)
     URL = "http://apis.data.go.kr/B553748/CertImgListService/getCertImgListService"
     parameters = {"serviceKey" : unquote(serviceKey), "pageNo" : str(pageNo), "returnType" : "json"}
@@ -91,7 +91,7 @@ while pageNo<=5:
     try:
         data = json.loads(res.text)['body']['items']
     except: # JSONDecodeError 무시 #
-        pass
+        continue
 
     # load된 data가 없을 경우 종료 #
     if not data:

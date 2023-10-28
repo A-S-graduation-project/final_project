@@ -12,33 +12,21 @@
         <h2>Food Name</h2>
         <p>Description information about the food.</p>
         <form action="https://search.shopping.naver.com/search/all" method="GET">
-            <input type="hidden" name="query" value="{{ detail.name }}">
+            <input type="hidden" name="query" value="{{ detail.prdlstNm }}">
             <button class="buy" type="submit"> 구매하기 </button>
         </form>
+        {% if check %}
         <div class="like-button-container">
           <button class="like-button" aria-label="Like" data-id="{{ detail.prdlstReportNo }}"></button>
         </div>
+        {% else %}
+        <div class="like-button-container">
+          <button class="like-button" aria-label="Like" data-id="{{ detail.prdlstReportNo }}"></button>
+        </div>
+        {% endif %}
       </div>
   </div>
 </main>
-<div id="recommend"></div>
-<div class="picture-grid">
-  {% if user.is_authenticated %}
-    {% for collarbor in collarbors %}
-      <div class="picture">
-        <a href="{% url 'searchapp:Detail' %}?pk={{ collarbor.prdlstReportNo }}">
-          <img src="{{ collarbor.image }}" alt="{{ collarbor.prdlstNm }}">
-          <p>{{ collarbor.prdlstNm }}</p>
-        </a>
-      </div>
-      {% empty %}
-        <h4>결과 없음</h4>
-    {% endfor %}
-  {% else %}
-      <h2>로그인 필요</h2>
-  {% endif %}
-</div>
-
 <div class="picture-grid">
   {% for similarity in similarities %}
     <div class="picture">

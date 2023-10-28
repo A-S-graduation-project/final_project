@@ -2,14 +2,10 @@ from django.shortcuts import render
 from .models import Product
 from .models import UserData
 from .models import PSimilarity
+from .models import Allergy
 from signapp.models import Customer
 from django.db.models import Q
 from django.core.cache import cache
-try:
-    from searchapp.allergy_sim import *
-    # from searchapp.food_sim import *
-except:
-    pass
 
 # filter 함수의 Q함수: OR조건으로 데이터를 조회하기 위해 사용하는 함수
 # objects.filter() 는 특정 조건에 해당하면 객체 출력 .get('kw') 은 kw만 반환
@@ -57,7 +53,7 @@ def searchResult(request):
                 )[:1000]
                 cache.set(cache_key, products, 60*60)
                 return render(request, 'search.html', {'query':query, 'products':products} )
-    
+
     return render(request, 'search.html', {'products':products})
 
 
@@ -83,11 +79,10 @@ def Detail(request):
         user.prdlstReportNo=detail.prdlstReportNo
         user.save()
 
-    collarbors = Collarbor(request)
     similarities = Similarity(request)
 
     try:
-        return render(request, 'detail.html', {'pk':pk, 'detail':detail, 'collarbors':collarbors, 'similarities':similarities})
+        return render(request, 'detail.html', {'pk':pk, 'detail':detail, 'similarities':similarities})
     except Exception as ex:
         print(ex)
         return render(request, 'detail.html', {'pk':pk, 'detail':detail})
@@ -112,30 +107,3 @@ def Similarity(request):
             similarities.append(similarity)
 
     return similarities
-
-
-def Collarbor(request):
-    cno = request.user
-
-    if not cno.is_anonymous:
-        customer = Customer.objects.all().filter(
-            Q(username__exact = cno)
-        )
-
-        # allergy = customer.get().allergy
-
-        print(customer)
-
-    collarbors = []
-
-    for i in range(len(re)):
-        if i == 5:
-            break
-        colquery = re[i][1]
-        collarbor = Product.objects.all()
-        collarbor = collarbor.get(
-            Q(prdlstReportNo__exact=colquery)
-        )
-        collarbors.append(collarbor)
-
-    return collarbors

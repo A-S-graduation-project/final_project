@@ -1,26 +1,29 @@
-import psycopg2
+import psycopg2, json
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-def vector(category, alist, blist=None):
+def vector(category, alist, blist, clist = None):
     # count vector로 만들어서 cosine similar 만들기 #
     vectorizer = CountVectorizer()
 
-    # alist = rawmtrl (product), ingrediend (board) #
+    # alist = rawmtrl (product), allerinfo (board) #
     alist_vector = vectorizer.fit_transform(alist)
     alist_cate = cosine_similarity(alist_vector)
+    
+    # blist = prdkind (product), types (board) #
+    blist_vector = vectorizer.fit_transform(blist)
+    blist_cate = cosine_similarity(blist_vector)
 
     # category : 0 (product), 1 (board) #
-    if category == 0:
-        # blist = prdkind (product), allerinfo (board) #
-        blist_vector = vectorizer.fit_transform(blist)
-        blist_cate = cosine_similarity(blist_vector)
+    if category == 1:
+        # blist = meterials
+        clist_vector = vectorizer.fit_transform(clist)
+        clist_cate = cosine_similarity(clist_vector)
 
-        return alist_cate * 0.3 + blist_cate * 0.7
-    
+        return alist_cate * 0.6 + blist_cate * 0.3 + clist_cate * 0.1
     else:
-        return alist_cate
+        return alist_cate * 0.3 + blist_cate * 0.7
 
 
 def food_sim():
@@ -75,26 +78,29 @@ def board_sim():
     cur = conn.cursor()
 
     # Mysql에서 DATA 읽기 (전처리 포함) #
-    cur.execute("""SELECT bno, ingredient FROM boards""")
+    cur.execute("""SELECT bno, allerinfo, types, meterials FROM boards""")
     brdData = cur.fetchall()
     row_count = len(brdData)
-    # print(brdData[0:2])
+    # print(brdData[:5])
 
     # 전처리 #
     bno = []
-    ingredient = []
+    allerinfo = []
+    types = []
+    meterials = []
 
     for row in brdData:
         bno.append(row[0])
-        ingredient.append(' '.join(row[1].keys()))
+        allerinfo.append(row[1])
+        types.append(row[2])
+        meterials.append(row[3])
 
-    # print(ingredient)
+    # print(allerinfo[:5])
+    # print(types[:5])
+    # print(meterials[:5])
 
-    # 알고리즘 확인용 #
-    # bno = [1,2,3]
-    # ingredient = ['밀 콩', '닭고기', '콩']
-
-    board_simi_cate = vector(1, ingredient)
+    board_simi_cate = vector(1, allerinfo, types, meterials)
+    # board_simi_cate = vector(ingredient, allerinfo)
     print(board_simi_cate)
 
     for n in range(row_count):
@@ -105,3 +111,7 @@ def board_sim():
         conn.commit()
 
     conn.close()
+
+
+# food_sim()
+# board_sim()

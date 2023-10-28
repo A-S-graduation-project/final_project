@@ -9,7 +9,7 @@ cur = conn.cursor()
 
 cur.execute("""CREATE TABLE IF NOT EXISTS meterial_categories(
             id SERIAL PRIMARY KEY NOT NULL,
-            materials varchar(50) UNIQUE NOT NULL)""")
+            meterials varchar(50) UNIQUE NOT NULL)""")
 
 # 넣을 재료등 #
 meterials = ["소고기", "돼지고기", "닭고기", "육류", "채소류",
@@ -22,7 +22,7 @@ for meterial in meterials:
     # 재료를 meterials에 넣음 #
     try:
         sql = """INSERT INTO meterial_categories(id, meterials) VALUES(DEFAULT, '{0}')""".format(meterial)
-        print(sql)
+        # print(sql)
         cur.execute(sql)
     except Exception as ex:
         conn.rollback() 
