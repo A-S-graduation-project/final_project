@@ -95,6 +95,16 @@ nav {
 .dropdown:hover .dropdown-content, .rangedropdown:hover .dropdown-content {
   display: block;
 }
+.login-box {
+  background-color: #aec22b;
+  padding: 10px 20px;
+  width: 20px;
+  height: 50;
+  border-radius: 5px;
+  text-align: center;
+  display: inline-block; 
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
 
 /* Hash tag style */
 .hashtag {
