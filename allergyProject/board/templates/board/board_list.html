@@ -14,7 +14,7 @@
       {% for board in board_list %}
         <div class="post">
           <a href="/board/board_detail/{{board.bno}}">
-            <img src="{% static 'images/food2.jpg' %}" alt="Post 1 Thumbnail">
+            <img src="{{board.image.url}}" alt="게시판 대표 사진">
             <h2>{{ board.title }}</h2>
           </a>
         </div>
