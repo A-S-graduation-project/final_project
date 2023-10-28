@@ -41,7 +41,14 @@
           {% endif %}
         </div>
         {% endfor %}
-
+        {% for content in board.content %}
+        <div class="recipe-box">
+          <p>{{ forloop.counter }}</p>
+          <div class="recipe">
+            {{ content }}
+          </div>
+        </div>
+        {% endfor %}
     </div>
 
   <div class="board-like-button-container">
@@ -52,18 +59,24 @@
   <div class="comment-box">
     <form method="POST" action="{% url 'board:create_comment' board.bno %}">
       {% csrf_token %}
-      {{ comment_form.as_p }}
-      <button type="submit">Add Comment</button>
+      {{ comment_form.comments }}
+      <button type="submit">등록</button>
     </form>
+    <br>
+    <hr width="80%" color="#E6E6E6" >
     {% for comment in comments %}
       <div class="comment">
-          <p>{{ comment.comments }}</p>
-          <p>작성자: {{ comment.cno.username }}</p>
+        <div class="comment-title">
+          {{ comment.cno.username }} {{comment.cdate}}
+        </div>
+        <div class="comment-text">
+          {{ comment.comments }}
+        </div>
       </div>
+      <hr width="80%" color="#E6E6E6" >
     {% endfor %}
   </div>
 </div>
-
 <div id="recommend"></div>
 <div class="container">
   <div class="post">

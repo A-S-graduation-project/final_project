@@ -24,22 +24,22 @@ def read_board(request, bno):
     # JSON 형식의 재료 데이터를 파이썬 객체로 변환
 
     # 선택한 알러지 정보를 가져와서 알러지 객체와 매칭하여 이름만 가져옴
-    selected_allergies = json.loads(board.allerinfo)
-    # print(selected_allergies)
-    allerinfo = [Allergy.objects.get(ano=allergy['ano']).allergy for allergy in selected_allergies]
+    selected_allergies = board.allerinfo
+    allerinfo = [allergy for allergy in selected_allergies]
     # print(allerinfo)
 
-    recipe_images = list(zip(board.content, images))
+    recipes = list(zip(board.content, images))
     # print(board.content, images)
     # print(BoardImage.objects.all())
-    # print(recipe_images)
+    print(recipes)
+    print(recipes == [])
     return render(request, 'board/board_detail.html', {
         'board': board, 
         'allerinfo':allerinfo,
         'images':images,
         'comment_form':comment_form,
         'comments':comments,
-        'recipe_images':recipe_images,
+        'recipes':recipes,
         })
 
 # test 코드
@@ -74,11 +74,8 @@ def create_board(request):
         })
 
 def save_board(request, board_form, image_form):
-    print("---------before save---------")
     board = board_form.save(commit=False)
-    print(board)
     board.cdate = timezone.now()
-    print("---------after save ---------")
 
     if request.user.is_authenticated:
         board.name = request.user.username
@@ -88,8 +85,11 @@ def save_board(request, board_form, image_form):
 
     selected_allergies = request.POST.getlist('selected_allergies')
     selected_allergies_objects = Allergy.objects.filter(ano__in=selected_allergies)
-    allergy_info = [{"ano": allergy.ano, "allergy": allergy.allergy} for allergy in selected_allergies_objects]
-    board.allerinfo = json.dumps(allergy_info)
+    # allergy_info = [{"ano": allergy.ano, "allergy": allergy.allergy} for allergy in selected_allergies_objects]
+    allergy_info = [allergy.allergy for allergy in selected_allergies_objects]
+    # board.allerinfo = json.dumps(allergy_info)
+    board.allerinfo = allergy_info
+    print(board.allerinfo)
 
     # 사용자로부터 선택받은 카테고리 정보를 가져와서 게시판 객체에 설정
     print("category save하는곳")
@@ -103,8 +103,6 @@ def save_board(request, board_form, image_form):
     board.types = type_category.types
     board.meterials = meterial_category.meterials
     print("------------ before ------------")
-    print(board.ingredient)
-    print(board.content)
     board.save()
     print("---------------- save board ----------------")
     handle_uploaded_images(request, board, image_form)
