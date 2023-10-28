@@ -98,12 +98,13 @@ nav {
 .login-box {
   background-color: #aec22b;
   padding: 10px 20px;
-  width: 20px;
-  height: 50;
+  width: 50px;
+  height: 30px;
   border-radius: 5px;
   text-align: center;
   display: inline-block; 
   border: 1px solid rgba(0, 0, 0, 0.3);
+  margin-top: 12.5px;
 }
 
 /* Hash tag style */
@@ -198,6 +199,7 @@ nav {
   font-size: 1em;
   border: none;
   cursor: pointer;
+  margin-top: 12.5px;
 }
 
 .menu .dropbtn:hover{
