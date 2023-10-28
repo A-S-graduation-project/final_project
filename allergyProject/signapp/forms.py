@@ -67,16 +67,21 @@ class UserProfileForm(forms.ModelForm):
     )
     class Meta:
         model = Customer
-        fields = ['email', 'phone', 'birthdate', 'gender']
+        fields = ['email', 'phone', 'birthdate', 'gender', 'allerinfo']
 
     # 이메일 필드를 선택적으로 만듦
     email = forms.EmailField(required=False)
     
 class CustomUserChangeForm(forms.ModelForm):
     gender = forms.IntegerField(widget=forms.HiddenInput(), initial=1)
+    allerinfo = forms.ModelMultipleChoiceField(
+        queryset=Allergy.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
     class Meta:
         model = Customer  # 폼과 연결될 모델 (Customer 모델)
-        fields = ['email', 'phone', 'birthdate', 'gender']  # 폼에 사용될 필드들
+        fields = ['email', 'phone', 'birthdate', 'gender','allerinfo']  # 폼에 사용될 필드들
 
     # 이메일 중복 검사를 위한 메서드
     def clean_email(self):

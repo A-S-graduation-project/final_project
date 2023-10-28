@@ -66,9 +66,9 @@ class MypageView(View):
 
     def get(self, request, *args, **kwargs):
         user_profile = Customer.objects.get(username=request.user.username)
-        print(user_profile.allerinfo)
-        form = UserProfileForm(instance=user_profile)
-        
+        allerinfo_str = user_profile.allerinfo
+        allerinfo_list = [int(item) for item in allerinfo_str.strip('[]').split(',')]
+        form = UserProfileForm(instance=user_profile,initial={'allerinfo': allerinfo_list})
         context = {
             'user_profile': user_profile,
             'form': form,
@@ -88,7 +88,13 @@ def update(request):
     if request.method == "POST":
         form = CustomUserChangeForm(request.POST, instance = request.user)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            allergies = form.cleaned_data.get('allerinfo')
+            selected_allergies = [allergy.ano for allergy in allergies]
+
+            # 사용자 프로필의 allerinfo 필드에 저장
+            user.allerinfo = selected_allergies
+            user.save()
             return redirect('signapp:mypage')
         
     else:
