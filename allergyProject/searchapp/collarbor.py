@@ -30,6 +30,27 @@ def user_based_recommendation(user, user_similarity, user_item_matrix):
 
 
 def food_recommend(user):
+    conn = psycopg2.connect(host='localhost',
+                        user='postgres',
+                        password='2017018023',
+                        dbname='allergydb',
+                        connect_timeout=32768)
+    cur = conn.cursor()
+
+    # Mysql에서 DATA 읽기 (전처리 포함) #
+    cur.execute("""SELECT cno, username, allerinfo FROM customers""")
+    cnoData = cur.fetchall()
+
+    # Mysql에서 DATA 읽기 (전처리 포함) #
+    cur.execute("""SELECT "prdlstReportNo" FROM products""")
+    proData = cur.fetchall()
+    # print(proData[0:2])
+
+    cur.execute("""SELECT "CNO_id", "FNO_id" FROM fbookmark""")
+    fbData = cur.fetchall()
+    # print(choData[0:2])
+
+    # print(cnoData[0:2])
     # 알레르기를 통한 사용자 유사도 #
     user_all_similarity = user_allergy_similarity()
 
@@ -60,10 +81,34 @@ def food_recommend(user):
     recommend_items = user_based_recommendation(user, user_all_similarity, user_item_matrix)
     print(recommend_items)
 
+    conn.close()
+
     return recommend_items
 
 
 def board_recommend(user):
+    conn = psycopg2.connect(host='localhost',
+                        user='postgres',
+                        password='2017018023',
+                        dbname='allergydb',
+                        connect_timeout=32768)
+    cur = conn.cursor()
+
+    # Mysql에서 DATA 읽기 (전처리 포함) #
+    cur.execute("""SELECT cno, username, allerinfo FROM customers""")
+    cnoData = cur.fetchall()
+
+    # Mysql에서 DATA 읽기 (전처리 포함) #
+    cur.execute("""SELECT bno from boards""")
+    bnoData = cur.fetchall()
+    # print(bnoData[0:2])
+
+    # Mysql에서 DATA 읽기 (전처리 포함) #
+    cur.execute("""SELECT "CNO_id", "bNO_id" FROM bbookmark""")
+    bbData = cur.fetchall()
+    # print(choData[0:2])
+
+    # print(cnoData[0:2])
     # 알레르기를 통한 사용자 유사도 #
     user_all_similarity = user_allergy_similarity()
 
@@ -94,6 +139,8 @@ def board_recommend(user):
     recommend_items = user_based_recommendation(user, user_all_similarity, user_item_matrix)
     print(recommend_items)
 
+    conn.close()
+
     return recommend_items
 
 
@@ -109,6 +156,11 @@ def user_allergy_similarity():
     cur.execute("""SELECT cno, username, allerinfo FROM customers""")
     cnoData = cur.fetchall()
     # print(cnoData[0:2])
+
+    # Mysql에서 DATA 읽기 (전처리 포함) #
+    cur.execute("""SELECT ano, allergy FROM allergies""")
+    allData = cur.fetchall()
+    # print(allData[0:2])
 
     # 알레르기 보유를 통한 사용자 유사도 구할 data frame #
     customer_allergy_data = {'User':[cno[1] for cno in cnoData]}
@@ -128,43 +180,12 @@ def user_allergy_similarity():
 
     user_similarity = np.dot(df, df.T) / (np.linalg.norm(df, axis=1)[:, np.newaxis] * np.linalg.norm(df.T, axis=0))
 
+    conn.close()
+
     return user_similarity
 
 #=========================================================================================================================================#
 
-# DB 연결 #
-conn = psycopg2.connect(host='localhost',
-                        user='postgres',
-                        password='2017018023',
-                        dbname='allergydb',
-                        connect_timeout=32768)
-cur = conn.cursor()
-
-# Mysql에서 DATA 읽기 (전처리 포함) #
-cur.execute("""SELECT ano, allergy FROM allergies""")
-allData = cur.fetchall()
-# print(allData[0:2])
-
-# Mysql에서 DATA 읽기 (전처리 포함) #
-cur.execute("""SELECT "prdlstReportNo" FROM products""")
-proData = cur.fetchall()
-# print(proData[0:2])
-
-cur.execute("""SELECT "CNO_id", "FNO_id" FROM fbookmark""")
-fbData = cur.fetchall()
-# print(choData[0:2])
-
-# Mysql에서 DATA 읽기 (전처리 포함) #
-cur.execute("""SELECT bno from boards""")
-bnoData = cur.fetchall()
-# print(bnoData[0:2])
-
-# Mysql에서 DATA 읽기 (전처리 포함) #
-cur.execute("""SELECT "CNO_id", "bNO_id" FROM bbookmark""")
-bbData = cur.fetchall()
-# print(choData[0:2])
-
 # method 확인용 #
 # food_recommend('1234')
 # board_recommend('1234')
-conn.close()
