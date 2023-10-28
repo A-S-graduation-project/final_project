@@ -59,34 +59,34 @@ h1 {
     margin-right: 10px;
   }
   
-  .checkbox input[type="checkbox"] {
-    display: none;
-  }
+.checkbox input[type="checkbox"] {
+  display: none;
+}
   
-  .checkbox label {
-    background-color: #e5e5e5;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-  }
+.checkbox label {
+  background-color: #e5e5e5;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
   
-  .checkbox input[type="checkbox"]:checked + label {
-    background-color: #99A638;
-    color: #fff;
-    border: 1px solid #99A638;
-  }
+.checkbox input[type="checkbox"]:checked + label {
+  background-color: #99A638;
+  color: #fff;
+  border: 1px solid #99A638;
+}
   
-  /* 선택한 알러지 목록 스타일링 */
-  #selected-allergies {
-    margin-top: 20px;
-  }
+/* 선택한 알러지 목록 스타일링 */
+#selected-allergies {
+  margin-top: 20px;
+}
   
-  #selected-allergies ul {
-    list-style: none;
-    padding: 0;
-  }
+#selected-allergies ul {
+  list-style: none;
+  padding: 0;
+}
   
-  #selected-allergies ul li {
-    margin-bottom: 5px;
-  }
+#selected-allergies ul li {
+  margin-bottom: 5px;
+}

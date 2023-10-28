@@ -69,7 +69,10 @@
             </li>
             {% if user.is_authenticated %}
             <div class="dropdown">
-              <button class="dropbtn">{{username}}</button>
+              <button class="dropbtn">
+                <img src="/static/images/profile.png" style="max-width: 100%; height: auto;">
+                {{username}}
+              </button>
               <div class="dropdown-content">
                 <a href="{% url 'signapp:mypage' %}">{{ username }}</a>
                 <a href="{% url 'signapp:mypage' %}">내정보</a>
@@ -79,13 +82,10 @@
               </div>
             </div>
             {% else %}
-            <div class="dropdown" style="margin-top: 10px;">
-              <button class="dropbtn">{{username}}</button>
-              <div class="dropdown-content">
-                <a href="{% url 'signapp:login' %}">로그인</a>
-              </div>
-            </div>
-            <!-- <li><a href="{% url 'signapp:mypage' %}">MyPage</a></li> -->
+            <div class="login-box">
+              <a href="{% url 'signapp:login' %}">로그인</a>
+          </div>
+            <!-- <li><a href="{% url 'signapp:mypage' %}">MyPage</a></li> s-->
             <!-- <li><a href="{% url 'signapp:login' %}">Login</a></li> -->
             {% endif %}
           </ul>

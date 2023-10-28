@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/myboard.css' %}">
 <div class="signup-form">
   <h1>회원 프로필</h1>
   {% if messages %}
@@ -28,6 +29,18 @@
       <label for="female" class="gender-label {% if user_profile.gender == 0 %}selected{% endif %}">여자</label>
       <input type="radio" id="female" name="gender" value="0" {% if user_profile.gender == 0 %}checked{% endif %}>
     </div>
+    <!-- 알러지 선택 체크 박스 그룹 -->
+    <div id="allerinfo-group">
+      <label for="allerinfo">알러지 선택</label>
+      {% for allergy in form.allerinfo.field.queryset %}
+      <div class="checkbox">
+        <input type="checkbox" name="allerinfo" id="allergy-{{ allergy.ano }}" value="{{ allergy.ano}}"
+              {% if user_profile.allerinfo and allergy.ano in user_profile.allerinfo %}checked{% endif %}>
+        <label for="allergy-{{ allergy.ano }}">{{ allergy.allergy }}</label>
+      </div>
+      {% endfor %}
+    </div>
+
     <input type="submit" value="프로필 업데이트">
   </form>
   <form action = "{% url 'signapp:update_password' %}" method = "POST">
@@ -40,7 +53,7 @@
     <!-- 비밀번호 확인 입력 -->
     <input type="password" placeholder="비밀번호 확인" name="password_confirm" id="password_confirm" required>
     <span id="password-confirm-error" class="error-msg"></span> <!--오류출력-->
-    <input type = "submit" value = "비밀번호 변경">
+    <input type = "submit" value = "비밀번호 변경"
   </form>
   <form action = "{% url 'signapp:delete' %}" method="POST"  id="delete-form">
     {% csrf_token %}
