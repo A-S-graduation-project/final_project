@@ -76,7 +76,7 @@ serviceKey = "KRFgFYY3tfo9A3cGfNrr%2Bzaib9lhbXTPnsWS149Apg2Vg%2Frl%2BaI9cVAVMQoM
 # TimeOut 오류시 pageNo 변경 #
 pageNo = 1
 
-while pageNo<=30:
+while pageNo<=15:
     print(pageNo)
     URL = "http://apis.data.go.kr/B553748/CertImgListService/getCertImgListService"
     parameters = {"serviceKey" : unquote(serviceKey), "pageNo" : str(pageNo), "returnType" : "json"}
