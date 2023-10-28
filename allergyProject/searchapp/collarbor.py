@@ -98,6 +98,18 @@ def board_recommend(user):
 
 
 def user_allergy_similarity():
+    conn = psycopg2.connect(host='localhost',
+                        user='postgres',
+                        password='2017018023',
+                        dbname='allergydb',
+                        connect_timeout=32768)
+    cur = conn.cursor()
+
+    # Mysql에서 DATA 읽기 (전처리 포함) #
+    cur.execute("""SELECT cno, username, allerinfo FROM customers""")
+    cnoData = cur.fetchall()
+    # print(cnoData[0:2])
+
     # 알레르기 보유를 통한 사용자 유사도 구할 data frame #
     customer_allergy_data = {'User':[cno[1] for cno in cnoData]}
 
@@ -107,7 +119,7 @@ def user_allergy_similarity():
     # bookmark data 적용 #
     for cno in cnoData:
         if cno[2] != None:
-            allerinfo = cno[2].split(', ')
+            allerinfo = cno[2].strip('[]').split(', ')
             for ano in allerinfo:
                 customer_allergy_data[int(ano)][cno[0]-1] = 1
 
@@ -127,11 +139,6 @@ conn = psycopg2.connect(host='localhost',
                         dbname='allergydb',
                         connect_timeout=32768)
 cur = conn.cursor()
-
-# Mysql에서 DATA 읽기 (전처리 포함) #
-cur.execute("""SELECT cno, username, allerinfo FROM customers""")
-cnoData = cur.fetchall()
-# print(cnoData[0:2])
 
 # Mysql에서 DATA 읽기 (전처리 포함) #
 cur.execute("""SELECT ano, allergy FROM allergies""")
