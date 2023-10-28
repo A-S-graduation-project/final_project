@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 
-def user_based_recommendation(user, user_similarity, user_item_matrix):
+def user_based_recommendation(user, user_similarity, user_item_matrix, cnoData):
     # Get the index of the active user
     user_index = list(user_item_matrix.index).index(user)
     # Find similar users and their similarity scores
@@ -78,7 +78,7 @@ def food_recommend(user):
 
     # user = '1234'
     user_item_matrix = df
-    recommend_items = user_based_recommendation(user, user_all_similarity, user_item_matrix)
+    recommend_items = user_based_recommendation(user, user_all_similarity, user_item_matrix, cnoData)
     print(recommend_items)
 
     conn.close()
@@ -136,7 +136,7 @@ def board_recommend(user):
     
     # user = '1234'
     user_item_matrix = df
-    recommend_items = user_based_recommendation(user, user_all_similarity, user_item_matrix)
+    recommend_items = user_based_recommendation(user, user_all_similarity, user_item_matrix, cnoData)
     print(recommend_items)
 
     conn.close()
