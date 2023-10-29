@@ -1,5 +1,4 @@
 from django.urls import path
-from .views import BoardView
 from . import views, view_add_board
 from django.conf.urls.static import static
 from django.conf import settings
@@ -7,7 +6,7 @@ from django.conf import settings
 app_name = 'board'
 
 urlpatterns = [
-    path('', BoardView.as_view(), name='board_list'),
+    path('', views.board_view, name='board_list'),
     path('board_search/', views.board_search_result, name='board_search'),
     path('board_create/', views.create_board, name='board_create'),
     path('board_detail/<int:bno>', views.read_board, name="board_detail"),
