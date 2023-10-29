@@ -349,22 +349,6 @@ board_list
   background-position: 99% 50%;
 }
 
-.filter-btn {
-  background-color: #e2e2e2;
-  color: #000000;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  margin-left: 5%;
-}
-
-.filter-btn:hover{
-  background-color: #000000;
-  color: #e2e2e2;
-}
-
 .post {
   display: flex;
   align-items: center;
@@ -374,6 +358,11 @@ board_list
   filter: drop-shadow(1px 2px 4px rgba(0, 0, 0, 0.4));
 }
 
+.post a {
+  text-decoration: none;
+  color: #333;
+}
+
 .post img {
   display: block;
   width: 100%;
@@ -381,12 +370,9 @@ board_list
   object-fit: cover;
 }
 
-.post-a {
-  text-decoration: none;
-  color: #333;
-}
 
-.post-info{
+
+.post a h2{
   display: flex;
   flex-direction: row;
   padding: 10px 0;

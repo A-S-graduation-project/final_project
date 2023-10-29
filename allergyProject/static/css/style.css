@@ -107,6 +107,10 @@ nav {
   margin-top: 12.5px;
 }
 
+.dropdown img{
+  border-radius: 50%;
+}
+
 /* Hash tag style */
 .hashtag {
   background-color: #f1f1f1;
