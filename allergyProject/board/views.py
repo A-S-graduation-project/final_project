@@ -112,8 +112,6 @@ def save_board(request, board_form, image_form):
     print("---------------- save board ----------------")
     handle_uploaded_images(request, board, image_form)
 
-    board.sim()
-
     return board
 
 def handle_uploaded_images(request, board, image_form):
@@ -189,6 +187,8 @@ def board_filtering(boards, list, query):
 
 
 def board_search_result(request):
+    board_sim()
+    
     if ('kw' in request.GET):
         if ('afilter' in request.GET):
             query = request.GET.get('kw')
