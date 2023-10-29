@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView, ListView
-from board.models import Board, Comment, BoardImage, TypeCategories, MeterialCategories
+from board.models import Board, Comment, BoardImage, TypeCategories, MeterialCategories, BSimilarity
 from .forms import BoardForm, CommentForm, ImageForm, CommentForm
 from searchapp.models import Allergy
 from signapp.models import Customer
@@ -13,15 +13,27 @@ import json
 
 from similarity import board_sim
 
-class BoardView(ListView):
-    model = Board
-    queryset = Board.objects.order_by('bno')
-    context_object_name = "board_list"
+def board_view(request):
+    board_list = Board.objects.order_by('bno')
+    boards = []
+    
+    # images_for_board = BoardImage.objects.get(bno=board_list.bno).first()
+    
+    for board in board_list:
+        images_for_board = BoardImage.objects.filter(bno=board.bno)
+        # 보드에 이미지가 있는 경우, 첫 번째 이미지를 저장합니다.
+        first_image = images_for_board.first() if images_for_board else None
+        
+        # 보드와 해당 보드의 첫 번째 이미지를 튜플로 묶어 리스트에 추가합니다.
+        boards.append((board, first_image))
+
+    return render(request, 'board/board_list.html', {'boards': boards})
 
 def read_board(request, bno):
     # 게시글을 데이터베이스에서 가져오거나 존재하지 않는 경우 404 에러 반환
     board = get_object_or_404(Board, bno=bno)
     board_list = Board.objects.all().order_by('bno')
+    # 게시글에 해당하는 image가져오기
     images = list(BoardImage.objects.filter(bno=board))
     comment_form = CommentForm()
     comments = Comment.objects.filter(bno=board)
@@ -31,12 +43,24 @@ def read_board(request, bno):
         comment_user = Customer.objects.get(cno=comment.cno)
         writen_comment.append((comment,comment_user))
     
+    print(images)
+
+    # 유사한 board객체들을 불러오는 부분 유사도 0.7이상
+    sim_board = BSimilarity.objects.get(bno=bno).simlist
+    similarities = []
+    print(sim_board)
+    for sim_no in sim_board:
+            similarity = Board.objects.all()
+            similarity = similarity.get(
+                Q(bno__exact = sim_no)
+            )
+            similarities.append(similarity)
 
     # 선택한 알러지 정보를 가져와서 알러지 객체와 매칭하여 이름만 가져옴
     selected_allergies = board.allerinfo
     allerinfo = [allergy for allergy in selected_allergies]
-
-    recipes = list(zip(board.content, images[1:]))
+    recipe_image = [img.image for img in images[1:]]
+    recipes = list(zip(board.content, recipe_image))
     print(writen_comment)
     return render(request, 'board/board_detail.html', {
         'board_list': board_list,
@@ -47,8 +71,8 @@ def read_board(request, bno):
         'comments':comments,
         'writen_comment': writen_comment,
         'recipes':recipes,
+        'sim_board':similarities,
         })
-
 # test 코드
 
 def create_board(request):
