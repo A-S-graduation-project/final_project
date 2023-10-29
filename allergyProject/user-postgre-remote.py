@@ -21,7 +21,7 @@ cur.execute("""DELETE FROM userdata""")
 try:
     f = open('./UserData.csv', 'r', encoding='UTF8')
 except:
-    os.chdir("./allergyProject/")
+    os.chdir("../")
     f = open('./allergyProject/UserData.csv', 'r', encoding='UTF8')
 
 rdr = csv.reader(f)
