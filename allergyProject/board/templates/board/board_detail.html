@@ -10,7 +10,7 @@
         {% if images %}
         <div class="image-box">
           {% with first_image=images|first %}
-            <img src="{{ first_image.image.url }}" alt="title 이미지">
+            <img src="{{ first_image.image.url }}" alt="title이미지">
           {% endwith %}
         </div>
         {% endif %}
@@ -30,24 +30,13 @@
           {{ ingredient }}
         {% endfor %}
         </div>
-        {% for recipe, images in recipe_images %}
+        {% for recipe, image in recipes %}
         <div class="recipe-box">
           <p>{{ forloop.counter }}</p>
           <div class="recipe">
             {{ recipe }}
           </div>
-          <img class="recipe-img" src="{{ image.images.url }}" alt="게시판 이미지">
-          {% if images %}
-            <img class="recipe-img" src="{{ image.images.url }}" alt="게시판 이미지">
-          {% endif %}
-        </div>
-        {% endfor %}
-        {% for content in board.content %}
-        <div class="recipe-box">
-          <p>{{ forloop.counter }}</p>
-          <div class="recipe">
-            {{ content }}
-          </div>
+          <img class="recipe-img" src="{{ image.url }}" alt="게시판 이미지">
         </div>
         {% endfor %}
     </div>
@@ -78,9 +67,8 @@
     {% endfor %}
   </div>
 </div>
-<div id="recommend"></div>
 <div class="container">
-  {% for boards in board_list %}
+  {% for boards in sim_board %}
   <div class="post">
     <a href="/board/board_detail/{{boards.bno}}">
       <img src="{{ boards.image.url }}" alt="{{ boards.title }}">
