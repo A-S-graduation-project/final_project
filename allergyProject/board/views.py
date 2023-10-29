@@ -174,7 +174,7 @@ def board_filtering(boards, list, query):
     if list != []:
         for i in list:
             boards = boards.filter(
-                    (Q(bno__icontains=query) |
+                    (Q(title__icontains=query) |
                     Q(types__icontains=query)) &
                     ~Q(allerinfo__icontains=i)
                 )
@@ -192,18 +192,18 @@ def board_search_result(request):
             list = afilter.copy()
             boards = Board.objects.all().order_by('bno')
             boards = board_filtering(boards, list, query)[:1000]
-            return render(request, 'board_search.html', {'query':query, 'afilter':afilter, 'boards':boards} )
+            return render(request, 'board/board_search.html', {'query':query, 'afilter':afilter, 'boards':boards} )
     
         else:
             query = request.GET.get('kw')
             boards = Board.objects.all().order_by('bno')
             boards = boards.filter(
-                Q(bno__icontains=query) |
+                Q(title__icontains=query) |
                 Q(types__icontains=query)
             )[:1000]
-            return render(request, 'board_search.html', {'query':query, 'boards':boards} )
+            return render(request, 'board/board_search.html', {'query':query, 'boards':boards} )
 
-    return render(request, 'board_search.html', {'boards':boards})
+    return render(request, 'board/board_search.html', {'boards':boards})
 
 
 @login_required
