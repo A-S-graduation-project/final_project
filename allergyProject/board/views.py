@@ -11,6 +11,8 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 import json
 
+from similarity import board_sim
+
 class BoardView(ListView):
     model = Board
     queryset = Board.objects.order_by('bno')
@@ -109,6 +111,8 @@ def save_board(request, board_form, image_form):
     board.save()
     print("---------------- save board ----------------")
     handle_uploaded_images(request, board, image_form)
+
+    board.sim()
 
     return board
 
