@@ -4,8 +4,10 @@ from django.views.generic import TemplateView, CreateView, ListView
 from board.models import Board, Comment, BoardImage, TypeCategories, MeterialCategories
 from .forms import BoardForm, CommentForm, ImageForm, CommentForm
 from searchapp.models import Allergy
+from signapp.models import Customer
 from django.utils import timezone
 import datetime as dt
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 import json
 
@@ -17,28 +19,31 @@ class BoardView(ListView):
 def read_board(request, bno):
     # 게시글을 데이터베이스에서 가져오거나 존재하지 않는 경우 404 에러 반환
     board = get_object_or_404(Board, bno=bno)
-    images = BoardImage.objects.filter(bno=board)
+    board_list = Board.objects.all().order_by('bno')
+    images = list(BoardImage.objects.filter(bno=board))
     comment_form = CommentForm()
     comments = Comment.objects.filter(bno=board)
+    writen_comment = []
+    for comment in comments:
+        print(comment.cno)
+        comment_user = Customer.objects.get(cno=comment.cno)
+        writen_comment.append((comment,comment_user))
     
-    # JSON 형식의 재료 데이터를 파이썬 객체로 변환
 
     # 선택한 알러지 정보를 가져와서 알러지 객체와 매칭하여 이름만 가져옴
     selected_allergies = board.allerinfo
     allerinfo = [allergy for allergy in selected_allergies]
-    # print(allerinfo)
 
-    recipes = list(zip(board.content, images))
-    # print(board.content, images)
-    # print(BoardImage.objects.all())
-    print(recipes)
-    print(recipes == [])
+    recipes = list(zip(board.content, images[1:]))
+    print(writen_comment)
     return render(request, 'board/board_detail.html', {
+        'board_list': board_list,
         'board': board, 
         'allerinfo':allerinfo,
         'images':images,
         'comment_form':comment_form,
         'comments':comments,
+        'writen_comment': writen_comment,
         'recipes':recipes,
         })
 
@@ -76,7 +81,7 @@ def create_board(request):
 def save_board(request, board_form, image_form):
     board = board_form.save(commit=False)
     board.cdate = timezone.now()
-
+    print(request.user.username,request.user.cno)
     if request.user.is_authenticated:
         board.name = request.user.username
         board.cno = request.user.cno
@@ -85,9 +90,7 @@ def save_board(request, board_form, image_form):
 
     selected_allergies = request.POST.getlist('selected_allergies')
     selected_allergies_objects = Allergy.objects.filter(ano__in=selected_allergies)
-    # allergy_info = [{"ano": allergy.ano, "allergy": allergy.allergy} for allergy in selected_allergies_objects]
     allergy_info = [allergy.allergy for allergy in selected_allergies_objects]
-    # board.allerinfo = json.dumps(allergy_info)
     board.allerinfo = allergy_info
     print(board.allerinfo)
 
@@ -165,7 +168,43 @@ def delete_board(request, bno):
         # 게시글을 삭제한다.
         board.delete()
         print("게시판이 삭제되었습니다.")
-        return redirect('board_list')
+        return redirect('../../')
+
+def board_filtering(boards, list, query):
+    if list != []:
+        for i in list:
+            boards = boards.filter(
+                    (Q(bno__icontains=query) |
+                    Q(types__icontains=query)) &
+                    ~Q(allerinfo__icontains=i)
+                )
+            list.remove(i)
+            return board_filtering(boards, list, query)
+    return boards
+
+
+
+def board_search_result(request):
+    if ('kw' in request.GET):
+        if ('afilter' in request.GET):
+            query = request.GET.get('kw')
+            afilter = request.GET.getlist('afilter')
+            list = afilter.copy()
+            boards = Board.objects.all().order_by('bno')
+            boards = board_filtering(boards, list, query)[:1000]
+            return render(request, 'board_search.html', {'query':query, 'afilter':afilter, 'boards':boards} )
+    
+        else:
+            query = request.GET.get('kw')
+            boards = Board.objects.all().order_by('bno')
+            boards = boards.filter(
+                Q(bno__icontains=query) |
+                Q(types__icontains=query)
+            )[:1000]
+            return render(request, 'board_search.html', {'query':query, 'boards':boards} )
+
+    return render(request, 'board_search.html', {'boards':boards})
+
 
 @login_required
 def create_comment(request, bno):
@@ -176,9 +215,10 @@ def create_comment(request, bno):
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
             comment.bno = board
-            comment.user = request.user.cno
+            comment.cno = request.user.cno
             comment.cdate = timezone.now()
             comment.save()
+            print(comment)
     return redirect(reverse('board:board_detail', args=[bno]))
     
 def update_comment(request, comment_id):

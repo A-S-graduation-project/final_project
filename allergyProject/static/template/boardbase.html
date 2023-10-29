@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Online Food Shopping Mall</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/boardstyle.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <a href="{% url 'main:home' %}"><h1>AllerView</h1></a>
+        </div>
+        <div class="search">
+          <form action="{% url 'board:board_search' %}" method="get">
+            <input type="text" placeholder="원하는 레시피를 검색해보세요" name="kw">
+            <button type="submit">검색</button>
+            <div class="dropdown">
+              <button class="dropbtn">알레르기</button>
+              <div class="dropdown-content">
+                <input type="checkbox" name="afilter" value="메밀">메밀</input><br>
+                <input type="checkbox" name="afilter" value="밀">밀</input><br>
+                <input type="checkbox" name="afilter" value="콩">콩</input><br>
+                <input type="checkbox" name="afilter" value="대두">대두</input><br>
+                <input type="checkbox" name="afilter" value="땅콩">땅콩</input><br>
+                <input type="checkbox" name="afilter" value="호두">호두</input><br>
+                <input type="checkbox" name="afilter" value="잣">잣</input><br>
+                <input type="checkbox" name="afilter" value="아몬드">아몬드</input><br>
+                <input type="checkbox" name="afilter" value="소고기">소고기</input><br>
+                <input type="checkbox" name="afilter" value="닭고기">닭고기</input><br>
+                <input type="checkbox" name="afilter" value="돼지고기">돼지고기</input><br>
+                <input type="checkbox" name="afilter" value="생선">생선</input><br>
+                <input type="checkbox" name="afilter" value="오징어">오징어</input><br>
+                <input type="checkbox" name="afilter" value="게">게</input><br>
+                <input type="checkbox" name="afilter" value="새우">새우</input><br>
+                <input type="checkbox" name="afilter" value="복숭아">복숭아</input><br>
+                <input type="checkbox" name="afilter" value="토마토">토마토</input><br>
+                <input type="checkbox" name="afilter" value="우유">우유</input><br>
+                <input type="checkbox" name="afilter" value="굴">굴</input><br>
+                <input type="checkbox" name="afilter" value="전복">전복</input><br>
+                <input type="checkbox" name="afilter" value="홍합">홍합</input><br>
+                <input type="checkbox" name="afilter" value="아황산류">아황산류</input><br>
+                <input type="checkbox" name="afilter" value="무">무</input><br>
+                <input type="checkbox" name="afilter" value="메추리알">메추리알</input><br>
+              </div>
+            </div>
+          </form>
+          <div id="selected-allergens"></div>
+        </div>
+        <div class="menu">
+          <ul>
+            <li>
+              <a href="{% url 'board:board_list' %}">
+                <div class="board_btn">
+                  레시피
+                </div>
+              </a>
+            </li>
+            {% if user.is_authenticated %}
+            <div class="dropdown">
+              <button class="dropbtn">
+                <img src="/static/images/profile.png" style="max-width: 100%; height: auto;">
+                {{username}}
+              </button>
+              <div class="dropdown-content">
+                <a href="{% url 'signapp:mypage' %}">{{ username }}</a>
+                <a href="{% url 'signapp:mypage' %}">내정보</a>
+                <a href="{% url 'signapp:my_board' %}">작성한 글</a>
+                <a href="{% url 'signapp:bookmarks' %}">찜 목록</a>
+                <a href="{% url 'signapp:logout' %}">로그아웃</a>
+              </div>
+            </div>
+            {% else %}
+            <div class="login-box">
+              <a href="{% url 'signapp:login' %}">로그인</a>
+            </div>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+      
+    </header>
+    {% block content %}
+    {% endblock %}
+    <footer>
+      <div class="color-blocks"></div>
+    </footer>
+  </body>
+  <script src="{% static 'js/app.js' %}"></script>
+</html>
