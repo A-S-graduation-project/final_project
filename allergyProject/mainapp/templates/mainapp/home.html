@@ -29,16 +29,40 @@
         {% empty %}
           <h4>결과 없음</h4>
         {% endfor %}
-      {% else %}
-        {% for rank in ranks %}
+        {% for bcollarbor in bcollarbors %}
           <div class="slide">
-            <a href="{% url 'searchapp:Detail' %}?pk={{ rank.prdlstReportNo }}">
-              <img src="{{ rank.image }}" alt="{{ rank.prdlstNm }}">
-              <p>{{ rank.prdlstNm }}</p>
+            <a href="{% url 'searchapp:Detail' %}?pk={{ bcollarbor.bno }}">
+              <img src="{{ bcollarbor.image }}" alt="{{ bcollarbor.title }}">
+              <p>{{ bcollarbor.title }}</p>
           </div>
           <a class="prev" onclick="changeSlide(1)">&#10094;</a>
           <a class="next" onclick="changeSlide(-1)">&#10095;</a>
+        {% empty %}
+          <h4>결과 없음</h4>
         {% endfor %}
+      {% else %}
+        {% for frank in franks %}
+          <div class="slide">
+            <a href="{% url 'searchapp:Detail' %}?pk={{ frank.prdlstReportNo }}">
+              <img src="{{ frank.image }}" alt="{{ frank.prdlstNm }}">
+              <p>{{ frank.prdlstNm }}</p>
+          </div>
+          <a class="prev" onclick="changeSlide(1)">&#10094;</a>
+          <a class="next" onclick="changeSlide(-1)">&#10095;</a>
+        {% empty %}
+          <h4>결과 없음</h4>
+        {% endfor %}
+        {% for brank in branks %}
+            <div class="slide">
+              <a href="{% url 'searchapp:Detail' %}?pk={{ brank.bno }}">
+                <img src="{{ brank.image }}" alt="{{ brank.title }}">
+                <p>{{ brank.title }}</p>
+            </div>
+            <a class="prev" onclick="changeSlide(1)">&#10094;</a>
+            <a class="next" onclick="changeSlide(-1)">&#10095;</a>
+          {% empty %}
+            <h4>결과 없음</h4>
+          {% endfor %}
       {% endif %}
     </div>
   </main>
