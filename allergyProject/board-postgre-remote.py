@@ -12,7 +12,7 @@ cur.execute("""DELETE FROM boards""")
 try:
     df = pd.read_csv("./board_info.csv")
 except:
-    os.chdir("./allergyProject/")
+    os.chdir("../")
     df = pd.read_csv("./allergyProject/board_info.csv")
 
 for line in df.values:
