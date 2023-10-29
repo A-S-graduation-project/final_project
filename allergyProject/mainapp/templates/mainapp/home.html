@@ -31,7 +31,7 @@
         {% endfor %}
         {% for bcollarbor, bimage in bcollarbors %}
           <div class="slide">
-            <a href="{% url 'searchapp:Detail' %}?pk={{ bcollarbor.bno }}">
+            <a href="/board/board_detail/{{bcollarbor.bno}}">
               <img src="{{ bimage.image }}" alt="{{ bcollarbor.title }}">
               <p>{{ bcollarbor.title }}</p>
           </div>
@@ -54,7 +54,7 @@
         {% endfor %}
         {% for brank, bimage in branks %}
             <div class="slide">
-              <a href="{% url 'searchapp:Detail' %}?pk={{ brank.bno }}">
+              <a href="/board/board_detail/{{brank.bno}}">
                 <img src="{{ bimage.image }}" alt="{{ brank.title }}">
                 <p>{{ brank.title }}</p>
             </div>
