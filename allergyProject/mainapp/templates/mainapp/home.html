@@ -29,10 +29,10 @@
         {% empty %}
           <h4>결과 없음</h4>
         {% endfor %}
-        {% for bcollarbor in bcollarbors %}
+        {% for bcollarbor, bimage in bcollarbors %}
           <div class="slide">
             <a href="{% url 'searchapp:Detail' %}?pk={{ bcollarbor.bno }}">
-              <img src="{{ bcollarbor.image }}" alt="{{ bcollarbor.title }}">
+              <img src="{{ bimage.image }}" alt="{{ bcollarbor.title }}">
               <p>{{ bcollarbor.title }}</p>
           </div>
           <a class="prev" onclick="changeSlide(1)">&#10094;</a>
@@ -52,10 +52,10 @@
         {% empty %}
           <h4>결과 없음</h4>
         {% endfor %}
-        {% for brank in branks %}
+        {% for brank, bimage in branks %}
             <div class="slide">
               <a href="{% url 'searchapp:Detail' %}?pk={{ brank.bno }}">
-                <img src="{{ brank.image }}" alt="{{ brank.title }}">
+                <img src="{{ bimage.image }}" alt="{{ brank.title }}">
                 <p>{{ brank.title }}</p>
             </div>
             <a class="prev" onclick="changeSlide(1)">&#10094;</a>

@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 from django.db.models import Q, Count
 
 from searchapp.models import Product
-from board.models import Board
+from board.models import Board, BoardImage
 
 try:
     from signapp.models_bookmark import FBookmark
@@ -43,12 +43,17 @@ def Collarbor(request):
             collarbor = Board.objects.all().get(
                 Q(bno__exact = col)
             )
-            bcollarbors.append(collarbor)
+
+            bimage = list(BoardImage.objects.filter(
+                Q(bno__exact = col)
+            ))[0]
+
+            bcollarbors.append((collarbor, bimage))
     else:
         fblist = FBookmark.objects.values('FNO')
-        print(fblist)
+        # print(fblist)
         bblist = BBookmark.objects.values('bNO')
-        print(bblist)
+        # print(bblist)
 
         counts = {}
 
@@ -80,10 +85,15 @@ def Collarbor(request):
             brank_list = Board.objects.all().get(
                 Q(bno__exact = bno[0])
             )
-            branks.append(brank_list)
+
+            bimage = list(BoardImage.objects.filter(
+                Q(bno__exact = bno[0])
+            ))[0]
+
+            branks.append((brank_list, bimage))
 
     # print(fcollarbors)
     # print(bcollarbors)
-    # print(ranks)
+    # print(branks)
 
     return render(request, 'mainapp/home.html', {'fcollarbors':fcollarbors[:3], 'bcollarbors':bcollarbors[:3], 'franks':franks[:3], 'branks':branks[:3]})
