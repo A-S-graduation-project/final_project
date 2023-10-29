@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'boardbase.html' %}
 {% load static %}
 
 {% block content %}
@@ -8,6 +8,10 @@
         <div class="title">
             <label for="{{ form.title.id_for_label }}">제목</label>
             {{ board_form.title }}
+        </div>
+        <div>
+            대표사진
+            {{ image_form.image }}
         </div>
         <div class="content">
             <div class="allergy">알러지</div>

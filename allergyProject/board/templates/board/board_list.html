@@ -1,20 +1,16 @@
-{% extends 'base.html' %}
+{% extends 'boardbase.html' %}
 {% load static %}
-<!-- add to django -->
 {% block content %}
 <div class="header">
-  <button class="filter-btn">필터</button>
-  <!-- <button class="create-board-btn">게시판 생성</button> -->
-  
+  <button class="filter-btn">필터</button>  
     <a href="{% url 'board:board_create' %}" class="create-board-btn">게시판 생성</a>
- 
 </div>
   <main>
     <div class="container">
       {% for board in board_list %}
         <div class="post">
           <a href="/board/board_detail/{{board.bno}}">
-            <img src="{{board.image.url}}" alt="게시판 대표 사진">
+            <img src="{{ board.image.url }}" alt="{{ board.title }}">
             <h2>{{ board.title }}</h2>
           </a>
         </div>

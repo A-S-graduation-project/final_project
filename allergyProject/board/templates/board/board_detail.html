@@ -9,8 +9,8 @@
         <h3 style="text-align: right;">{{ board.name }} , {{ board.cdate }}</h3>
         {% if images %}
         <div class="image-box">
-          {% with latest_image=images|first %}
-            <img src="{{ latest_image.image.url }}" alt="title 이미지">
+          {% with first_image=images|first %}
+            <img src="{{ first_image.image.url }}" alt="title 이미지">
           {% endwith %}
         </div>
         {% endif %}
@@ -30,14 +30,15 @@
           {{ ingredient }}
         {% endfor %}
         </div>
-        {% for recipe, image in recipe_images %}
+        {% for recipe, images in recipe_images %}
         <div class="recipe-box">
           <p>{{ forloop.counter }}</p>
           <div class="recipe">
             {{ recipe }}
           </div>
-          {% if image %}
-            <img class="recipe-img" src="{{ image.image.url }}" alt="게시판 이미지">
+          <img class="recipe-img" src="{{ image.images.url }}" alt="게시판 이미지">
+          {% if images %}
+            <img class="recipe-img" src="{{ image.images.url }}" alt="게시판 이미지">
           {% endif %}
         </div>
         {% endfor %}
@@ -64,10 +65,10 @@
     </form>
     <br>
     <hr width="80%" color="#E6E6E6" >
-    {% for comment in comments %}
+    {% for comment, name in writen_comment %}
       <div class="comment">
         <div class="comment-title">
-          {{ comment.cno.username }} {{comment.cdate}}
+          {{ name }} {{comment.cdate}}
         </div>
         <div class="comment-text">
           {{ comment.comments }}
@@ -79,114 +80,14 @@
 </div>
 <div id="recommend"></div>
 <div class="container">
+  {% for boards in board_list %}
   <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food2.jpg' %}" alt="Post 1 Thumbnail">
-      <h2>삼겹살</h2>
+    <a href="/board/board_detail/{{boards.bno}}">
+      <img src="{{ boards.image.url }}" alt="{{ boards.title }}">
+      <h2>{{ boards.title }}</h2>
     </a>
   </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food3.jpg' %}" alt="Post 2 Thumbnail">
-      <h2>짜장면</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food4.jpg' %}" alt="Post 3 Thumbnail">
-      <h2>돈까스</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food2.jpg' %}" alt="Post 1 Thumbnail">
-      <h2>삼겹살</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food3.jpg' %}" alt="Post 2 Thumbnail">
-      <h2>짜장면</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food4.jpg' %}" alt="Post 3 Thumbnail">
-      <h2>돈까스</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food2.jpg' %}" alt="Post 1 Thumbnail">
-      <h2>삼겹살</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food3.jpg' %}" alt="Post 2 Thumbnail">
-      <h2>짜장면</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food4.jpg' %}" alt="Post 3 Thumbnail">
-      <h2>돈까스</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food2.jpg' %}" alt="Post 1 Thumbnail">
-      <h2>삼겹살</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food3.jpg' %}" alt="Post 2 Thumbnail">
-      <h2>짜장면</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food4.jpg' %}" alt="Post 3 Thumbnail">
-      <h2>돈까스</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food2.jpg' %}" alt="Post 1 Thumbnail">
-      <h2>삼겹살</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food3.jpg' %}" alt="Post 2 Thumbnail">
-      <h2>짜장면</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food4.jpg' %}" alt="Post 3 Thumbnail">
-      <h2>돈까스</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food2.jpg' %}" alt="Post 1 Thumbnail">
-      <h2>삼겹살</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food3.jpg' %}" alt="Post 2 Thumbnail">
-      <h2>짜장면</h2>
-    </a>
-  </div>
-  <div class="post">
-    <a href="post.html">
-      <img src="{% static 'images/food4.jpg' %}" alt="Post 3 Thumbnail">
-      <h2>돈까스</h2>
-    </a>
-  </div>
+  {% endfor %}
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
