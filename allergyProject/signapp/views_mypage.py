@@ -1,65 +1,17 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.views.generic.edit import FormView
-from django.contrib import messages
-from signapp.models import Customer
-from signapp.forms import SignupForm, UserProfileForm, CustomUserChangeForm
-from searchapp.models import Allergy
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.contrib.auth.hashers import make_password 
-from django.contrib.auth.views import LogoutView
-from django.contrib.auth.decorators import login_required
+# 사용자 마이페이지 뷰
 from django.shortcuts import render, redirect
 from django.views import View
 from django.utils.decorators import method_decorator
+from django.contrib import messages
+from django.contrib.auth.views import LogoutView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout, update_session_auth_hash
+from django.urls import reverse_lazy
 
-# 사용자 로그인 뷰
-class UserLoginView(View):
-    def get(self, request):
-        # 로그인 폼을 보여주는 부분 (GET 요청)
-        return render(request, 'signapp/login.html')
-    
-    def post(self, request):
-        # POST 요청으로 로그인 정보를 처리
-        username = request.POST['username']
-        password = request.POST['password']
+from signapp.models import Customer
+from .forms import forms_CustomerUserChangeForm, forms_UserProfileForm
 
-        user = authenticate(request, username=username, password=password)
-        
-        if user is not None:
-            # 로그인 성공
-            login(request, user)
-            return redirect('main:home')  # 로그인 후 홈페이지로 리디렉션
-        else:
-            error_message = '로그인에 실패하였습니다. 다시 시도해주세요.'
-            messages.error(request, error_message)
-            return render(request, 'signapp/login.html', {'error_message': error_message})
 
-# 사용자 회원 가입 뷰
-class SignupView(FormView):
-    template_name = 'signapp/signup.html'
-    form_class = SignupForm
-    success_url = reverse_lazy('main:home')
-
-    def form_valid(self, form):
-        # 비밀번호를 해싱하여 저장
-        user = form.save(commit=False)
-        user.password = make_password(form.cleaned_data['password'])
-        
-        # 사용자 정보 저장
-        allergies = form.cleaned_data.get('allerinfo')
-        selected_allergies = [allergy.ano for allergy in allergies]
-
-        # 사용자 프로필의 allerinfo 필드에 저장
-        user.allerinfo = selected_allergies
-
-        user.save()  # 사용자 정보 저장
-        
-        login(self.request, user)
-
-        return super().form_valid(form)
-
-# 사용자 마이페이지 뷰
 @method_decorator(login_required, name='dispatch')
 class MypageView(View):
     template_name = 'signapp/mypage.html'
@@ -68,7 +20,7 @@ class MypageView(View):
         user_profile = Customer.objects.get(username=request.user.username)
         allerinfo_str = user_profile.allerinfo
         allerinfo_list = [int(item) for item in allerinfo_str.strip('[]').split(',')]
-        form = UserProfileForm(instance=user_profile,initial={'allerinfo': allerinfo_list})
+        form = forms_UserProfileForm.UserProfileForm(instance=user_profile,initial={'allerinfo': allerinfo_list})
         context = {
             'user_profile': user_profile,
             'form': form,
@@ -86,7 +38,7 @@ def delete(request):
 
 def update(request):
     if request.method == "POST":
-        form = CustomUserChangeForm(request.POST, instance = request.user)
+        form = forms_CustomerUserChangeForm.CustomUserChangeForm(request.POST, instance = request.user)
         if form.is_valid():
             user = form.save(commit=False)
             allergies = form.cleaned_data.get('allerinfo')
@@ -98,7 +50,7 @@ def update(request):
             return redirect('signapp:mypage')
         
     else:
-        form = CustomUserChangeForm(instance = request.user)
+        form = forms_CustomerUserChangeForm.CustomUserChangeForm(instance = request.user)
     context = {'form':form}
     return render(request, 'signapp/mypage.html', context)
 
