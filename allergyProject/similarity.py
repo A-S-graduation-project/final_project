@@ -57,8 +57,15 @@ def food_sim():
     food_simi_cate = vector(0, rawmtrl, prdkind)
     print(food_simi_cate)
 
-    for n in range(row_count):
-        source = [prdlstReportNo[n], [prdlstReportNo[m] for m in range(row_count) if (food_simi_cate[n][m] >= 0.5 and prdlstReportNo[m] != prdlstReportNo[n])]]
+    for x in range(row_count):
+        cate_dict = {}
+
+        for y in range(row_count):
+            cate_dict[y] = food_simi_cate[x][y]
+
+        cate_dict = sorted(cate_dict.items(), reverse=True, key=lambda x:x[1])
+        source = [prdlstReportNo[x], [cate[0] for cate in cate_dict if (cate[1] >= 0.5 and cate[0] != x)]]
+
         sql = """INSERT INTO psimilarity("prdNo",simlist) VALUES(%s, %s)"""\
             """ON CONFLICT ("prdNo") DO UPDATE SET simlist = EXCLUDED.simlist"""
         cur.execute(sql, source)
@@ -103,8 +110,15 @@ def board_sim():
     # board_simi_cate = vector(ingredient, allerinfo)
     print(board_simi_cate)
 
-    for n in range(row_count):
-        source = [bno[n], [bno[m] for m in range(row_count) if (board_simi_cate[n][m] >= 0.5 and bno[m] != bno[n])]]
+    for x in range(row_count):
+        cate_dict = {}
+
+        for y in range(row_count):
+            cate_dict[y] = board_simi_cate[x][y]
+
+        cate_dict = sorted(cate_dict.items(), reverse=True, key=lambda x:x[1])
+        source = [bno[x], [cate[0] for cate in cate_dict if (cate[1] >= 0.5 and cate[0] != x)]]
+    
         sql = """INSERT INTO bsimilarity(bno,simlist) VALUES(%s, %s)"""\
             """ON CONFLICT (bno) DO UPDATE SET simlist = EXCLUDED.simlist"""
         cur.execute(sql, source)
