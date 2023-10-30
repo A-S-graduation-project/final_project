@@ -117,7 +117,7 @@ def board_sim():
             cate_dict[y] = board_simi_cate[x][y]
 
         cate_dict = sorted(cate_dict.items(), reverse=True, key=lambda x:x[1])
-        source = [bno[x], [bno[cate[0]] for cate in cate_dict if (cate[1] >= 0.5 and cate[0] != x)]]
+        source = [bno[x], [bno[cate[0]] for cate in cate_dict if (cate[1] >= 0.6 and cate[0] != x)]]
     
         sql = """INSERT INTO bsimilarity(bno,simlist) VALUES(%s, %s)"""\
             """ON CONFLICT (bno) DO UPDATE SET simlist = EXCLUDED.simlist"""

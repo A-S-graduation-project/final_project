@@ -82,7 +82,7 @@ def Detail(request):
     similarities = Similarity(request)
 
     try:
-        return render(request, 'detail.html', {'pk':pk, 'detail':detail, 'similarities':similarities})
+        return render(request, 'detail.html', {'pk':pk, 'detail':detail, 'similarities':similarities[:6]})
     except Exception as ex:
         print(ex)
         return render(request, 'detail.html', {'pk':pk, 'detail':detail})

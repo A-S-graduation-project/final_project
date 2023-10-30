@@ -69,7 +69,7 @@ def read_board(request, bno):
         'comments':comments,
         'writen_comment': writen_comment,
         'recipes':recipes,
-        'sim_board':similarities,
+        'sim_board':similarities[:5],
         })
 # test 코드
 
