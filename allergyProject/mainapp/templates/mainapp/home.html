@@ -19,6 +19,7 @@
       
       {% if user.is_authenticated %}
       <h2>사용자님의 추천 상품 및 레시피 입니다.</h2>
+      <h3>사용자님의 알레르기 : {{ allergies_str }}</h3>
         {% for fcollarbor in fcollarbors %}
           <div class="slide">
             <a href="{% url 'searchapp:Detail' %}?pk={{ fcollarbor.prdlstReportNo }}">
