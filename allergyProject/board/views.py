@@ -42,8 +42,6 @@ def read_board(request, bno):
         print(comment.cno)
         comment_user = Customer.objects.get(cno=comment.cno)
         writen_comment.append((comment,comment_user))
-    
-    print(images)
 
     # 유사한 board객체들을 불러오는 부분 유사도 0.7이상
     sim_board = BSimilarity.objects.get(bno=bno).simlist
