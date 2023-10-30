@@ -7,8 +7,10 @@ from django.contrib.auth.views import LogoutView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, update_session_auth_hash
 from django.urls import reverse_lazy
+from django.db.models import Q
 
 from signapp.models import Customer
+from searchapp.models import Allergy
 from .forms import forms_CustomerUserChangeForm, forms_UserProfileForm
 
 
@@ -17,13 +19,25 @@ class MypageView(View):
     template_name = 'signapp/mypage.html'
 
     def get(self, request, *args, **kwargs):
+        allergies = []
+
         user_profile = Customer.objects.get(username=request.user.username)
         allerinfo_str = user_profile.allerinfo
         allerinfo_list = [int(item) for item in allerinfo_str.strip('[]').split(',')]
+
+        for ano in allerinfo_list:
+            allergy = Allergy.objects.all().get(
+                Q(ano__exact = ano)
+            ).allergy
+            allergies.append(allergy)
+        
+        aller_str = ', '.join(allergies)
+
         form = forms_UserProfileForm.UserProfileForm(instance=user_profile,initial={'allerinfo': allerinfo_list})
         context = {
             'user_profile': user_profile,
             'form': form,
+            'allergies': aller_str
         }
         return render(request, self.template_name, context)
         
