@@ -1,10 +1,9 @@
 {% extends 'boardbase.html' %}
 {% load static %}
 {% block content %}
-<h3>검색된 게시판 "{{ query }}"</h3>
 <div class="header">
-    <button class="filter-btn">필터</button>
     <a href="{% url 'board:board_create' %}" class="create-board-btn">게시판 생성</a>
+    <h3 align="right">검색된 키워드 "{{ query }}"</h3>
 </div>
   <main>
     <div class="container">
