@@ -24,12 +24,39 @@ def filtering(products, list, query):
     return products
 
 
+def CheckAll(user):
+    allergies = []
+
+    user_allerinfo = Customer.objects.get(
+        username = user.username
+    ).allerinfo
+    allerinfo_list = [int(item) for item in user_allerinfo.strip('[]').split(', ')]
+
+    for ano in allerinfo_list:
+        allergy = Allergy.objects.all().get(
+            Q(ano__exact = ano)
+        ).allergy
+        allergies.append(allergy)
+    
+    return allergies
+
+
 # cache 적용 사례 #
 def searchResult(request):
-    if request.GET.get('afilter'):
-        cache_key = request.GET.get('kw') + request.GET.get('afilter')
+    user = request.user
+    allergies = CheckAll(user)
+    allergies_str = ' '.join(allergies)
+
+    if user.is_anonymous:
+        if request.GET.get('afilter'):
+            cache_key = request.GET.get('kw') + request.GET.get('afilter')
+        else:
+            cache_key = request.GET.get('kw')
     else:
-        cache_key = request.GET.get('kw')
+        if request.GET.get('afilter'):
+            cache_key = request.GET.get('kw') + request.GET.get('afilter') + allergies_str
+        else:
+            cache_key = request.GET.get('kw') + allergies_str
     products = cache.get(cache_key, None)
 
     if not products:
@@ -38,7 +65,7 @@ def searchResult(request):
             if ('afilter' in request.GET):
                 query = request.GET.get('kw')
                 afilter = request.GET.getlist('afilter')
-                list = afilter.copy()
+                list = afilter.copy() + allergies
                 products = Product.objects.all().order_by('prdlstNm')
                 products = filtering(products, list, query)[:1000]
                 cache.set(cache_key, products, 60*60)
@@ -47,10 +74,7 @@ def searchResult(request):
             else:
                 query = request.GET.get('kw')
                 products = Product.objects.all().order_by('prdlstNm')
-                products = products.filter(
-                    Q(prdlstNm__icontains=query) |
-                    Q(prdkind__icontains=query)
-                )[:1000]
+                products = filtering(products, allergies, query)[:1000]
                 cache.set(cache_key, products, 60*60)
                 return render(request, 'search.html', {'query':query, 'products':products} )
 

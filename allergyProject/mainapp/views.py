@@ -3,8 +3,9 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.db.models import Q, Count
 
-from searchapp.models import Product
+from searchapp.models import Product, Allergy
 from board.models import Board, BoardImage
+from signapp.models import Customer
 
 try:
     from signapp.models_bookmark import FBookmark
@@ -22,14 +23,35 @@ class AboutView(TemplateView):
     template_name = 'mainapp/about.html'
 
 
+def CheckAll(user):
+    allergies = []
+
+    user_allerinfo = Customer.objects.get(
+        username = user.username
+    ).allerinfo
+    allerinfo_list = [int(item) for item in user_allerinfo.strip('[]').split(', ')]
+
+    for ano in allerinfo_list:
+        allergy = Allergy.objects.all().get(
+            Q(ano__exact = ano)
+        ).allergy
+        allergies.append(allergy)
+
+    aller_str = ', '.join(allergies)
+
+    return aller_str
+
+
 def Collarbor(request):
     username = request.user
+
     fcollarbors = []
     bcollarbors = []
     franks = []
     branks = []
     
     if not username.is_anonymous:
+        allergies_str = CheckAll(username)
         fcollarbor_list = food_recommend(str(username)).keys()
         bcollarbor_list = board_recommend(str(username)).keys()
 
@@ -49,6 +71,13 @@ def Collarbor(request):
             ))[0]
 
             bcollarbors.append((collarbor, bimage))
+
+        context = {
+            'fcollarbors':fcollarbors[:3],
+            'bcollarbors':bcollarbors[:3],
+            'allergies_str':allergies_str,
+        }
+
     else:
         fblist = FBookmark.objects.values('FNO')
         # print(fblist)
@@ -92,8 +121,13 @@ def Collarbor(request):
 
             branks.append((brank_list, bimage))
 
+        context = {
+            'franks':franks[:3],
+            'branks':branks[:3],
+        }
+
     # print(fcollarbors)
     # print(bcollarbors)
     # print(branks)
 
-    return render(request, 'mainapp/home.html', {'fcollarbors':fcollarbors[:3], 'bcollarbors':bcollarbors[:3], 'franks':franks[:3], 'branks':branks[:3]})
+    return render(request, 'mainapp/home.html', context)
