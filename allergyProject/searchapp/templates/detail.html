@@ -3,14 +3,13 @@
 {% block content %}
 <script>const csrfToken = "{{ csrf_token|escapejs }}";</script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<h1>Search results for "{{ detail.prdlstNm }}"</h1>
 <main>
   <div class="food-details">
       <!-- <img src="{% static 'food-image.jpg' %}" alt="Food Image"> -->
       <img src="{{ detail.image }}" alt="Food Image">
       <div class="food-info">
-        <h2>Food Name</h2>
-        <p>Description information about the food.</p>
+        <h2>{{ detail.prdlstNm }}</h2>
+        <p>{{ detail.allergy }}</p>
         <form action="https://search.shopping.naver.com/search/all" method="GET">
             <input type="hidden" name="query" value="{{ detail.prdlstNm }}">
             <button class="buy" type="submit"> 구매하기 </button>

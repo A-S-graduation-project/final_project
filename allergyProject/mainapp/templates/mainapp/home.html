@@ -18,6 +18,7 @@
       <!-- <div class="slide"> -->
       
       {% if user.is_authenticated %}
+      <h2>사용자님의 추천 상품 및 레시피 입니다.</h2>
         {% for fcollarbor in fcollarbors %}
           <div class="slide">
             <a href="{% url 'searchapp:Detail' %}?pk={{ fcollarbor.prdlstReportNo }}">
@@ -41,6 +42,7 @@
           <h4>결과 없음</h4>
         {% endfor %}
       {% else %}
+      <h3>북마크를 가장 많이 받은 TOP3</h3>
         {% for frank in franks %}
           <div class="slide">
             <a href="{% url 'searchapp:Detail' %}?pk={{ frank.prdlstReportNo }}">

@@ -21,7 +21,7 @@ def vector(category, alist, blist, clist = None):
         clist_vector = vectorizer.fit_transform(clist)
         clist_cate = cosine_similarity(clist_vector)
 
-        return alist_cate * 0.6 + blist_cate * 0.3 + clist_cate * 0.1
+        return alist_cate * 0.6 + blist_cate * 0.2 + clist_cate * 0.2
     else:
         return alist_cate * 0.3 + blist_cate * 0.7
 
@@ -117,7 +117,7 @@ def board_sim():
             cate_dict[y] = board_simi_cate[x][y]
 
         cate_dict = sorted(cate_dict.items(), reverse=True, key=lambda x:x[1])
-        source = [bno[x], [bno[cate[0]] for cate in cate_dict if (cate[1] >= 0.5 and cate[0] != x)]]
+        source = [bno[x], [bno[cate[0]] for cate in cate_dict if (cate[1] >= 0.6 and cate[0] != x)]]
     
         sql = """INSERT INTO bsimilarity(bno,simlist) VALUES(%s, %s)"""\
             """ON CONFLICT (bno) DO UPDATE SET simlist = EXCLUDED.simlist"""

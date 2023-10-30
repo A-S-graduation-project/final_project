@@ -173,7 +173,7 @@ def user_allergy_similarity():
         if cno[2] != None:
             allerinfo = cno[2].strip('[]').split(', ')
             for ano in allerinfo:
-                customer_allergy_data[int(ano)][cno[0]-1] = 1
+                customer_allergy_data[int(ano)][customer_allergy_data['User'].index(cno[1])-1] = 1
 
     df = pd.DataFrame(customer_allergy_data)
     df.set_index('User', inplace=True)
