@@ -44,15 +44,17 @@ def CheckAll(user):
 # cache 적용 사례 #
 def searchResult(request):
     user = request.user
-    allergies = CheckAll(user)
-    allergies_str = ' '.join(allergies)
-
+    allergies = []
+    
     if user.is_anonymous:
         if request.GET.get('afilter'):
             cache_key = request.GET.get('kw') + request.GET.get('afilter')
         else:
             cache_key = request.GET.get('kw')
     else:
+        allergies = CheckAll(user)
+        allergies_str = ' '.join(allergies)
+
         if request.GET.get('afilter'):
             cache_key = request.GET.get('kw') + request.GET.get('afilter') + allergies_str
         else:
