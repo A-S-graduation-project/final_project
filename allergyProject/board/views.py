@@ -35,18 +35,18 @@ def read_board(request, bno):
     board_list = Board.objects.all().order_by('bno')
     # 게시글에 해당하는 image가져오기
     images = list(BoardImage.objects.filter(bno=board))
+    print(images)
     comment_form = CommentForm()
     comments = Comment.objects.filter(bno=board)
     writen_comment = []
     for comment in comments:
-        print(comment.cno)
         comment_user = Customer.objects.get(cno=comment.cno)
         writen_comment.append((comment,comment_user))
 
     # 유사한 board객체들을 불러오는 부분 유사도 0.7이상
     sim_board = BSimilarity.objects.get(bno=bno).simlist
     similarities = []
-    print(sim_board)
+    print(f"sim_board = {sim_board}")
     for sim_no in sim_board:
             similarity = Board.objects.all()
             similarity = similarity.get(
@@ -57,9 +57,15 @@ def read_board(request, bno):
     # 선택한 알러지 정보를 가져와서 알러지 객체와 매칭하여 이름만 가져옴
     selected_allergies = board.allerinfo
     allerinfo = [allergy for allergy in selected_allergies]
-    recipe_image = [img.image for img in images[1:]]
-    recipes = list(zip(board.content, recipe_image))
-    print(writen_comment)
+    recipe_image = [img.image for img in images[1:] if img.image != None ]
+    recipe_ex_image = [img.ex_image for img in images[1:]]
+    # print(f"internal = {recipe_image}")
+    # print(f"external = {recipe_ex_image}")
+    # print(f"{recipe_image != None}")
+    if recipe_image:
+        recipes = list(zip(board.content, recipe_image))
+    else:
+        recipes = list(zip(board.content, recipe_ex_image))
     return render(request, 'board/board_detail.html', {
         'board_list': board_list,
         'board': board, 
