@@ -30,6 +30,8 @@ def board_view(request):
     return render(request, 'board/board_list.html', {'boards': boards})
 
 def read_board(request, bno):
+    # board 유사도 구하기
+    board_sim()
     # 게시글을 데이터베이스에서 가져오거나 존재하지 않는 경우 404 에러 반환
     board = get_object_or_404(Board, bno=bno)
     board_list = Board.objects.all().order_by('bno')
@@ -215,6 +217,7 @@ def board_filtering(boards, list, query):
 
 
 def board_search_result(request):
+    # board 유사도 구하기
     board_sim()
     
     if ('kw' in request.GET):
