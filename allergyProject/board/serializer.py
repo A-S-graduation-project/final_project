@@ -6,7 +6,7 @@ class BoardImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BoardImage
-        fields = ['image']
+        fields = ['image', 'ex_image']
 
 class BoardSerializer(serializers.ModelSerializer):
     images = BoardImageSerializer(many=True, read_only=True)

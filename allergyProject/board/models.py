@@ -33,7 +33,8 @@ def get_image_filename(instance, filename):
 class BoardImage(models.Model):
     serial = models.AutoField(primary_key=True)
     bno = models.ForeignKey(Board, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to=get_image_filename)
+    image = models.ImageField(upload_to=get_image_filename, null=True)
+    ex_image = models.URLField()
 
     class Meta:
         db_table = "board_images" # DB에 표시되고 사용할 테이블 명
