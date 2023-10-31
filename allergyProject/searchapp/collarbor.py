@@ -62,8 +62,9 @@ def food_recommend(user):
 
     # bookmark data 적용 #
     for fbno in fbData:
+        print(fbno)
         if fbno[0] != None:
-            data[fbno[1]][fbno[0]-1] += 3
+            data[fbno[1]][data['User'].index(user)] += 3
 
     # sample #
     # data = {
@@ -121,7 +122,7 @@ def board_recommend(user):
     # bookmark data 적용 #
     for bbno in bbData:
         if bbno[0] != None:
-            data[bbno[1]][bbno[0]-1] += 3
+            data[bbno[1]][data['User'].index(user)] += 3
 
     # sample #
     # data = {
