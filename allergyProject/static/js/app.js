@@ -23,8 +23,10 @@ function changeSlide(n) {
   
   if (slideIndex >= slides.length-3) {
     slideIndex = 0;
-  } else if (slideIndex < 0) {
+  } else if (slideIndex < 0 &&  n == -1) {
     slideIndex = slides.length - 4;
+  } else if (slideIndex < 0) {
+    slideIndex = slides.length - 3;
   }
   
   showSlides();
