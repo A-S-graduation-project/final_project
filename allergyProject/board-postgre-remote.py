@@ -10,10 +10,10 @@ cur = conn.cursor()
 cur.execute("""DELETE FROM boards""")
 
 try:
-    df = pd.read_csv("./board_info.csv")
+    df = pd.read_csv(".//allergyProject//board_info.csv")
 except:
     os.chdir("../")
-    df = pd.read_csv("./allergyProject/board_info.csv")
+    df = pd.read_csv(".//allergyProject//board_info.csv")
 
 for line in df.values:
     board_info = [line[0], line[1],line[2],line[3],line[4],parser.parse(line[5]),'{'+line[6]+'}','{'+line[7]+'}',line[8],line[9]]
@@ -27,7 +27,7 @@ for line in df.values:
 
     for image in image_list:
         image_info = [line[0], image]
-        sql = """INSERT INTO board_images(serial, bno_id, image) VALUES (DEFAULT, %s, %s)"""
+        sql = """INSERT INTO board_images(serial, bno_id, ex_image) VALUES (DEFAULT, %s, %s)"""
 
         cur.execute(sql, image_info)
         conn.commit()

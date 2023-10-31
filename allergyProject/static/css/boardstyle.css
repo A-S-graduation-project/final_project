@@ -38,6 +38,11 @@ board_detail
   font-weight: bolder;
 }
 
+.recipe-box img{
+  width: 150px;
+  height: 150px;
+}
+
 .comment-box{
   display: flex;
   justify-content: left;
@@ -96,12 +101,6 @@ board_detail
     border-color: var(--hover);
     color: #fff;
   }
-}
-
-
-.recipe-img{
-  width: 150px;
-  height: 150px;
 }
 
 
