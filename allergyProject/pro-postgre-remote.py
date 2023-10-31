@@ -70,23 +70,19 @@ cur.execute("""CREATE TABLE IF NOT EXISTS products(
             manufacture varchar(200))""")
 
 # hearder 정보 #
-# headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'}
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'}
 
 serviceKey = "KRFgFYY3tfo9A3cGfNrr%2Bzaib9lhbXTPnsWS149Apg2Vg%2Frl%2BaI9cVAVMQoMPFzLW23jYOdrysnHWISruWgzTA%3D%3D"
-
+# TimeOut 오류시 pageNo 변경 #
 pageNo = 1
-prevPage = 0
 
 while pageNo<=15:
-    if pageNo != prevPage:
-        print(pageNo)
-        prevPage = pageNo
-
+    print(pageNo)
     URL = "http://apis.data.go.kr/B553748/CertImgListService/getCertImgListService"
     parameters = {"serviceKey" : unquote(serviceKey), "pageNo" : str(pageNo), "returnType" : "json"}
 
     try:
-        res = requests.get(URL, params=parameters, verify=False, timeout=None)
+        res = requests.get(URL, params=parameters, verify=False, headers=headers, timeout=None)
     except Exception as ex: # error 발생 시 error의 종류 출력 후 다시 시도 #
         if ex is not ConnectionError:
             print(ex)
@@ -108,7 +104,7 @@ while pageNo<=15:
 
         # print(procData)
 
-        if procData and procData[4]:
+        if procData:
             # "" 없으면 소문자로 인식 #
             sql = """INSERT INTO products("prdlstReportNo", "prdlstNm", prdkind, rawmtrl, allergy, image, manufacture)"""\
                 """VALUES(%s, %s, %s, %s, %s, %s, %s)"""\
