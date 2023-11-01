@@ -7,7 +7,7 @@
 </div>
   <main>
     <div class="container">
-      {% for board in boards %}
+      {% for board, image in boards %}
         <div class="post">
           <a href="/board/board_detail/{{board.bno}}">
             {% if iamge.image %}
