@@ -63,13 +63,9 @@ def Collarbor(request):
 
         for col in bcollarbor_list:
             collarbor = Board.objects.all().get(
-                Q(bno__exact = col)
+                Q(bno__exact=col)
             )
-
-            bimage = list(BoardImage.objects.filter(
-                Q(bno__exact = col)
-            ))[0]
-
+            bimage = BoardImage.objects.filter(bno=col).first()
             bcollarbors.append((collarbor, bimage))
 
         context = {
@@ -114,11 +110,7 @@ def Collarbor(request):
             brank_list = Board.objects.all().get(
                 Q(bno__exact = bno[0])
             )
-
-            bimage = list(BoardImage.objects.filter(
-                Q(bno__exact = bno[0])
-            ))[0]
-
+            bimage = BoardImage.objects.filter(bno=bno[0]).first()
             branks.append((brank_list, bimage))
 
         context = {

@@ -34,7 +34,13 @@
         {% for bcollarbor, bimage in bcollarbors %}
           <div class="slide">
             <a href="/board/board_detail/{{bcollarbor.bno}}">
-              <img src="{{ bimage.image }}" alt="{{ bcollarbor.title }}">
+              {% if biamge.image %}
+              <img src="{{ bimage.image.url }}" alt="{{ board.title }}">
+              {% else %}
+                {% with stripped_ex_url=bimage.ex_image|slice:"1:-1" %}
+                <img src="{{ stripped_ex_url }}" alt="{{ board.title }}">
+                {% endwith %}
+              {% endif %}
               <p>{{ bcollarbor.title }}</p>
           </div>
           <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
@@ -58,7 +64,13 @@
         {% for brank, bimage in branks %}
             <div class="slide">
               <a href="/board/board_detail/{{brank.bno}}">
-                <img src="{{ bimage.image }}" alt="{{ brank.title }}">
+                {% if biamge.image %}
+                <img src="{{ bimage.image.url }}" alt="{{ board.title }}">
+                {% else %}
+                  {% with stripped_ex_url=bimage.ex_image|slice:"1:-1" %}
+                  <img src="{{ stripped_ex_url }}" alt="{{ board.title }}">
+                  {% endwith %}
+                {% endif %}
                 <p>{{ brank.title }}</p>
             </div>
             <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
