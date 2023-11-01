@@ -55,7 +55,7 @@
     <!-- 비밀번호 확인 입력 -->
     <input type="password" placeholder="비밀번호 확인" name="password_confirm" id="password_confirm" required>
     <span id="password-confirm-error" class="error-msg"></span> <!--오류출력-->
-    <input type = "submit" value = "비밀번호 변경"
+    <input type = "submit" value = "비밀번호 변경">
   </form>
   <form action = "{% url 'signapp:delete' %}" method="POST"  id="delete-form">
     {% csrf_token %}
