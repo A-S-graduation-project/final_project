@@ -37,7 +37,6 @@ def read_board(request, bno):
     board_list = Board.objects.all().order_by('bno')
     # 게시글에 해당하는 image가져오기
     images = list(BoardImage.objects.filter(bno=board))
-    print(images)
     comment_form = CommentForm()
     comments = Comment.objects.filter(bno=board)
     writen_comment = []
@@ -54,7 +53,8 @@ def read_board(request, bno):
             similarity = similarity.get(
                 Q(bno__exact = sim_no)
             )
-            similarities.append(similarity)
+            sim_image = BoardImage.objects.filter(bno=sim_no).first()
+            similarities.append((similarity, sim_image))
 
     # 선택한 알러지 정보를 가져와서 알러지 객체와 매칭하여 이름만 가져옴
     selected_allergies = board.allerinfo
@@ -219,23 +219,34 @@ def board_filtering(boards, list, query):
 def board_search_result(request):
     # board 유사도 구하기
     board_sim()
-    
+    boards = []
+
     if ('kw' in request.GET):
         if ('afilter' in request.GET):
             query = request.GET.get('kw')
             afilter = request.GET.getlist('afilter')
             list = afilter.copy()
-            boards = Board.objects.all().order_by('bno')
-            boards = board_filtering(boards, list, query)[:1000]
+            board_list = Board.objects.all().order_by('bno')
+            board_list = board_filtering(board_list, list, query)[:1000]
+
+            for board in board_list:
+                first_image = BoardImage.objects.filter(bno=board.bno).first()
+                boards.append((board, first_image))
+
             return render(request, 'board/board_search.html', {'query':query, 'afilter':afilter, 'boards':boards} )
     
         else:
             query = request.GET.get('kw')
-            boards = Board.objects.all().order_by('bno')
-            boards = boards.filter(
+            board_list = Board.objects.all().order_by('bno')
+            board_list = board_list.filter(
                 Q(title__icontains=query) |
                 Q(types__icontains=query)
             )[:1000]
+
+            for board in board_list:
+                first_image = BoardImage.objects.filter(bno=board.bno).first()
+                boards.append((board, first_image))
+
             return render(request, 'board/board_search.html', {'query':query, 'boards':boards} )
 
     return render(request, 'board/board_search.html', {'boards':boards})

@@ -82,10 +82,16 @@
   </div>
 </div>
 <div class="container">
-  {% for boards in sim_board %}
+  {% for boards, image in sim_board %}
   <div class="post">
     <a href="/board/board_detail/{{boards.bno}}">
-      <img src="{{ boards.image.url }}" alt="{{ boards.title }}">
+      {% if iamge.image %}
+      <img src="{{ image.image.url }}" alt="{{ boards.title }}">
+      {% else %}
+        {% with stripped_ex_url=image.ex_image|slice:"1:-1" %}
+        <img src="{{ stripped_ex_url }}" alt="{{ boards.title }}">
+        {% endwith %}
+      {% endif %}
       <h2>{{ boards.title }}</h2>
     </a>
   </div>
