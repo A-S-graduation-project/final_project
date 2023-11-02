@@ -10,8 +10,8 @@
       {% for board, image in boards %}
         <div class="post">
           <a href="/board/board_detail/{{board.bno}}">
-            {% if iamge.image %}
-            <img src="{{ image.image.url }}" alt="{{ board.title }}">
+            {% if image.image %}
+            <img src="{{ image.image.url }}" alt="{{board.title}}">
             {% else %}
               {% with stripped_ex_url=image.ex_image|slice:"1:-1" %}
               <img src="{{ stripped_ex_url }}" alt="{{ board.title }}">
