@@ -9,14 +9,12 @@
         <h3 style="text-align: right;">{{ board.name }} , {{ board.cdate }}</h3>
         {% if images.image %}
         <div class="image-box">
-            <img src="{{ images.image.url }}" alt="title이미지">
+          <img src="{{ images.image.url }}" alt="title이미지">
         </div>
         {% else %}
         <div class="image-box">
-          {% with first_image=images|first|slice:"1:-1" %}
-            {% with strip_first_image=first_image.ex_image|slice:"1:-1" %}
-            <img src="{{ strip_first_image }}" alt="title이미지">
-            {% endwith %}
+          {% with strip_first_image=images.ex_image|slice:"1:-1" %}
+          <img src="{{ strip_first_image }}" alt="title이미지">
           {% endwith %}
         </div>
         {% endif %}
