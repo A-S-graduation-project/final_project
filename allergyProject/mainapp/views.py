@@ -83,7 +83,7 @@ def Collarbor(request):
         counts = {}
 
         for fno in fblist:
-            if fno['FNO'] in franks:
+            if fno['FNO'] in counts:
                 counts[fno['FNO']] += 1
             else:
                 counts[fno['FNO']] = 1
@@ -99,7 +99,7 @@ def Collarbor(request):
         counts = {}
 
         for bno in bblist:
-            if bno['bNO'] in branks:
+            if bno['bNO'] in counts:
                 counts[bno['bNO']] += 1
             else:
                 counts[bno['bNO']] = 1
