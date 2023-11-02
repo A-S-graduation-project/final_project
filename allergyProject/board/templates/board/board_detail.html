@@ -9,9 +9,7 @@
         <h3 style="text-align: right;">{{ board.name }} , {{ board.cdate }}</h3>
         {% if images.image %}
         <div class="image-box">
-          {% with first_image=images|first %}
-            <img src="{{ first_image.image.url }}" alt="title이미지">
-          {% endwith %}
+            <img src="{{ images.image.url }}" alt="title이미지">
         </div>
         {% else %}
         <div class="image-box">

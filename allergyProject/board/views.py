@@ -72,7 +72,7 @@ def read_board(request, bno):
         'board_list': board_list,
         'board': board, 
         'allerinfo':allerinfo,
-        'images':images,
+        'images':images[0],
         'comment_form':comment_form,
         'comments':comments,
         'writen_comment': writen_comment,
