@@ -65,6 +65,12 @@
     <br>
     <hr width="80%" color="#E6E6E6" >
     {% for comment, name in writen_comment %}
+    {% if user.is_authenticated %}
+          <form action="{% url 'board:delete_comment' board.bno comment.serialno %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="삭제">
+          </form>
+          {% endif %}
       <div class="comment">
         <div class="comment-title">
           {{ name }} {{comment.cdate}}

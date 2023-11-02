@@ -152,44 +152,37 @@ def handle_uploaded_images(request, board, image_form):
             image.save()
 
 def update_board(request, bno):
-   # 수정할 게시글의 게시판 번호를 가져온다.
+    # 수정할 기존 보드 인스턴스를 가져옵니다.
+    print("----------update----------")
     board = get_object_or_404(Board, pk=bno)
-    # 모든 알러지 정보를 가져온다.
+
+    # 폼에 필요한 모든 데이터를 검색합니다.
     allergies = Allergy.objects.all()
-    # form의 method가 POST로 오면
+    type_category = TypeCategories.objects.all()
+    meterial_category = MeterialCategories.objects.all()
+    image_form = ImageForm(request.POST, request.FILES)
+
+    print(f"------{board.allerinfo}-------{board.types}------{board.meterials}------{image_form}---------")
+
+
     if request.method == 'POST':
-        # board의 form을 가져와 저장한다.
-        board_form = BoardForm(request.POST)
-
-        # board_form이 valid하다면
+        board_form = BoardForm(request.POST, request.FILES, instance=board)  # 기존 보드를 수정하기 위해 인스턴스 전달
         if board_form.is_valid():
-            # 데이터 베이스에 아직 저장하지 않고 board만 생성
-            board = board_form.save(commit=False) 
-            # udate의 경우 수정을 완료한 시간을 넣어준다.
-            board.udate = dt.datetime.now()
-            # 현재 작성하고 있는 사용자의 이름과 번호를 가져와 넣는다.
-            board.name = request.user.username
-            board.cno = request.user.cno
+            board = save_board(request, board_form, image_form)
+            return redirect('../')  # 수정 후 적절한 페이지로 이동
 
-            # 사용자가 form에서 선택한 알러지 정보를 가져온다.
-            selected_allergies = request.POST.getlist('selected_allergies')
-            # 게시판의 allerinfo 선택 정보를 속성에 넣어준다.
-            board.allerinfo = json.dumps(selected_allergies)
-            # 모든 속성이 들어간 board를 저장해준다.
-            board.save()
-            
-            # 성공하면 board_list로 이동한다.
-            return redirect('board_list')
-        
-        # board_form unvalid하다면 error를 출력
-        print(f"{board_form.errors}")
     else:
-        # method가 POST가 아니면 bno에 해당하는 값을 form에 넣는다..
-        board_form = BoardForm(instance=board)
-    # board_form 페이지를 보여준다.
+        board_form = BoardForm(instance=board)  # 기존 보드 데이터로 폼을 채웁니다.
+        print(board_form)
+        
+
     return render(request, 'board/board_form.html', {
-        'board_form': board_form, 
-        'allergies': allergies})
+        'board_form': board_form,
+        'allergies': allergies,
+        'image_form': image_form,
+        'type_category': type_category,
+        'meterial_category': meterial_category,
+    })
 
 
 def delete_board(request, bno):
@@ -267,7 +260,7 @@ def create_comment(request, bno):
             print(comment)
     return redirect(reverse('board:board_detail', args=[bno]))
     
-def update_comment(request, comment_id):
+def update_comment(request, bno, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
     board_id = comment.bno.pk
 
@@ -278,14 +271,12 @@ def update_comment(request, comment_id):
             if comment.cdate:
                 comment.udate = dt.datetime.now()
             comment_form.save()
-            return redirect('board_detail', board_id=board_id)
+            return redirect(reverse('board:board_detail', args=[board_id]))
 
 
-
-def delete_comment(request, comment_id):
-    comment = get_object_or_404(Comment, pk=comment_id)
-    board_id = comment.bno.pk
+def delete_comment(request, bno, serialno):
+    comment = get_object_or_404(Comment, serialno=serialno)
 
     if request.method == 'POST':
         comment.delete()
-        return redirect('board_detail', board_id=board_id)
+        return redirect(reverse('board:board_detail', kwargs={'bno': bno}))

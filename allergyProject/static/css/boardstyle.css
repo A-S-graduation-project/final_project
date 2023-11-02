@@ -112,11 +112,21 @@ board_detail
 }
 
 .comment-title{
+  display: flex;
+  flex-direction: row;
   height: 35px;
 }
 
-.comment-text{
+.comment-title form input{
+  display: flex;
   height: 25px;
+}
+
+.comment-text{
+  min-height: 25px;
+  overflow: overlay; /* 텍스트가 넘칠 경우 가림 */
+  word-wrap: break-word; /* 긴 단어를 강제로 줄바꿈 */
+
 }
 
 
